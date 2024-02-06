@@ -55,10 +55,10 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIOPigeon2(false),
-                new ModuleIOSparkMax(0),
-                new ModuleIOSparkMax(1),
-                new ModuleIOSparkMax(2),
-                new ModuleIOSparkMax(3));
+                new ModuleIOSparkMax(0), // FL
+                new ModuleIOSparkMax(1), // FR
+                new ModuleIOSparkMax(2), // BL
+                new ModuleIOSparkMax(3)); // BR
         // flywheel = new Flywheel(new FlywheelIOSparkMax());
         // drive = new Drive(
         // new GyroIOPigeon2(true),
@@ -144,7 +144,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-        // STU
+    // STU
     drive.setDefaultCommand(
         // DriveCommands.joystickDrive(
         //     drive,
