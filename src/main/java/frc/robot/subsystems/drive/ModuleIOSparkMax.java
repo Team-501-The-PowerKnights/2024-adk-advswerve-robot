@@ -22,6 +22,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAbsoluteEncoder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.AnalogInput;
 // import edu.wpi.first.wpilibj.RobotController;
 import java.util.Queue;
@@ -57,7 +58,11 @@ public class ModuleIOSparkMax implements ModuleIO {
   private final boolean isTurnMotorInverted = true;
   // private final Rotation2d absoluteEncoderOffset;
 
+  // STU
+  private final int m_index;
+
   public ModuleIOSparkMax(int index) {
+    m_index = index;
     switch (index) {
       case 0: // FL
         driveSparkMax = new CANSparkMax(1, MotorType.kBrushless);
@@ -136,6 +141,8 @@ public class ModuleIOSparkMax implements ModuleIO {
     inputs.driveCurrentAmps = new double[] {driveSparkMax.getOutputCurrent()};
 
     inputs.turnAbsolutePosition = new Rotation2d(turnAbsoluteEncoder.getPosition() * 2.0 * Math.PI);
+    SmartDashboard.putNumber(
+        "turnAbsolutePosition[" + m_index + "]", inputs.turnAbsolutePosition.getDegrees());
     // turnAbsoluteEncoder.getVoltage() / RobotController.getVoltage5V() * 2.0 * Math.PI)
     // .minus(absoluteEncoderOffset);
     inputs.turnPosition =
