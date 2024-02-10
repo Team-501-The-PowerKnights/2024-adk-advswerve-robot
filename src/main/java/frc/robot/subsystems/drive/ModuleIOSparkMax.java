@@ -49,9 +49,9 @@ public class ModuleIOSparkMax implements ModuleIO {
 
   private final RelativeEncoder driveEncoder;
   private final RelativeEncoder turnRelativeEncoder;
-
   private final AbsoluteEncoder turnAbsoluteEncoder;
 
+  private final Queue<Double> timestampQueue;
   private final Queue<Double> drivePositionQueue;
   private final Queue<Double> turnPositionQueue;
 
@@ -74,7 +74,7 @@ public class ModuleIOSparkMax implements ModuleIO {
         driveSparkMax = new CANSparkMax(5, MotorType.kBrushless);
         turnSparkMax = new CANSparkMax(6, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
-        absoluteEncoderOffset = new Rotation2d(0.00); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(3.21); // MUST BE CALIBRATED
         break;
       case 2: // BL
         driveSparkMax = new CANSparkMax(3, MotorType.kBrushless);
@@ -86,7 +86,7 @@ public class ModuleIOSparkMax implements ModuleIO {
         driveSparkMax = new CANSparkMax(7, MotorType.kBrushless);
         turnSparkMax = new CANSparkMax(8, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
-        absoluteEncoderOffset = new Rotation2d(4.66); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(1.52); // MUST BE CALIBRATED
         break;
       default:
         throw new RuntimeException("Invalid module index");
@@ -122,6 +122,7 @@ public class ModuleIOSparkMax implements ModuleIO {
         PeriodicFrame.kStatus2, (int) (1000.0 / Module.ODOMETRY_FREQUENCY));
     turnSparkMax.setPeriodicFramePeriod(
         PeriodicFrame.kStatus2, (int) (1000.0 / Module.ODOMETRY_FREQUENCY));
+    timestampQueue = SparkMaxOdometryThread.getInstance().makeTimestampQueue();
     drivePositionQueue =
         SparkMaxOdometryThread.getInstance().registerSignal(driveEncoder::getPosition);
     turnPositionQueue =
@@ -140,20 +141,20 @@ public class ModuleIOSparkMax implements ModuleIO {
     inputs.driveAppliedVolts = driveSparkMax.getAppliedOutput() * driveSparkMax.getBusVoltage();
     inputs.driveCurrentAmps = new double[] {driveSparkMax.getOutputCurrent()};
 
-    // Original
+    /* Original */
     // inputs.turnAbsolutePosition =
     //     new Rotation2d(
     //             turnAbsoluteEncoder.getVoltage() / RobotController.getVoltage5V() * 2.0 *
     // Math.PI)
     //         .minus(absoluteEncoderOffset);
 
-    // For Calibration of Offsets
-    // inputs.turnAbsolutePosition =
-    //     new Rotation2d(turnAbsoluteEncoder.getPosition() * 2.0 * Math.PI);
+    /* For Calibration of Offsets */
+    // inputs.turnAbsolutePosition = new Rotation2d(turnAbsoluteEncoder.getPosition() * 2.0 *
+    // Math.PI);
     // SmartDashboard.putNumber(
     //     "turnAbsolutePosition[" + m_index + "]", inputs.turnAbsolutePosition.getDegrees());
 
-    // Our Version
+    /* Our Version */
     inputs.turnAbsolutePosition =
         new Rotation2d(turnAbsoluteEncoder.getPosition() * 2.0 * Math.PI)
             .minus(absoluteEncoderOffset);
@@ -167,6 +168,8 @@ public class ModuleIOSparkMax implements ModuleIO {
     inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
     inputs.turnCurrentAmps = new double[] {turnSparkMax.getOutputCurrent()};
 
+    inputs.odometryTimestamps =
+        timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
     inputs.odometryDrivePositionsRad =
         drivePositionQueue.stream()
             .mapToDouble((Double value) -> Units.rotationsToRadians(value) / DRIVE_GEAR_RATIO)
@@ -175,6 +178,7 @@ public class ModuleIOSparkMax implements ModuleIO {
         turnPositionQueue.stream()
             .map((Double value) -> Rotation2d.fromRotations(value / TURN_GEAR_RATIO))
             .toArray(Rotation2d[]::new);
+    timestampQueue.clear();
     drivePositionQueue.clear();
     turnPositionQueue.clear();
   }
