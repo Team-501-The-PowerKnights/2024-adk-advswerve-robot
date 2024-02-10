@@ -146,16 +146,16 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // STU
     drive.setDefaultCommand(
-        // DriveCommands.joystickDrive(
-        //     drive,
-        //     () -> -controller.getLeftY(),
-        //     () -> -controller.getLeftX(),
-        //     () -> -controller.getRightX()));
         DriveCommands.joystickDrive(
             drive,
-            () -> ZeroSupplier.zero(),
-            () -> ZeroSupplier.zero(),
-            () -> ZeroSupplier.zero()));
+            () -> -controller.getLeftY(),
+            () -> -controller.getLeftX(),
+            () -> -controller.getRightX()));
+    // DriveCommands.joystickDrive(
+    //     drive,
+    //     () -> ZeroSupplier.zero(),
+    //     () -> ZeroSupplier.zero(),
+    //     () -> ZeroSupplier.zero()));
     // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     // controller
     //     .b()
