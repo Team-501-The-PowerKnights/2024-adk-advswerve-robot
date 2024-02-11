@@ -42,7 +42,7 @@ import java.util.Queue;
 public class ModuleIOSparkMax implements ModuleIO {
   private static final double SWERVE_PINION_TEETH = 14;
   private static final double DRIVE_GEAR_RATIO = (45.0 * 22) / (SWERVE_PINION_TEETH * 15);
-  private static final double TURN_GEAR_RATIO = 1; // Rev Steering
+  private static final double TURN_GEAR_RATIO = (9424.0 / 203); // Rev Steering
 
   private final CANSparkMax driveSparkMax;
   private final CANSparkMax turnSparkMax;
@@ -55,7 +55,7 @@ public class ModuleIOSparkMax implements ModuleIO {
   private final Queue<Double> drivePositionQueue;
   private final Queue<Double> turnPositionQueue;
 
-  private final boolean isTurnMotorInverted = true;
+  private final boolean isTurnMotorInverted = false;
   private final Rotation2d absoluteEncoderOffset;
 
   // STU
@@ -68,25 +68,25 @@ public class ModuleIOSparkMax implements ModuleIO {
         driveSparkMax = new CANSparkMax(1, MotorType.kBrushless);
         turnSparkMax = new CANSparkMax(2, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
-        absoluteEncoderOffset = new Rotation2d(4.78); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(-1.57); // MUST BE CALIBRATED
         break;
       case 1: // FR
         driveSparkMax = new CANSparkMax(5, MotorType.kBrushless);
         turnSparkMax = new CANSparkMax(6, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
-        absoluteEncoderOffset = new Rotation2d(3.21); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(3.14); // MUST BE CALIBRATED
         break;
       case 2: // BL
         driveSparkMax = new CANSparkMax(3, MotorType.kBrushless);
         turnSparkMax = new CANSparkMax(4, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
-        absoluteEncoderOffset = new Rotation2d(0.00); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(0); // MUST BE CALIBRATED
         break;
       case 3: // BR
         driveSparkMax = new CANSparkMax(7, MotorType.kBrushless);
         turnSparkMax = new CANSparkMax(8, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
-        absoluteEncoderOffset = new Rotation2d(1.52); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(1.57); // MUST BE CALIBRATED
         break;
       default:
         throw new RuntimeException("Invalid module index");
