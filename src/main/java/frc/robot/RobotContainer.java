@@ -148,9 +148,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -controller.getLeftY(),
-            () -> -controller.getLeftX(),
-            () -> -controller.getRightX()));
+            () -> (-controller.getLeftY() * 0.50),
+            () -> (-controller.getLeftX() * 0.50),
+            () -> (controller.getRightX() * 0.50)));
     // drive.setDefaultCommand(
     //     DriveCommands.joystickDrive(
     //         drive,
