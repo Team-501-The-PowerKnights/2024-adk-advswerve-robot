@@ -24,7 +24,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class Module {
   private static final double WHEEL_RADIUS = Units.inchesToMeters(1.5);
-  static final double ODOMETRY_FREQUENCY = 250.0;
+  static final double ODOMETRY_FREQUENCY = 200.0; // was 250hz
 
   private final ModuleIO io;
   private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
