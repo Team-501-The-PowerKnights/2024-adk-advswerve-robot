@@ -26,6 +26,18 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSparkMax;
+import frc.robot.subsystems.rollers.Rollers;
+import frc.robot.subsystems.rollers.RollersSensorsIO;
+import frc.robot.subsystems.rollers.RollersSensorsIOReal;
+import frc.robot.subsystems.rollers.feeder.Feeder;
+import frc.robot.subsystems.rollers.feeder.FeederIO;
+import frc.robot.subsystems.rollers.feeder.FeederIOSparkMax;
+import frc.robot.subsystems.rollers.indexer.Indexer;
+import frc.robot.subsystems.rollers.indexer.IndexerIO;
+import frc.robot.subsystems.rollers.indexer.IndexerIOSparkMax;
+import frc.robot.subsystems.rollers.intake.Intake;
+import frc.robot.subsystems.rollers.intake.IntakeIO;
+import frc.robot.subsystems.rollers.intake.IntakeIOSparkMax;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -37,18 +49,27 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private Rollers rollers;
+
   // private final Flywheel flywheel;
 
   // Controller
-  private final CommandXboxController controller = new CommandXboxController(0);
+  private final CommandXboxController driver = new CommandXboxController(0);
+  private final CommandXboxController operator = new CommandXboxController(1);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
   // private final LoggedDashboardNumber flywheelSpeedInput =
-  //     new LoggedDashboardNumber("Flywheel Speed", 1500.0);
+  // new LoggedDashboardNumber("Flywheel Speed", 1500.0);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    // Declare component subsystems (not visible outside constructor)
+    Feeder feeder = null;
+    Indexer indexer = null;
+    Intake intake = null;
+
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
@@ -59,6 +80,12 @@ public class RobotContainer {
                 new ModuleIOSparkMax(1), // FR
                 new ModuleIOSparkMax(2), // BL
                 new ModuleIOSparkMax(3)); // BR
+
+        feeder = new Feeder(new FeederIOSparkMax());
+        indexer = new Indexer(new IndexerIOSparkMax());
+        intake = new Intake(new IntakeIOSparkMax());
+        rollers = new Rollers(feeder, indexer, intake, new RollersSensorsIOReal());
+
         // flywheel = new Flywheel(new FlywheelIOSparkMax());
         // drive = new Drive(
         // new GyroIOPigeon2(true),
@@ -78,6 +105,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
+
         // flywheel = new Flywheel(new FlywheelIOSim());
         break;
 
@@ -94,12 +122,26 @@ public class RobotContainer {
         break;
     }
 
+    if (feeder == null) {
+      feeder = new Feeder(new FeederIO() {});
+    }
+    if (indexer == null) {
+      indexer = new Indexer(new IndexerIO() {});
+    }
+    if (intake == null) {
+      intake = new Intake(new IntakeIO() {});
+    }
+    if (rollers == null) {
+      rollers = new Rollers(feeder, indexer, intake, new RollersSensorsIO() {});
+    }
+
     // Set up auto routines
     // NamedCommands.registerCommand(
-    //     "Run Flywheel",
-    //     Commands.startEnd(
-    //             () -> flywheel.runVelocity(flywheelSpeedInput.get()), flywheel::stop, flywheel)
-    //         .withTimeout(5.0));
+    // "Run Flywheel",
+    // Commands.startEnd(
+    // () -> flywheel.runVelocity(flywheelSpeedInput.get()), flywheel::stop,
+    // flywheel)
+    // .withTimeout(5.0));
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     // Set up SysId routines
@@ -114,16 +156,16 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     // autoChooser.addOption(
-    //     "Flywheel SysId (Quasistatic Forward)",
-    //     flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // "Flywheel SysId (Quasistatic Forward)",
+    // flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
     // autoChooser.addOption(
-    //     "Flywheel SysId (Quasistatic Reverse)",
-    //     flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // "Flywheel SysId (Quasistatic Reverse)",
+    // flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
     // autoChooser.addOption(
-    //     "Flywheel SysId (Dynamic Forward)",
+    // "Flywheel SysId (Dynamic Forward)",
     // flywheel.sysIdDynamic(SysIdRoutine.Direction.kForward));
     // autoChooser.addOption(
-    //     "Flywheel SysId (Dynamic Reverse)",
+    // "Flywheel SysId (Dynamic Reverse)",
     // flywheel.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Configure the button bindings
@@ -131,12 +173,13 @@ public class RobotContainer {
   }
 
   // STU
-  private static class ZeroSupplier {
-    public static double zero() {
-      return 0.0;
-    }
-  }
-
+  /*
+   * private static class ZeroSupplier {
+   * public static double zero() {
+   * return 0.0;
+   * }
+   * }
+   */
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
@@ -148,35 +191,39 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> (-controller.getLeftY() * 0.50),
-            () -> (-controller.getLeftX() * 0.50),
-            () -> (controller.getRightX() * 0.50)));
+            () -> (-driver.getLeftY() * 0.50),
+            () -> (-driver.getLeftX() * 0.50),
+            () -> (driver.getRightX() * 0.50)));
+
+    driver.button(0).whileTrue(rollers.floorIntakeCommand());
+
     // drive.setDefaultCommand(
-    //     DriveCommands.joystickDrive(
-    //         drive,
-    //         () -> -controller.getLeftY(),
-    //         () -> ZeroSupplier.zero(),
-    //         () -> ZeroSupplier.zero()));
     // DriveCommands.joystickDrive(
-    //     drive,
-    //     () -> ZeroSupplier.zero(),
-    //     () -> ZeroSupplier.zero(),
-    //     () -> ZeroSupplier.zero()));
+    // drive,
+    // () -> -controller.getLeftY(),
+    // () -> ZeroSupplier.zero(),
+    // () -> ZeroSupplier.zero()));
+    // DriveCommands.joystickDrive(
+    // drive,
+    // () -> ZeroSupplier.zero(),
+    // () -> ZeroSupplier.zero(),
+    // () -> ZeroSupplier.zero()));
     // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     // controller
-    //     .b()
-    //     .onTrue(
-    //         Commands.runOnce(
-    //                 () ->
-    //                     drive.setPose(
-    //                         new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
-    //                 drive)
-    //             .ignoringDisable(true));
+    // .b()
+    // .onTrue(
+    // Commands.runOnce(
+    // () ->
+    // drive.setPose(
+    // new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
+    // drive)
+    // .ignoringDisable(true));
     // controller
-    //     .a()
-    //     .whileTrue(
-    //         Commands.startEnd(
-    //             () -> flywheel.runVelocity(flywheelSpeedInput.get()), flywheel::stop, flywheel));
+    // .a()
+    // .whileTrue(
+    // Commands.startEnd(
+    // () -> flywheel.runVelocity(flywheelSpeedInput.get()), flywheel::stop,
+    // flywheel));
   }
 
   /**
