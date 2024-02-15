@@ -156,8 +156,7 @@ public class ModuleIOSparkMax implements ModuleIO {
 
     /* Our Version */
     inputs.turnAbsolutePosition =
-        new Rotation2d(turnAbsoluteEncoder.getPosition() * 2.0 * Math.PI)
-            .minus(absoluteEncoderOffset);
+        Rotation2d.fromRotations(turnAbsoluteEncoder.getPosition()).minus(absoluteEncoderOffset);
     SmartDashboard.putNumber(
         "turnAbsolutePosition[" + m_index + "]", inputs.turnAbsolutePosition.getDegrees());
     inputs.turnPosition =
