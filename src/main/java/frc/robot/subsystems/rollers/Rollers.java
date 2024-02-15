@@ -48,7 +48,7 @@ public class Rollers extends SubsystemBase {
     intake.periodic();
   }
 
-  private void goIdle() {
+  public void goIdle() {
     feeder.setGoal(Feeder.Goal.IDLE);
     indexer.setGoal(Indexer.Goal.IDLE);
     intake.setGoal(Intake.Goal.IDLE);
@@ -102,5 +102,16 @@ public class Rollers extends SubsystemBase {
             },
             this::goIdle)
         .withName("RollersFeedShooter");
+  }
+
+  public Command idleRollersCommand() {
+    return startEnd(
+            () -> {
+              feeder.setGoal(Feeder.Goal.IDLE);
+              indexer.setGoal(Indexer.Goal.IDLE);
+              intake.setGoal(Intake.Goal.IDLE);
+            },
+            this::goIdle)
+        .withName("RollersIdle");
   }
 }
