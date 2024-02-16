@@ -109,7 +109,7 @@ public class ModuleIOSparkMax implements ModuleIO {
     turnSparkMax.enableVoltageCompensation(12.0);
 
     driveEncoder.setPosition(0.0);
-    driveEncoder.setMeasurementPeriod(10);
+    driveEncoder.setMeasurementPeriod(15);
     driveEncoder.setAverageDepth(2);
 
     turnRelativeEncoder.setPosition(0.0);
@@ -162,6 +162,8 @@ public class ModuleIOSparkMax implements ModuleIO {
         "turnAbsolutePosition[" + m_index + "]", inputs.turnAbsolutePosition.getDegrees());
     inputs.turnPosition =
         Rotation2d.fromRotations(turnRelativeEncoder.getPosition() / TURN_GEAR_RATIO);
+    SmartDashboard.putNumber(
+        "turnRelativePosition[" + m_index + "]", inputs.turnPosition.getDegrees());
     inputs.turnVelocityRadPerSec =
         Units.rotationsPerMinuteToRadiansPerSecond(turnRelativeEncoder.getVelocity())
             / TURN_GEAR_RATIO;
