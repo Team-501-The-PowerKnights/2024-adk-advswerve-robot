@@ -14,12 +14,11 @@ public class Feeder extends SubsystemBase {
   double feederSpeed;
 
   public Feeder() {
-    //        feederLeft = new CANSparkMax(kFeederLeft, MotorType.kBrushless);
     feederRight = new CANSparkMax(kFeederRight, MotorType.kBrushless);
-    // feederLeft.setSmartCurrentLimit(kFeederCurrentLimit);
+    feederRight.restoreFactoryDefaults();
+
     feederRight.setSmartCurrentLimit(kFeederCurrentLimit);
     feederRight.setInverted(true);
-    // feederRight.follow(feederLeft);
     feederSpeed = kFeederSpeed;
     System.out.println("Feeder Constructed!!");
   }

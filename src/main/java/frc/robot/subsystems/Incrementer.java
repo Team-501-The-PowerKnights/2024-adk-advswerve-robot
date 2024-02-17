@@ -14,7 +14,10 @@ public class Incrementer extends SubsystemBase {
 
   public Incrementer() {
     incrementerLeft = new CANSparkMax(kIncrementerLeft, MotorType.kBrushless);
+    incrementerLeft.restoreFactoryDefaults();
     incrementerRight = new CANSparkMax(kIncrementerRight, MotorType.kBrushless);
+    incrementerLeft.restoreFactoryDefaults();
+
     incrementerLeft.setSmartCurrentLimit(kIncrementerCurrentLimit);
     incrementerRight.setSmartCurrentLimit(kIncrementerCurrentLimit);
     incrementerRight.setInverted(false);

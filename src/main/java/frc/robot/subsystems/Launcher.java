@@ -14,7 +14,10 @@ public class Launcher extends SubsystemBase {
 
   public Launcher() {
     launcherLeft = new CANSparkMax(kLauncherLeft, MotorType.kBrushless);
+    launcherLeft.restoreFactoryDefaults();
     launcherRight = new CANSparkMax(kLauncherRight, MotorType.kBrushless);
+    launcherRight.restoreFactoryDefaults();
+
     launcherLeft.setSmartCurrentLimit(kLauncherCurrentLimit);
     launcherRight.setSmartCurrentLimit(kLauncherCurrentLimit);
     launcherRight.setInverted(true);

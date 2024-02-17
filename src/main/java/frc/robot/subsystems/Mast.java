@@ -17,7 +17,10 @@ public class Mast extends SubsystemBase {
 
   public Mast() {
     mastLeft = new CANSparkMax(kMastLeft, MotorType.kBrushless);
+    mastLeft.restoreFactoryDefaults();
     mastRight = new CANSparkMax(kMastRight, MotorType.kBrushless);
+    mastRight.restoreFactoryDefaults();
+
     mastLeft.setSmartCurrentLimit(kMastCurrentLimit);
     mastRight.setSmartCurrentLimit(kMastCurrentLimit);
     mastRight.setInverted(true);

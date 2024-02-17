@@ -162,7 +162,7 @@ public class ModuleIOSparkFlex implements ModuleIO {
     SmartDashboard.putNumber(
         "turnAbsolutePosition[" + m_index + "]", inputs.turnAbsolutePosition.getDegrees());
     SmartDashboard.putBoolean(
-        "turnAligned[" + m_index + "]", (Math.abs(inputs.turnAbsolutePosition.getDegrees()) < 0.2));
+        "turnAligned[" + m_index + "]", (Math.abs(inputs.turnAbsolutePosition.getDegrees()) < 0.3));
     inputs.turnPosition =
         Rotation2d.fromRotations(turnRelativeEncoder.getPosition() / TURN_GEAR_RATIO);
     SmartDashboard.putNumber(
