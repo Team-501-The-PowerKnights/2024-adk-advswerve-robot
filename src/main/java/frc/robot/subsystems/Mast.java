@@ -5,8 +5,10 @@ import static frc.robot.Constants.MastConstants.*;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class Mast extends SubsystemBase {
   CANSparkMax mastLeft;
@@ -14,6 +16,7 @@ public class Mast extends SubsystemBase {
   double mastSpeed;
   RelativeEncoder relmastLeft;
   RelativeEncoder relmastRight;
+  CommandXboxController operPad;
 
   public Mast() {
     mastLeft = new CANSparkMax(kMastLeft, MotorType.kBrushless);
@@ -23,8 +26,12 @@ public class Mast extends SubsystemBase {
 
     mastLeft.setSmartCurrentLimit(kMastCurrentLimit);
     mastRight.setSmartCurrentLimit(kMastCurrentLimit);
+
+    mastLeft.enableVoltageCompensation(12.0);
+    mastRight.enableVoltageCompensation(12.0);
+
     mastRight.setInverted(true);
-    mastRight.follow(mastLeft);
+    // mastRight.follow(mastLeft);
     relmastLeft = mastLeft.getEncoder();
     relmastRight = mastRight.getEncoder();
 
@@ -34,28 +41,38 @@ public class Mast extends SubsystemBase {
 
   // Sets the speed of the lead motor
   public void setMastSpeed(double speed) {
-    if (speed >= .1 || speed <= -.1) {
+    System.out.println("running setMastSpeed = " + speed);
+    if (Math.abs(speed) > 0.1) {
       mastLeft.set(speed / 5);
+      mastRight.set(speed / 5);
     } else {
-      mastLeft.set(speed);
+      mastLeft.set(0);
+      mastRight.set(0);
     }
   }
 
   // Sets the speed of the lead motor to 0
   public void stop() {
     mastLeft.set(0);
+    mastRight.set(0);
   }
 
-  public Command mastUpDown(double controllerSpeed) {
-    return this.startEnd(
+  public Command mastUpDown(double controllerSpeed, CommandXboxController operator) {
+    return this.run(
         () -> {
-          if (controllerSpeed >= -1 && controllerSpeed <= 1) {
-            setMastSpeed(controllerSpeed);
-          }
-        },
-        () -> {
-          stop();
+          SmartDashboard.putBoolean("Mast.moving", true);
+          System.out.println("running mastUpDown = " + operator.getLeftY());
+          setMastSpeed(operator.getLeftY());
         });
+    // return this.startEnd(
+    //     () -> {
+    //       SmartDashboard.putBoolean("Mast.moving", true);
+    //       setMastSpeed(controllerSpeed);
+    //     },
+    //     () -> {
+    //       SmartDashboard.putBoolean("Mast.moving", false);
+    //       stop();
+    //     });
   }
 
   // public double getMastPosition(){

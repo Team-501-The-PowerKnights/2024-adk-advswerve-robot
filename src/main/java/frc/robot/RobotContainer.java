@@ -108,8 +108,8 @@ public class RobotContainer {
     // m_launcher = null;
     m_launcher = new Launcher();
 
-    m_mast = null;
-    //  m_mast = new Mast();
+    // m_mast = null;
+    m_mast = new Mast();
 
     // Configure the button bindings
     configureButtonBindings();
@@ -165,7 +165,8 @@ public class RobotContainer {
     operPad.x().whileTrue(m_launcher.reverseLauncher());
 
     // Mast Controls:
-    // operPad.leftStick().whileTrue(m_mast.mastUpDown(operPad.getLeftX()));
+    // operPad.leftStick().whileTrue(m_mast.mastUpDown(operPad.getLeftY()));
+    m_mast.setDefaultCommand(m_mast.mastUpDown(-operPad.getLeftY(), operPad));
   }
 
   /**
