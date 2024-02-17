@@ -17,18 +17,20 @@ public class Incrementer extends SubsystemBase {
     incrementerRight = new CANSparkMax(kIncrementerRight, MotorType.kBrushless);
     incrementerLeft.setSmartCurrentLimit(kIncrementerCurrentLimit);
     incrementerRight.setSmartCurrentLimit(kIncrementerCurrentLimit);
-    incrementerRight.setInverted(true);
-    incrementerRight.follow(incrementerLeft);
+    incrementerRight.setInverted(false);
+    // incrementerRight.follow(incrementerLeft);
     incrementerSpeed = kIncrementerSpeed;
     System.out.println("Incrementer Constructed!!");
   }
   // Sets the speed of the lead motor
   public void setIncrementerSpeed(double speed) {
-    incrementerLeft.set(speed);
+    incrementerLeft.set(-speed);
+    incrementerRight.set(speed);
   }
   // Sets the speed of the lead motor to 0
   public void stop() {
     incrementerLeft.set(0);
+    incrementerRight.set(0);
   }
   // Use this command to pull a note off the floor
   public Command runIncrementer() {

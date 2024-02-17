@@ -96,14 +96,14 @@ public class RobotContainer {
         break;
     }
 
-    m_intake = null;
-    // m_intake = new Intake();
+    // m_intake = null;
+    m_intake = new Intake();
 
-    m_feeder = null;
-    // m_feeder = new Feeder();
+    // m_feeder = null;
+    m_feeder = new Feeder();
 
-    m_incrementer = null;
-    // m_incrementer = new Incrementer();
+    // m_incrementer = null;
+    m_incrementer = new Incrementer();
 
     m_launcher = null;
     // m_launcher = new Launcher();
@@ -133,9 +133,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> (-driverPad.getLeftY() * 0.50),
-            () -> (-driverPad.getLeftX() * 0.50),
-            () -> (driverPad.getRightX() * 0.50)));
+            () -> (-driverPad.getLeftY() * 0.75),
+            () -> (-driverPad.getLeftX() * 0.75),
+            () -> (driverPad.getRightX() * 0.75)));
     // drive.setDefaultCommand(
     //     DriveCommands.joystickDrive(
     //         drive,
@@ -149,16 +149,16 @@ public class RobotContainer {
     //     () -> ZeroSupplier.zero()));
 
     // Intake controls:
-    // operPad.leftBumper().whileTrue(m_intake.runIntake());
-    // operPad.leftTrigger().whileTrue(m_intake.reverseIntake());
+    operPad.leftBumper().whileTrue(m_intake.runIntake());
+    operPad.leftTrigger().whileTrue(m_intake.reverseIntake());
 
     // Feeder Controls:
-    // operPad.rightBumper().whileTrue(m_feeder.runFeeder());
-    // operPad.rightTrigger().whileTrue(m_feeder.reverseFeeder());
+    operPad.rightBumper().whileTrue(m_feeder.runFeeder());
+    operPad.rightTrigger().whileTrue(m_feeder.reverseFeeder());
 
     // Incrementer Controls:
-    // operPad.b().whileTrue(m_incrementer.runIncrementer());
-    // operPad.y().whileTrue(m_incrementer.reverseIncrementer());
+    operPad.b().whileTrue(m_incrementer.runIncrementer());
+    operPad.y().whileTrue(m_incrementer.reverseIncrementer());
 
     // Launcher Controls:
     // operPad.a().whileTrue(m_launcher.runLauncher());
