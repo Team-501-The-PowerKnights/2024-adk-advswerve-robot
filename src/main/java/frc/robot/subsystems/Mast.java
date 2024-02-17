@@ -34,7 +34,11 @@ public class Mast extends SubsystemBase {
 
   // Sets the speed of the lead motor
   public void setMastSpeed(double speed) {
-    mastLeft.set(speed);
+    if (speed >= .1 || speed <= -.1) {
+      mastLeft.set(speed / 5);
+    } else {
+      mastLeft.set(speed);
+    }
   }
 
   // Sets the speed of the lead motor to 0

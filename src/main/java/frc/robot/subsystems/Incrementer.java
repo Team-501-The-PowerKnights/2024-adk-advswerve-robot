@@ -20,7 +20,6 @@ public class Incrementer extends SubsystemBase {
 
     incrementerLeft.setSmartCurrentLimit(kIncrementerCurrentLimit);
     incrementerRight.setSmartCurrentLimit(kIncrementerCurrentLimit);
-    incrementerRight.setInverted(false);
     // incrementerRight.follow(incrementerLeft);
     incrementerSpeed = kIncrementerSpeed;
     System.out.println("Incrementer Constructed!!");

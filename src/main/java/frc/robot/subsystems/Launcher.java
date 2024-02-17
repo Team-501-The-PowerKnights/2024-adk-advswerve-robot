@@ -2,36 +2,37 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.LauncherConstants.*;
 
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
+import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Launcher extends SubsystemBase {
-  CANSparkMax launcherLeft;
-  CANSparkMax launcherRight;
+  // CANSparkMax launcherLeft;
+  // CANSparkMax launcherRight;
+  TalonFX launcherLeft;
+  TalonFX launcherRight;
   double launcherSpeed;
 
   public Launcher() {
-    launcherLeft = new CANSparkMax(kLauncherLeft, MotorType.kBrushless);
-    launcherLeft.restoreFactoryDefaults();
-    launcherRight = new CANSparkMax(kLauncherRight, MotorType.kBrushless);
-    launcherRight.restoreFactoryDefaults();
+    launcherLeft = new TalonFX(kLauncherLeft);
+    launcherRight = new TalonFX(kLauncherRight);
 
-    launcherLeft.setSmartCurrentLimit(kLauncherCurrentLimit);
-    launcherRight.setSmartCurrentLimit(kLauncherCurrentLimit);
+    // launcherLeft.setSmartCurrentLimit(kLauncherCurrentLimit);
+    // launcherRight.setSmartCurrentLimit(kLauncherCurrentLimit);
     launcherRight.setInverted(true);
-    launcherRight.follow(launcherLeft);
+    //    launcherRight.setControl(launcherLeft);
     launcherSpeed = kLauncherSpeed;
     System.out.println("Launcher Constructed!!");
   }
   // Sets the speed of the lead motor
   public void setLauncherSpeed(double speed) {
     launcherLeft.set(speed);
+    launcherRight.set(speed);
   }
   // Sets the speed of the lead motor to 0
   public void stop() {
     launcherLeft.set(0);
+    launcherRight.set(0);
   }
   // Use this command to pull a note off the floor
   public Command runLauncher() {

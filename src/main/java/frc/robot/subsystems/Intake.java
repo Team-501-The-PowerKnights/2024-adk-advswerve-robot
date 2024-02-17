@@ -20,18 +20,20 @@ public class Intake extends SubsystemBase {
 
     intakeFront.setSmartCurrentLimit(kIntakeCurrentLimit);
     intakeRear.setSmartCurrentLimit(kIntakeCurrentLimit);
-    intakeRear.setInverted(true);
-    intakeRear.follow(intakeFront);
+    // intakeRear.setInverted(false);
+    // intakeRear.follow(intakeFront);
     intakeSpeed = kIntakeSpeed;
     System.out.println("Intake Constructed!!");
   }
   // Sets the speed of the lead motor
   public void setIntakeSpeed(double speed) {
     intakeFront.set(speed);
+    intakeRear.set(-speed);
   }
   // Sets the speed of the lead motor to 0
   public void stop() {
     intakeFront.set(0);
+    intakeRear.set(0);
   }
   // Use this command to pull a note off the floor
   public Command runIntake() {
