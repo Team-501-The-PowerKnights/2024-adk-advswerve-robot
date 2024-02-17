@@ -26,8 +26,8 @@ public class Launcher extends SubsystemBase {
   }
   // Sets the speed of the lead motor
   public void setLauncherSpeed(double speed) {
-    launcherLeft.set(speed);
-    launcherRight.set(speed);
+    launcherLeft.set(-speed);
+    launcherRight.set(-speed);
   }
   // Sets the speed of the lead motor to 0
   public void stop() {

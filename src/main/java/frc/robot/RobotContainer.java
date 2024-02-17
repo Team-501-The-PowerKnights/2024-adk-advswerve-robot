@@ -105,8 +105,8 @@ public class RobotContainer {
     // m_incrementer = null;
     m_incrementer = new Incrementer();
 
-    m_launcher = null;
-    // m_launcher = new Launcher();
+    // m_launcher = null;
+    m_launcher = new Launcher();
 
     m_mast = null;
     //  m_mast = new Mast();
@@ -161,8 +161,8 @@ public class RobotContainer {
     operPad.y().whileTrue(m_incrementer.reverseIncrementer());
 
     // Launcher Controls:
-    // operPad.a().whileTrue(m_launcher.runLauncher());
-    // operPad.x().whileTrue(m_launcher.reverseLauncher());
+    operPad.a().whileTrue(m_launcher.runLauncher());
+    operPad.x().whileTrue(m_launcher.reverseLauncher());
 
     // Mast Controls:
     // operPad.leftStick().whileTrue(m_mast.mastUpDown(operPad.getLeftX()));
