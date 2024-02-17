@@ -13,20 +13,22 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Incrementer;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Launcher;
+import frc.robot.subsystems.Mast;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSparkFlex;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -37,6 +39,11 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final Intake m_intake;
+  private final Feeder m_feeder;
+  private final Incrementer m_incrementer;
+  private final Launcher m_launcher;
+  private final Mast m_mast;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -88,6 +95,19 @@ public class RobotContainer {
         break;
     }
 
+    m_mast = null;
+    m_intake = null;
+    m_feeder = null;
+    m_incrementer = null;
+    m_launcher = null;
+
+    //  m_mast = new Mast();
+    // m_intake = new Intake();
+    // m_feeder = new Feeder();
+    // m_incrementer = new Incrementer();
+    // m_launcher = new Launcher();
+    //  m_mast = new Mast();
+
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -134,5 +154,4 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return null;
   }
-
 }
