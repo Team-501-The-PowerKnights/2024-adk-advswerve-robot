@@ -8,13 +8,14 @@
 package frc.robot.subsystems.rollers;
 
 import com.revrobotics.CANSparkBase;
-import com.revrobotics.CANSparkFlex;
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.util.Units;
 
 /** Generic roller IO implementation for a roller or series of rollers using a SPARK Flex. */
 public abstract class GenericRollerSystemIOSparkMax implements GenericRollerSystemIO {
-  private final CANSparkFlex motor;
+
+  private final CANSparkMax motor;
   private final RelativeEncoder encoder;
 
   private final double reduction;
@@ -22,7 +23,7 @@ public abstract class GenericRollerSystemIOSparkMax implements GenericRollerSyst
   public GenericRollerSystemIOSparkMax(
       int id, int currentLimitAmps, boolean invert, boolean brake, double reduction) {
     this.reduction = reduction;
-    motor = new CANSparkFlex(id, CANSparkBase.MotorType.kBrushless);
+    motor = new CANSparkMax(id, CANSparkBase.MotorType.kBrushless);
 
     motor.setSmartCurrentLimit(currentLimitAmps);
     motor.setInverted(invert);

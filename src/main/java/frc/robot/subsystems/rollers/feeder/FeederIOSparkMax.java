@@ -7,16 +7,57 @@
 
 package frc.robot.subsystems.rollers.feeder;
 
-import frc.robot.subsystems.rollers.GenericRollerSystemIOSparkMax;
+import com.revrobotics.CANSparkMax;
 
-public class FeederIOSparkMax extends GenericRollerSystemIOSparkMax implements FeederIO {
-  private static final int id = 3;
-  private static final int currentLimitAmps = 40;
-  private static final boolean invert = false;
-  private static final boolean brake = false;
-  private static final double reduction = 18.0 / 12.0;
+public class FeederIOSparkMax implements FeederIO {
+  // Hardware Setup
+  private final CANSparkMax leftMotor;
+  private final CANSparkMax rightMotor;
 
   public FeederIOSparkMax() {
-    super(id, currentLimitAmps, invert, brake, reduction);
+
+    leftMotor = new CANSparkMax(22, CANSparkMax.MotorType.kBrushless);
+    rightMotor = new CANSparkMax(23, CANSparkMax.MotorType.kBrushless);
+
+    // Default
+    leftMotor.restoreFactoryDefaults();
+    rightMotor.restoreFactoryDefaults();
+
+    // Limits
+    leftMotor.setSmartCurrentLimit(20);
+    rightMotor.setSmartCurrentLimit(20);
+    leftMotor.enableVoltageCompensation(12.0);
+    rightMotor.enableVoltageCompensation(12.0);
+
+    // Disable brake mode
+    leftMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    rightMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+
+    leftMotor.burnFlash();
+    rightMotor.burnFlash();
+  }
+
+  @Override
+  public void updateInputs(FeederIOInputs inputs) {
+
+    inputs.leftAppliedVolts = leftMotor.getAppliedOutput();
+    inputs.leftOutputCurrent = leftMotor.getOutputCurrent();
+    inputs.leftTempCelsius = leftMotor.getMotorTemperature();
+
+    inputs.rightAppliedVolts = rightMotor.getAppliedOutput();
+    inputs.rightOutputCurrent = rightMotor.getOutputCurrent();
+    inputs.rightTempCelsius = rightMotor.getMotorTemperature();
+  }
+
+  @Override
+  public void runVolts(double leftVolts, double rightVolts) {
+    leftMotor.setVoltage(leftVolts);
+    rightMotor.setVoltage(rightVolts);
+  }
+
+  @Override
+  public void stop() {
+    leftMotor.stopMotor();
+    rightMotor.stopMotor();
   }
 }

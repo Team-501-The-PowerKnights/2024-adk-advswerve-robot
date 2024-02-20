@@ -8,18 +8,22 @@
 package frc.robot.subsystems.rollers.feeder;
 
 import frc.robot.subsystems.rollers.GenericRollerSystem;
+import frc.robot.subsystems.rollers.GenericRollerSystem.VoltageGoal;
 import frc.robot.util.LoggedTunableNumber;
 import java.util.function.DoubleSupplier;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-@Setter
 @Getter
+@Setter
 public class Feeder extends GenericRollerSystem<Feeder.Goal> {
+
+  private final FeederIO io;
+
   @RequiredArgsConstructor
   @Getter
-  public enum Goal implements GenericRollerSystem.VoltageGoal {
+  public enum Goal implements VoltageGoal {
     IDLE(() -> 0.0),
     FLOOR_INTAKING(new LoggedTunableNumber("Feeder/FloorIntakingVoltage", 8.0)),
     BACKSTOPPING(new LoggedTunableNumber("Feeder/BackstoppingVoltage", -4.0)),
@@ -29,9 +33,18 @@ public class Feeder extends GenericRollerSystem<Feeder.Goal> {
     private final DoubleSupplier voltageSupplier;
   }
 
-  private Feeder.Goal goal = Feeder.Goal.IDLE;
-
   public Feeder(FeederIO io) {
     super("Feeder", io);
+    this.io = io;
+  }
+
+  private Goal goal = Goal.IDLE;
+
+  public Goal getGoal() {
+    return goal;
+  }
+
+  public void setGoal(Goal goal) {
+    goal = this.goal;
   }
 }

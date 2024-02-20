@@ -5,13 +5,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.rollers.feeder.Feeder;
 import frc.robot.subsystems.rollers.indexer.Indexer;
-import frc.robot.subsystems.rollers.intake.Intake;
+import frc.robot.subsystems.rollers.intakeFront.IntakeFront;
+import frc.robot.subsystems.rollers.intakeRear.IntakeRear;
 import org.littletonrobotics.junction.Logger;
 
 public class Rollers extends SubsystemBase {
   private final Feeder feeder;
   private final Indexer indexer;
-  private final Intake intake;
+  private final IntakeFront intakeFront;
+  private final IntakeRear intakeRear;
 
   private final RollersSensorsIO sensorsIO;
   private final RollersSensorsIOInputsAutoLogged sensorInputs =
@@ -25,10 +27,16 @@ public class Rollers extends SubsystemBase {
     FEED_SHOOTER
   }
 
-  public Rollers(Feeder feeder, Indexer indexer, Intake intake, RollersSensorsIO sensorsIO) {
+  public Rollers(
+      Feeder feeder,
+      Indexer indexer,
+      IntakeFront intakeFront,
+      IntakeRear intakeRear,
+      RollersSensorsIO sensorsIO) {
     this.feeder = feeder;
     this.indexer = indexer;
-    this.intake = intake;
+    this.intakeFront = intakeFront;
+    this.intakeRear = intakeRear;
     this.sensorsIO = sensorsIO;
 
     setDefaultCommand(runOnce(this::goIdle).withName("RollersIdle"));
@@ -45,13 +53,15 @@ public class Rollers extends SubsystemBase {
 
     feeder.periodic();
     indexer.periodic();
-    intake.periodic();
+    intakeFront.periodic();
+    intakeRear.periodic();
   }
 
   public void goIdle() {
     feeder.setGoal(Feeder.Goal.IDLE);
     indexer.setGoal(Indexer.Goal.IDLE);
-    intake.setGoal(Intake.Goal.IDLE);
+    intakeFront.setGoal(IntakeFront.Goal.IDLE);
+    intakeRear.setGoal(IntakeRear.Goal.IDLE);
   }
 
   public Command floorIntakeCommand() {
@@ -59,7 +69,8 @@ public class Rollers extends SubsystemBase {
             () -> {
               feeder.setGoal(Feeder.Goal.FLOOR_INTAKING);
               indexer.setGoal(Indexer.Goal.FLOOR_INTAKING);
-              intake.setGoal(Intake.Goal.FLOOR_INTAKING);
+              intakeFront.setGoal(IntakeFront.Goal.FLOOR_INTAKING);
+              intakeRear.setGoal(IntakeRear.Goal.FLOOR_INTAKING);
               if (sensorInputs.shooterStaged) {
                 indexer.setGoal(Indexer.Goal.IDLE);
               }
@@ -73,7 +84,8 @@ public class Rollers extends SubsystemBase {
             () -> {
               feeder.setGoal(Feeder.Goal.IDLE);
               indexer.setGoal(Indexer.Goal.STATION_INTAKING);
-              intake.setGoal(Intake.Goal.IDLE);
+              intakeFront.setGoal(IntakeFront.Goal.IDLE);
+              intakeRear.setGoal(IntakeRear.Goal.IDLE);
               if (sensorInputs.shooterStaged) { // TODO: ADD THIS BANNER
                 indexer.setGoal(Indexer.Goal.IDLE);
               }
@@ -87,7 +99,8 @@ public class Rollers extends SubsystemBase {
             () -> {
               feeder.setGoal(Feeder.Goal.EJECTING);
               indexer.setGoal(Indexer.Goal.EJECTING);
-              intake.setGoal(Intake.Goal.EJECTING);
+              intakeFront.setGoal(IntakeFront.Goal.EJECTING);
+              intakeRear.setGoal(IntakeRear.Goal.EJECTING);
             },
             this::goIdle)
         .withName("RollersEjectFloor");
@@ -98,7 +111,8 @@ public class Rollers extends SubsystemBase {
             () -> {
               feeder.setGoal(Feeder.Goal.SHOOTING);
               indexer.setGoal(Indexer.Goal.SHOOTING);
-              intake.setGoal(Intake.Goal.IDLE);
+              intakeFront.setGoal(IntakeFront.Goal.IDLE);
+              intakeRear.setGoal(IntakeRear.Goal.IDLE);
             },
             this::goIdle)
         .withName("RollersFeedShooter");
@@ -109,7 +123,8 @@ public class Rollers extends SubsystemBase {
             () -> {
               feeder.setGoal(Feeder.Goal.IDLE);
               indexer.setGoal(Indexer.Goal.IDLE);
-              intake.setGoal(Intake.Goal.IDLE);
+              intakeFront.setGoal(IntakeFront.Goal.IDLE);
+              intakeRear.setGoal(IntakeRear.Goal.IDLE);
             },
             this::goIdle)
         .withName("RollersIdle");
