@@ -13,22 +13,24 @@ import static frc.robot.subsystems.flywheels.FlywheelConstants.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import java.util.function.DoubleSupplier;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import frc.robot.Constants;
 import frc.robot.util.LinearProfile;
 import frc.robot.util.LoggedTunableNumber;
+import java.util.function.DoubleSupplier;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Flywheels extends SubsystemBase {
+
   private static final LoggedTunableNumber kP = new LoggedTunableNumber("Flywheels/kP", gains.kP());
   private static final LoggedTunableNumber kI = new LoggedTunableNumber("Flywheels/kI", gains.kI());
   private static final LoggedTunableNumber kD = new LoggedTunableNumber("Flywheels/kD", gains.kD());
   private static final LoggedTunableNumber kS = new LoggedTunableNumber("Flywheels/kS", gains.kS());
   private static final LoggedTunableNumber kV = new LoggedTunableNumber("Flywheels/kV", gains.kV());
   private static final LoggedTunableNumber kA = new LoggedTunableNumber("Flywheels/kA", gains.kA());
+
   private static final LoggedTunableNumber shootingLeftRpm =
       new LoggedTunableNumber("Flywheels/ShootingLeftRpm", 6000.0);
   private static final LoggedTunableNumber shootingRightRpm =
