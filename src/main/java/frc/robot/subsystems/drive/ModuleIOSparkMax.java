@@ -55,6 +55,7 @@ public class ModuleIOSparkMax implements ModuleIO {
   private final Queue<Double> drivePositionQueue;
   private final Queue<Double> turnPositionQueue;
 
+  private final boolean isDriveMotorInverted = false;
   private final boolean isTurnMotorInverted = false;
   private final Rotation2d absoluteEncoderOffset;
 
@@ -68,7 +69,7 @@ public class ModuleIOSparkMax implements ModuleIO {
         driveSparkMax = new CANSparkMax(1, MotorType.kBrushless);
         turnSparkMax = new CANSparkMax(2, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
-        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(-90.0)); // MUST BE CALIBRATED
+        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(270.0)); // MUST BE CALIBRATED
         break;
       case 1: // FR
         driveSparkMax = new CANSparkMax(5, MotorType.kBrushless);
@@ -102,6 +103,7 @@ public class ModuleIOSparkMax implements ModuleIO {
     driveEncoder = driveSparkMax.getEncoder();
     turnRelativeEncoder = turnSparkMax.getEncoder();
 
+    driveSparkMax.setInverted(isDriveMotorInverted);
     turnSparkMax.setInverted(isTurnMotorInverted);
     driveSparkMax.setSmartCurrentLimit(40);
     turnSparkMax.setSmartCurrentLimit(30);
@@ -113,6 +115,11 @@ public class ModuleIOSparkMax implements ModuleIO {
     driveEncoder.setAverageDepth(2);
 
     turnRelativeEncoder.setPosition(0.0);
+    double position =
+        Rotation2d.fromRotations(turnAbsoluteEncoder.getPosition())
+            .minus(absoluteEncoderOffset)
+            .getRotations();
+    turnRelativeEncoder.setPosition(position * TURN_GEAR_RATIO);
     turnRelativeEncoder.setMeasurementPeriod(10);
     turnRelativeEncoder.setAverageDepth(2);
 
@@ -150,15 +157,17 @@ public class ModuleIOSparkMax implements ModuleIO {
     //         .minus(absoluteEncoderOffset);
 
     /* For Calibration of Offsets */
+    inputs.turnAbsolutePosition = Rotation2d.fromRotations(turnAbsoluteEncoder.getPosition());
     SmartDashboard.putNumber(
-        "calibration[" + m_index + "]",
-        Rotation2d.fromRotations(turnAbsoluteEncoder.getPosition()).getDegrees());
+        "turnCalibration[" + m_index + "]", inputs.turnAbsolutePosition.getDegrees());
 
     /* Our Version */
     inputs.turnAbsolutePosition =
         Rotation2d.fromRotations(turnAbsoluteEncoder.getPosition()).minus(absoluteEncoderOffset);
     SmartDashboard.putNumber(
         "turnAbsolutePosition[" + m_index + "]", inputs.turnAbsolutePosition.getDegrees());
+    SmartDashboard.putBoolean(
+        "turnAligned[" + m_index + "]", (Math.abs(inputs.turnAbsolutePosition.getDegrees()) < 0.3));
     inputs.turnPosition =
         Rotation2d.fromRotations(turnRelativeEncoder.getPosition() / TURN_GEAR_RATIO);
     SmartDashboard.putNumber(
