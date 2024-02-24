@@ -17,7 +17,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
@@ -27,21 +26,24 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSparkMax;
-import frc.robot.subsystems.flywheel.Flywheel;
-import frc.robot.subsystems.flywheel.FlywheelIOSim;
-import frc.robot.subsystems.flywheel.FlywheelIOSparkMax;
+import frc.robot.subsystems.flywheels.Flywheels;
+import frc.robot.subsystems.flywheels.FlywheelsIOSim;
+import frc.robot.subsystems.flywheels.FlywheelsIOSparkMax;
 import frc.robot.subsystems.rollers.Rollers;
 import frc.robot.subsystems.rollers.RollersSensorsIO;
 import frc.robot.subsystems.rollers.RollersSensorsIOReal;
 import frc.robot.subsystems.rollers.feeder.Feeder;
-import frc.robot.subsystems.rollers.feeder.FeederIO;
+import frc.robot.subsystems.rollers.feeder.FeederIOSim;
 import frc.robot.subsystems.rollers.feeder.FeederIOSparkMax;
 import frc.robot.subsystems.rollers.indexer.Indexer;
-import frc.robot.subsystems.rollers.indexer.IndexerIO;
+import frc.robot.subsystems.rollers.indexer.IndexerIOSim;
 import frc.robot.subsystems.rollers.indexer.IndexerIOSparkMax;
-import frc.robot.subsystems.rollers.intake.Intake;
-import frc.robot.subsystems.rollers.intake.IntakeIO;
-import frc.robot.subsystems.rollers.intake.IntakeIOSparkMax;
+import frc.robot.subsystems.rollers.intakeFront.IntakeFront;
+import frc.robot.subsystems.rollers.intakeFront.IntakeFrontIOSim;
+import frc.robot.subsystems.rollers.intakeFront.IntakeFrontIOSparkMax;
+import frc.robot.subsystems.rollers.intakeRear.IntakeRear;
+import frc.robot.subsystems.rollers.intakeRear.IntakeRearIOSim;
+import frc.robot.subsystems.rollers.intakeRear.IntakeRearIOSparkMax;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
@@ -56,8 +58,11 @@ public class RobotContainer {
   private final Drive drive;
 
   private Rollers rollers;
-
-  private Flywheel flywheel;
+  private Feeder feeder;
+  private Indexer indexer;
+  private IntakeFront intakeFront;
+  private IntakeRear intakeRear;
+  private Flywheels flywheels;
 
   // Controller
   private final CommandXboxController driver = new CommandXboxController(0);
@@ -72,9 +77,6 @@ public class RobotContainer {
   public RobotContainer() {
 
     // Declare component subsystems (not visible outside constructor)
-    Feeder feeder = null;
-    Indexer indexer = null;
-    Intake intake = null;
 
     switch (Constants.currentMode) {
       case REAL:
@@ -89,17 +91,18 @@ public class RobotContainer {
 
         feeder = new Feeder(new FeederIOSparkMax());
         indexer = new Indexer(new IndexerIOSparkMax());
-        intake = new Intake(new IntakeIOSparkMax());
-        rollers = new Rollers(feeder, indexer, intake, new RollersSensorsIOReal());
+        intakeFront = new IntakeFront(new IntakeFrontIOSparkMax());
+        intakeRear = new IntakeRear(new IntakeRearIOSparkMax());
+        rollers = new Rollers(feeder, indexer, intakeFront, intakeRear, new RollersSensorsIOReal());
 
-        flywheel = new Flywheel(new FlywheelIOSparkMax());
+        flywheels = new Flywheels(new FlywheelsIOSparkMax());
         // drive = new Drive(
         // new GyroIOPigeon2(true),
         // new ModuleIOTalonFX(0),
         // new ModuleIOTalonFX(1),
         // new ModuleIOTalonFX(2),
         // new ModuleIOTalonFX(3));
-        flywheel = new Flywheel(new FlywheelIOSparkMax());
+        flywheels = new Flywheels(new FlywheelsIOSparkMax());
         break;
 
       case SIM:
@@ -112,7 +115,13 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
 
-        flywheel = new Flywheel(new FlywheelIOSim());
+        flywheels = new Flywheels(new FlywheelsIOSim());
+
+        feeder = new Feeder(new FeederIOSim());
+        indexer = new Indexer(new IndexerIOSim());
+        intakeFront = new IntakeFront(new IntakeFrontIOSim());
+        intakeRear = new IntakeRear(new IntakeRearIOSim());
+        rollers = new Rollers(feeder, indexer, intakeFront, intakeRear, new RollersSensorsIO() {});
         break;
 
       default:
@@ -126,19 +135,6 @@ public class RobotContainer {
                 new ModuleIO() {});
         // flywheel = new Flywheel(new FlywheelIO() {});
         break;
-    }
-
-    if (feeder == null) {
-      feeder = new Feeder(new FeederIO() {});
-    }
-    if (indexer == null) {
-      indexer = new Indexer(new IndexerIO() {});
-    }
-    if (intake == null) {
-      intake = new Intake(new IntakeIO() {});
-    }
-    if (rollers == null) {
-      rollers = new Rollers(feeder, indexer, intake, new RollersSensorsIO() {});
     }
 
     // Set up auto routines
@@ -200,13 +196,13 @@ public class RobotContainer {
             () -> (-driver.getLeftY() * 0.50),
             () -> (-driver.getLeftX() * 0.50),
             () -> (driver.getRightX() * 0.50)));
-
-    driver
-        .button(1)
-        .whileTrue(
-            Commands.startEnd(
-                () -> flywheel.runVelocity(flywheelSpeedInput.get()), flywheel::stop, flywheel));
-
+    /*
+        driver
+            .button(1)
+            .whileTrue(
+                Commands.startEnd(
+                    () -> flywheels.runVelocity(flywheelSpeedInput.get()), flywheels::IDLE, flywheels));
+    */
     // driver.button(2).whileTrue( () - > ).runEnd(flywheel.runVolts(.5), flywheel.runVolts(0) ));
 
     // drive.setDefaultCommand(

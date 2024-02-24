@@ -64,6 +64,50 @@ public final class Constants {
     disableHAL = true;
   }
 
+  public static final class IntakeConstants {
+    // SPARK MAX CAN IDs
+    public static final int kIntakeFront = 20;
+    public static final int kIntakeRear = 21;
+    // Speed Controller Speeds
+    public static final double kIntakeSpeed = 1;
+    public static final int kIntakeCurrentLimit = 80;
+  }
+
+  public static final class FeederConstants {
+    // SPARK MAX CAN IDs
+    public static final int kFeederRight = 22;
+    // Speed Controller Speeds
+    public static final double kFeederSpeed = 1;
+    public static final int kFeederCurrentLimit = 80;
+  }
+
+  public static final class IncrementerConstants {
+    // SPARK MAX CAN IDs
+    public static final int kIncrementerLeft = 30;
+    public static final int kIncrementerRight = 31;
+    // Speed Controller Speeds
+    public static final double kIncrementerSpeed = 1;
+    public static final int kIncrementerCurrentLimit = 80;
+  }
+
+  public static final class LauncherConstants {
+    // SPARK MAX CAN IDs
+    public static final int kLauncherLeft = 32;
+    public static final int kLauncherRight = 33;
+    // Speed Controller Speeds
+    public static final double kLauncherSpeed = 1;
+    public static final int kLauncherCurrentLimit = 80;
+  }
+
+  public static final class MastConstants {
+    // SPARK MAX CAN IDs
+    public static final int kMastLeft = 40;
+    public static final int kMastRight = 41;
+    // Speed Controller Speeds
+    public static final double kMastSpeed = 1;
+    public static final int kMastCurrentLimit = 80;
+  }
+
   /** Checks whether the robot the correct robot is selected when deploying. */
   public static void main(String... args) {
     if (robotType == RobotType.SIMBOT) {
