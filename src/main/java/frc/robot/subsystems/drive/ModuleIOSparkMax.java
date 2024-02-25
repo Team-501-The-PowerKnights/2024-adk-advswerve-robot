@@ -72,14 +72,14 @@ public class ModuleIOSparkMax implements ModuleIO {
         turnSparkMax = new CANSparkMax(2, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
         // MUST BE CALIBRATED
-        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(-90.0));
+        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(273.95));
         break;
       case 1: // FR
         driveSparkMax = new CANSparkMax(5, MotorType.kBrushless);
         turnSparkMax = new CANSparkMax(6, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
         // MUST BE CALIBRATED
-        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(180.0));
+        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(179.49));
         break;
       case 2: // BL
         driveSparkMax = new CANSparkMax(3, MotorType.kBrushless);
@@ -93,7 +93,7 @@ public class ModuleIOSparkMax implements ModuleIO {
         turnSparkMax = new CANSparkMax(8, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
         // MUST BE CALIBRATED
-        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(90.0));
+        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(88.85));
         break;
       default:
         throw new RuntimeException("Invalid module index");
