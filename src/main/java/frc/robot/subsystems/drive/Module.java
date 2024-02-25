@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
 
@@ -65,6 +66,8 @@ public class Module {
 
     turnFeedback.enableContinuousInput(-Math.PI, Math.PI);
     setBrakeMode(true);
+
+    SmartDashboard.putBoolean("turnInitialized[" + this.index + "]", false);
   }
 
   /**
@@ -81,7 +84,9 @@ public class Module {
     // On first cycle, reset relative turn encoder
     // Wait until absolute angle is nonzero in case it wasn't initialized yet
     if (turnRelativeOffset == null && inputs.turnAbsolutePosition.getRadians() != 0.0) {
-      turnRelativeOffset = inputs.turnAbsolutePosition.minus(inputs.turnPosition);
+      turnRelativeOffset = inputs.turnAbsolutePosition.minus(inputs.turnPosition).times(-1);
+      SmartDashboard.putBoolean("turnInitialized[" + this.index + "]", true);
+      SmartDashboard.putNumber("turnOffset[" + this.index + "]", turnRelativeOffset.getDegrees());
     }
 
     // Run closed loop turn control

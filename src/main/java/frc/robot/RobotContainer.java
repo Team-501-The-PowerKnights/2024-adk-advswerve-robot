@@ -28,7 +28,7 @@ import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
-import frc.robot.subsystems.drive.ModuleIOSparkFlex;
+import frc.robot.subsystems.drive.ModuleIOSparkMax;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -57,10 +57,17 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIOPigeon2(false),
-                new ModuleIOSparkFlex(0), // FL
-                new ModuleIOSparkFlex(1), // FR
-                new ModuleIOSparkFlex(2), // BL
-                new ModuleIOSparkFlex(3)); // BR
+                new ModuleIOSparkMax(0), // FL
+                new ModuleIOSparkMax(1), // FR
+                new ModuleIOSparkMax(2), // BL
+                new ModuleIOSparkMax(3)); // BR
+        // drive =
+        //     new Drive(
+        //         new GyroIOPigeon2(false),
+        //         new ModuleIOSparkFlex(0), // FL
+        //         new ModuleIOSparkFlex(1), // FR
+        //         new ModuleIOSparkFlex(2), // BL
+        //         new ModuleIOSparkFlex(3)); // BR
         // flywheel = new Flywheel(new FlywheelIOSparkMax());
         // drive = new Drive(
         // new GyroIOPigeon2(true),
@@ -96,20 +103,20 @@ public class RobotContainer {
         break;
     }
 
-    // m_intake = null;
-    m_intake = new Intake();
+    m_intake = null;
+    // m_intake = new Intake();
 
-    // m_feeder = null;
-    m_feeder = new Feeder();
+    m_feeder = null;
+    // m_feeder = new Feeder();
 
-    // m_incrementer = null;
-    m_incrementer = new Incrementer();
+    m_incrementer = null;
+    // m_incrementer = new Incrementer();
 
-    // m_launcher = null;
-    m_launcher = new Launcher();
+    m_launcher = null;
+    // m_launcher = new Launcher();
 
-    // m_mast = null;
-    m_mast = new Mast();
+    m_mast = null;
+    // m_mast = new Mast();
 
     // Configure the button bindings
     configureButtonBindings();
@@ -133,9 +140,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> (-driverPad.getLeftY() * 0.85),
-            () -> (-driverPad.getLeftX() * 0.85),
-            () -> (driverPad.getRightX() * 0.85)));
+            () -> (-driverPad.getLeftY() * 0.5), // 0.85
+            () -> (-driverPad.getLeftX() * 0.5), // 0.85
+            () -> (driverPad.getRightX() * 0.5))); // 0.85
     // drive.setDefaultCommand(
     //     DriveCommands.joystickDrive(
     //         drive,
@@ -148,25 +155,25 @@ public class RobotContainer {
     //     () -> ZeroSupplier.zero(),
     //     () -> ZeroSupplier.zero()));
 
-    // Intake controls:
-    operPad.leftBumper().whileTrue(m_intake.runIntake());
-    operPad.leftTrigger().whileTrue(m_intake.reverseIntake());
+    // // Intake controls:
+    // operPad.leftBumper().whileTrue(m_intake.runIntake());
+    // operPad.leftTrigger().whileTrue(m_intake.reverseIntake());
 
-    // Feeder Controls:
-    operPad.rightBumper().whileTrue(m_feeder.runFeeder());
-    operPad.rightTrigger().whileTrue(m_feeder.reverseFeeder());
+    // // Feeder Controls:
+    // operPad.rightBumper().whileTrue(m_feeder.runFeeder());
+    // operPad.rightTrigger().whileTrue(m_feeder.reverseFeeder());
 
-    // Incrementer Controls:
-    operPad.b().whileTrue(m_incrementer.runIncrementer());
-    operPad.y().whileTrue(m_incrementer.reverseIncrementer());
+    // // Incrementer Controls:
+    // operPad.b().whileTrue(m_incrementer.runIncrementer());
+    // operPad.y().whileTrue(m_incrementer.reverseIncrementer());
 
-    // Launcher Controls:
-    operPad.a().whileTrue(m_launcher.runLauncher());
-    operPad.x().whileTrue(m_launcher.reverseLauncher());
+    // // Launcher Controls:
+    // operPad.a().whileTrue(m_launcher.runLauncher());
+    // operPad.x().whileTrue(m_launcher.reverseLauncher());
 
-    // Mast Controls:
-    // operPad.leftStick().whileTrue(m_mast.mastUpDown(operPad.getLeftY()));
-    m_mast.setDefaultCommand(m_mast.mastUpDown(-operPad.getLeftY(), operPad));
+    // // Mast Controls:
+    // // operPad.leftStick().whileTrue(m_mast.mastUpDown(operPad.getLeftY()));
+    // m_mast.setDefaultCommand(m_mast.mastUpDown(-operPad.getLeftY(), operPad));
   }
 
   /**
