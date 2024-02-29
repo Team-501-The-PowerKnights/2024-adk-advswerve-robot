@@ -137,6 +137,22 @@ public class Mast extends SubsystemBase {
         });
   }
 
+   // Use this command to set PID to Load from Intake
+   public Command setLoadingCommand() {
+    return this.runOnce(
+        () -> {
+          setMastPID(mastPosLoad);
+        });
+  }
+
+     // Use this command to set PID to Score in Trap
+     public Command setTrapCommand() {
+      return this.runOnce(
+          () -> {
+            setMastPID(mastPosTrap);
+          });
+    }
+
   public Command mastUpDown(double controllerSpeed, CommandXboxController operator) {
 
     double gearRatioLeft = (48.0 / 32.0) * 25.0 * -1;
