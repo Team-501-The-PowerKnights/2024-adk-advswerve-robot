@@ -28,6 +28,7 @@ import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.drive.ModuleIOSparkFlex;
 import frc.robot.subsystems.drive.ModuleIOSparkMax;
 
 /**
@@ -54,20 +55,57 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
-        drive =
-            new Drive(
-                new GyroIOPigeon2(false),
-                new ModuleIOSparkMax(0), // FL
-                new ModuleIOSparkMax(1), // FR
-                new ModuleIOSparkMax(2), // BL
-                new ModuleIOSparkMax(3)); // BR
-        // drive =
-        //     new Drive(
-        //         new GyroIOPigeon2(false),
-        //         new ModuleIOSparkFlex(0), // FL
-        //         new ModuleIOSparkFlex(1), // FR
-        //         new ModuleIOSparkFlex(2), // BL
-        //         new ModuleIOSparkFlex(3)); // BR
+        switch (Constants.currentRobot) {
+          case PROTO:
+            drive =
+                new Drive(
+                    new GyroIOPigeon2(false),
+                    new ModuleIOSparkMax(0), // FL
+                    new ModuleIOSparkMax(1), // FR
+                    new ModuleIOSparkMax(2), // BL
+                    new ModuleIOSparkMax(3)); // BR
+
+            m_intake = null;
+            m_feeder = null;
+            m_incrementer = null;
+            m_launcher = null;
+            m_mast = null;
+            break;
+
+          case REAL:
+            drive =
+                new Drive(
+                    new GyroIOPigeon2(false),
+                    new ModuleIOSparkFlex(0), // FL
+                    new ModuleIOSparkFlex(1), // FR
+                    new ModuleIOSparkFlex(2), // BL
+                    new ModuleIOSparkFlex(3)); // BR
+
+            m_intake = new Intake();
+            m_feeder = new Feeder();
+            m_incrementer = new Incrementer();
+            m_launcher = new Launcher();
+            m_mast = new Mast();
+            break;
+
+          case SUITCASE:
+          default:
+            drive =
+                new Drive(
+                    new GyroIO() {},
+                    new ModuleIO() {},
+                    new ModuleIO() {},
+                    new ModuleIO() {},
+                    new ModuleIO() {});
+
+            m_intake = null;
+            m_feeder = null;
+            m_incrementer = null;
+            m_launcher = null;
+            m_mast = null;
+            break;
+        }
+
         // flywheel = new Flywheel(new FlywheelIOSparkMax());
         // drive = new Drive(
         // new GyroIOPigeon2(true),
@@ -88,6 +126,11 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         // flywheel = new Flywheel(new FlywheelIOSim());
+        m_intake = null;
+        m_feeder = null;
+        m_incrementer = null;
+        m_launcher = null;
+        m_mast = null;
         break;
 
       default:
@@ -100,23 +143,13 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         // flywheel = new Flywheel(new FlywheelIO() {});
+        m_intake = null;
+        m_feeder = null;
+        m_incrementer = null;
+        m_launcher = null;
+        m_mast = null;
         break;
     }
-
-    m_intake = null;
-    // m_intake = new Intake();
-
-    m_feeder = null;
-    // m_feeder = new Feeder();
-
-    m_incrementer = null;
-    // m_incrementer = new Incrementer();
-
-    m_launcher = null;
-    // m_launcher = new Launcher();
-
-    m_mast = null;
-    // m_mast = new Mast();
 
     // Configure the button bindings
     configureButtonBindings();
@@ -136,44 +169,61 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // STU
-    drive.setDefaultCommand(
-        DriveCommands.joystickDrive(
-            drive,
-            () -> (-driverPad.getLeftY() * 0.5), // 0.85
-            () -> (-driverPad.getLeftX() * 0.5), // 0.85
-            () -> (driverPad.getRightX() * 0.5))); // 0.85
-    // drive.setDefaultCommand(
-    //     DriveCommands.joystickDrive(
-    //         drive,
-    //         () -> -controller.getLeftY(),
-    //         () -> ZeroSupplier.zero(),
-    //         () -> ZeroSupplier.zero()));
-    // DriveCommands.joystickDrive(
-    //     drive,
-    //     () -> ZeroSupplier.zero(),
-    //     () -> ZeroSupplier.zero(),
-    //     () -> ZeroSupplier.zero()));
+    switch (Constants.currentRobot) {
+      case PROTO:
+        drive.setDefaultCommand(
+            DriveCommands.joystickDrive(
+                drive,
+                () -> (-driverPad.getLeftY() * 0.5),
+                () -> (-driverPad.getLeftX() * 0.5),
+                () -> (driverPad.getRightX() * 0.5)));
+        // drive.setDefaultCommand(
+        //     DriveCommands.joystickDrive(
+        //         drive,
+        //         () -> -controller.getLeftY(),
+        //         () -> ZeroSupplier.zero(),
+        //         () -> ZeroSupplier.zero()));
+        // drive.setDefaultCommand(
+        //     DriveCommands.joystickDrive(
+        //         drive,
+        //         () -> ZeroSupplier.zero(),
+        //         () -> ZeroSupplier.zero(),
+        //         () -> ZeroSupplier.zero()));
+        break;
 
-    // // Intake controls:
-    // operPad.leftBumper().whileTrue(m_intake.runIntake());
-    // operPad.leftTrigger().whileTrue(m_intake.reverseIntake());
+      case REAL:
+        drive.setDefaultCommand(
+            DriveCommands.joystickDrive(
+                drive,
+                () -> (-driverPad.getLeftY() * 0.85),
+                () -> (-driverPad.getLeftX() * 0.85),
+                () -> (driverPad.getRightX() * 0.85)));
 
-    // // Feeder Controls:
-    // operPad.rightBumper().whileTrue(m_feeder.runFeeder());
-    // operPad.rightTrigger().whileTrue(m_feeder.reverseFeeder());
+        // Intake controls:
+        operPad.leftBumper().whileTrue(m_intake.runIntake());
+        operPad.leftTrigger().whileTrue(m_intake.reverseIntake());
 
-    // // Incrementer Controls:
-    // operPad.b().whileTrue(m_incrementer.runIncrementer());
-    // operPad.y().whileTrue(m_incrementer.reverseIncrementer());
+        // Feeder Controls:
+        operPad.rightBumper().whileTrue(m_feeder.runFeeder());
+        operPad.rightTrigger().whileTrue(m_feeder.reverseFeeder());
 
-    // // Launcher Controls:
-    // operPad.a().whileTrue(m_launcher.runLauncher());
-    // operPad.x().whileTrue(m_launcher.reverseLauncher());
+        // Incrementer Controls:
+        operPad.b().whileTrue(m_incrementer.runIncrementer());
+        operPad.y().whileTrue(m_incrementer.reverseIncrementer());
 
-    // // Mast Controls:
-    // // operPad.leftStick().whileTrue(m_mast.mastUpDown(operPad.getLeftY()));
-    // m_mast.setDefaultCommand(m_mast.mastUpDown(-operPad.getLeftY(), operPad));
+        // Launcher Controls:
+        operPad.a().whileTrue(m_launcher.runLauncher());
+        operPad.x().whileTrue(m_launcher.reverseLauncher());
+
+        // Mast Controls:
+        // operPad.leftStick().whileTrue(m_mast.mastUpDown(operPad.getLeftY()));
+        m_mast.setDefaultCommand(m_mast.mastUpDown(-operPad.getLeftY(), operPad));
+        break;
+
+      case SUITCASE:
+      default:
+        break;
+    }
   }
 
   /**

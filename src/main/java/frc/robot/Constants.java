@@ -35,6 +35,19 @@ public final class Constants {
     REPLAY
   }
 
+  public static final Robot currentRobot = Robot.PROTO;
+
+  public static enum Robot {
+    /** Running on suitcase robot. */
+    SUITCASE,
+
+    /** Running on proto robot. (drive chassis) */
+    PROTO,
+
+    /** Running on real robot. (all subsystems) */
+    REAL
+  }
+
   public static final class IntakeConstants {
     // SPARK MAX CAN IDs
     public static final int kIntakeFront = 20;
