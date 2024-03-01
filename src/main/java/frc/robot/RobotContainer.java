@@ -207,6 +207,10 @@ public class RobotContainer {
         // Mast Controls:
         // operPad.leftStick().whileTrue(m_mast.mastUpDown(operPad.getLeftY()));
         m_mast.setDefaultCommand(m_mast.mastUpDown(-operPad.getLeftY(), operPad));
+        driverPad.a().whileTrue(m_mast.setAmpCommand());
+        driverPad.b().whileTrue(m_mast.setSubwooferCommand());
+        driverPad.x().whileTrue(m_mast.setLoadingCommand());
+        driverPad.y().whileTrue(m_mast.setTrapCommand());
         break;
 
       case SUITCASE:
