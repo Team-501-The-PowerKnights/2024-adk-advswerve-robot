@@ -7,52 +7,104 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Launcher extends SubsystemBase {
-  // CANSparkMax launcherLeft;
-  // CANSparkMax launcherRight;
-  TalonFX launcherLeft;
-  TalonFX launcherRight;
-  double launcherSpeed;
+
+  public enum Task {
+    INTAKING("Intaking", 0.0, 0.0),
+    LAUNCHMAN("Launch Manual", 1.0, 4000.00),
+    LAUNCHAUTO("Launch Auto", 0.0, 0.0),
+    PUTAMP("Note->Amp", 0.0, 0.0),
+    PUTRAP("Note->Trap", 0.0, 0.0),
+    CLEARJAM("Clear", 0.25, 1000.0),
+    IDLE("Idle", 0.0, 0.0);
+
+    private final String taskName;
+    private final double speed;
+    private final double targetRPM;
+
+    Task(String taskName, double speed, double targetRPM) {
+      this.taskName = taskName;
+      this.speed = speed;
+      this.targetRPM = targetRPM;
+    }
+
+    public String getTaskName() {
+      return taskName;
+    }
+
+    public double getSpeed() {
+      return this.speed;
+    }
+
+    public double getRPM() {
+      return this.targetRPM;
+    }
+  }
+
+  // Motors - Speed Controls
+  private TalonFX launcherLeft;
+  private TalonFX launcherRight;
+
+  // used when launcher is in auto mode
+  private double launcherSpeedAuto;
+
+  // curent launcher task
+  private Task currentTask;
 
   public Launcher() {
+
+    // Startup in Idle
+    currentTask = Task.IDLE;
+
+    // Construct Motors
     launcherLeft = new TalonFX(kLauncherLeft);
+    // One must be inverted
     launcherLeft.setInverted(true);
+
     launcherRight = new TalonFX(kLauncherRight);
 
-    // launcherLeft.setSmartCurrentLimit(kLauncherCurrentLimit);
-    // launcherRight.setSmartCurrentLimit(kLauncherCurrentLimit);
-    // launcherRight.setInverted(true);
-    // launcherRight.setControl(launcherLeft);
-    launcherSpeed = kLauncherSpeed;
+    // TODO: Impliment Automatic Speed Control
+    launcherSpeedAuto = kLauncherSpeed;
+
     System.out.println("Launcher Constructed!!");
   }
-  // Sets the speed of the lead motor
-  public void setLauncherSpeed(double speed) {
+
+  /// TODO: Impliment PID Launcher Velocity
+  public void setLauncherSpeedCL(double rpm) {
+    // launcherLeft.set(-speed);
+    // launcherRight.set(-speed);
+  }
+
+  // Sets the speed of the lead motor open loop
+  public void setLauncherSpeedOL(double speed) {
     launcherLeft.set(-speed);
     launcherRight.set(-speed);
   }
+
   // Sets the speed of the lead motor to 0
   public void stop() {
+    currentTask = Task.IDLE;
     launcherLeft.set(0);
     launcherRight.set(0);
   }
-  // Use this command to pull a note off the floor
-  public Command runLauncher() {
+
+  // Use this command will command the Launcher to Do Something and goes to idle when button
+  // released
+  public Command setTask(Task task) {
     return this.startEnd(
         () -> {
-          setLauncherSpeed(kLauncherSpeed);
+          currentTask = task; // let subsystem know current task
         },
         () -> {
-          stop();
+          currentTask = Task.IDLE;
         });
   }
-  // Use this command to "eject" a note back onto the floor
-  public Command reverseLauncher() {
-    return this.startEnd(
+
+  //runs when no commands are active
+  public Command defaultCommand() {
+    return this.run(
         () -> {
-          setLauncherSpeed(kLauncherSpeed * -0.5);
-        },
-        () -> {
-          stop();
+          setLauncherSpeedOL(currentTask.getSpeed());
+          // setLauncherSpeedCL(currentTask.getRPM());
         });
   }
 
