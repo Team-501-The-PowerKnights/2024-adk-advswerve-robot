@@ -35,7 +35,7 @@ public final class Constants {
     REPLAY
   }
 
-  public static final Robot currentRobot = Robot.PROTO;
+  public static final Robot currentRobot = Robot.REAL;
 
   public static enum Robot {
     /** Running on suitcase robot. */
@@ -54,7 +54,7 @@ public final class Constants {
     public static final int kIntakeRear = 21;
     // Speed Controller Speeds
     public static final double kIntakeSpeed = 1;
-    public static final int kIntakeCurrentLimit = 80;
+    public static final int kIntakeCurrentLimit = 20;
   }
 
   public static final class FeederConstants {
@@ -62,7 +62,7 @@ public final class Constants {
     public static final int kFeederRight = 22;
     // Speed Controller Speeds
     public static final double kFeederSpeed = 1;
-    public static final int kFeederCurrentLimit = 80;
+    public static final int kFeederCurrentLimit = 20;
   }
 
   public static final class IncrementerConstants {
@@ -71,7 +71,7 @@ public final class Constants {
     public static final int kIncrementerRight = 31;
     // Speed Controller Speeds
     public static final double kIncrementerSpeed = 1;
-    public static final int kIncrementerCurrentLimit = 80;
+    public static final int kIncrementerCurrentLimit = 20;
   }
 
   public static final class LauncherConstants {
@@ -89,6 +89,6 @@ public final class Constants {
     public static final int kMastRight = 41;
     // Speed Controller Speeds
     public static final double kMastSpeed = 1;
-    public static final int kMastCurrentLimit = 80;
+    public static final int kMastCurrentLimit = 20;
   }
 }
