@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,10 +18,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 public class Mast extends SubsystemBase {
   CANSparkMax mastLeft;
   CANSparkMax mastRight;
+
   double mastSpeed;
-  RelativeEncoder relmastLeft;
-  RelativeEncoder relmastRight;
+  RelativeEncoder relmastLeftEncoder;
+  RelativeEncoder relmastRightEncoder;
   CommandXboxController operPad;
+  DutyCycleEncoder absMastLeftEncoder;
 
   public static double mastKp;
   public static double mastKi;
@@ -38,6 +41,7 @@ public class Mast extends SubsystemBase {
   private static double mastPosSubwoofer;
   private static double mastPosCamera;
   private static double mastPosTrap;
+  private static double mastAbsAngle;
 
   // TODO: Populate values with encoder values
 
@@ -70,12 +74,14 @@ public class Mast extends SubsystemBase {
 
     mastLeft.setIdleMode(IdleMode.kBrake); // Turn on the brake for PID
     mastRight.setIdleMode(IdleMode.kCoast); // Turn off the brake other motor
-    // mastLeft.setInverted(true);
+    mastLeft.setInverted(true);
     mastRight.setInverted(true);
     // mastRight.follow(mastLeft);
 
-    relmastLeft = mastLeft.getEncoder();
-    relmastRight = mastRight.getEncoder();
+    absMastLeftEncoder = new DutyCycleEncoder(2);
+
+    relmastLeftEncoder = mastLeft.getEncoder();
+    relmastRightEncoder = mastRight.getEncoder();
 
     mastLeftPIDController = mastLeft.getPIDController();
     mastRightPIDController = mastRight.getPIDController();
@@ -167,10 +173,11 @@ public class Mast extends SubsystemBase {
             mastLeftPIDController.setReference(operator.getLeftY(), ControlType.kVoltage);
             mastRightPIDController.setReference(operator.getLeftY(), ControlType.kVoltage);
           }
-          double leftEnc = relmastLeft.getPosition() * 360 / gearRatioLeft;
-          double rightEnc = relmastRight.getPosition() * 360 / gearRatioRight;
+          double leftEnc = relmastLeftEncoder.getPosition() * 360 / gearRatioLeft;
+          double rightEnc = relmastRightEncoder.getPosition() * 360 / gearRatioRight;
           SmartDashboard.putNumber("Mast Left Encoder", leftEnc);
           SmartDashboard.putNumber("Mast Right Encoder", rightEnc);
+          SmartDashboard.putNumber("Mast Abs Encoder", absMastLeftEncoder.getAbsolutePosition());
         });
     // return this.startEnd(
     //     () -> {

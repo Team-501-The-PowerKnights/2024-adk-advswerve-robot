@@ -15,12 +15,13 @@ public class Launcher extends SubsystemBase {
 
   public Launcher() {
     launcherLeft = new TalonFX(kLauncherLeft);
+    launcherLeft.setInverted(true);
     launcherRight = new TalonFX(kLauncherRight);
 
     // launcherLeft.setSmartCurrentLimit(kLauncherCurrentLimit);
     // launcherRight.setSmartCurrentLimit(kLauncherCurrentLimit);
-    launcherRight.setInverted(true);
-    //    launcherRight.setControl(launcherLeft);
+    // launcherRight.setInverted(true);
+    // launcherRight.setControl(launcherLeft);
     launcherSpeed = kLauncherSpeed;
     System.out.println("Launcher Constructed!!");
   }

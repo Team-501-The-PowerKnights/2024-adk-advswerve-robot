@@ -193,12 +193,13 @@ public class RobotContainer {
         operPad.leftTrigger().whileTrue(m_intake.reverseIntake());
 
         // Feeder Controls:
-        operPad.rightBumper().whileTrue(m_feeder.runFeeder());
-        operPad.rightTrigger().whileTrue(m_feeder.reverseFeeder());
+        operPad.leftBumper().whileTrue(m_feeder.runFeeder());
+        operPad.leftTrigger().whileTrue(m_feeder.reverseFeeder());
 
         // Incrementer Controls:
-        operPad.b().whileTrue(m_incrementer.runIncrementer());
-        operPad.y().whileTrue(m_incrementer.reverseIncrementer());
+        operPad.leftBumper().whileTrue(m_incrementer.runIncrementer());
+        operPad.a().whileTrue(m_incrementer.runIncrementer());
+        operPad.leftTrigger().whileTrue(m_incrementer.reverseIncrementer());
 
         // Launcher Controls:
         operPad.a().whileTrue(m_launcher.runLauncher());
