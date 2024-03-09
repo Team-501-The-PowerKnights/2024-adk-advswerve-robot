@@ -69,7 +69,7 @@ public class ModuleIOSparkFlex implements ModuleIO {
     m_index = index;
     switch (index) {
       case 0: // FL
-        driveSparkFlex = new CANSparkFlex(1, MotorType.kBrushless);
+        driveSparkFlex = new CANSparkFlex(9, MotorType.kBrushless);  //Changed to resolve PDB Conflict
         turnSparkMax = new CANSparkMax(2, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
         // MUST BE CALIBRATED
