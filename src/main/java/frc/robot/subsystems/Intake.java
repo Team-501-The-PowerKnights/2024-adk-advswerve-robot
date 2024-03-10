@@ -20,6 +20,8 @@ public class Intake extends SubsystemBase {
 
     intakeFront.setSmartCurrentLimit(kIntakeCurrentLimit);
     intakeRear.setSmartCurrentLimit(kIntakeCurrentLimit);
+
+    // intakeFront.
     // intakeRear.setInverted(false);
     // intakeRear.follow(intakeFront);
     intakeSpeed = kIntakeSpeed;

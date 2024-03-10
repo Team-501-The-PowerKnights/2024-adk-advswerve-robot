@@ -79,7 +79,7 @@ public final class Constants {
     public static final int kLauncherLeft = 32;
     public static final int kLauncherRight = 33;
     // Speed Controller Speeds
-    public static final double kLauncherSpeed = 1;
+    public static final double kLauncherSpeed = .7;
     public static final int kLauncherCurrentLimit = 80;
   }
 
@@ -91,6 +91,7 @@ public final class Constants {
     public static final double kMastSpeed = 1;
     public static final int kMastCurrentLimit = 20;
   }
+
   public static final class ClimberConstants {
     // SPARK MAX CAN IDs
     public static final int kClimber = 50;

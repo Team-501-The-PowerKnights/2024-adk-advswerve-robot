@@ -29,6 +29,10 @@ public class Incrementer extends SubsystemBase {
   }
   // Sets the speed of the lead motor
   public void setIncrementerSpeed(double speed) {
+    try {
+      Thread.sleep(2000);
+    } catch (Exception ex) {
+    }
     incrementerLeft.set(-speed);
     incrementerRight.set(speed);
   }
@@ -51,7 +55,7 @@ public class Incrementer extends SubsystemBase {
   public Command reverseIncrementer() {
     return this.startEnd(
         () -> {
-          setIncrementerSpeed(kIncrementerSpeed * -0.5);
+          setIncrementerSpeed(kIncrementerSpeed * -1.0);
         },
         () -> {
           stop();

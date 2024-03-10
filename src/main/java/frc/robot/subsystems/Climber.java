@@ -7,45 +7,45 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
-    TalonFX climberFX;
-    double climberSpeed;
+  TalonFX climberFX;
+  double climberSpeed;
 
-    public Climber(){
-        climberFX = new TalonFX(kClimber);
-        //climberFX.setInverted(true);
-        climberSpeed = kClimberSpeed;
-        
-        System.out.println("Climber Constructed!!");
-    }
+  public Climber() {
+    climberFX = new TalonFX(kClimber);
+    // climberFX.setInverted(true);
+    climberSpeed = kClimberSpeed;
+
+    System.out.println("Climber Constructed!!");
+  }
 
   // Sets the speed of the lead motor
-  public void setLauncherSpeed(double speed) {
+  public void setClimberSpeed(double speed) {
     climberFX.set(-speed);
+  }
   // Sets the speed of the lead motor to 0
   public void stop() {
     climberFX.set(0);
   }
   // Use this command to pull a note off the floor
-  public Command runLauncher() {
+  public Command runClimber() {
     return this.startEnd(
         () -> {
-          setLauncherSpeed(kClimberSpeed);
+          setClimberSpeed(kClimberSpeed);
         },
         () -> {
           stop();
         });
   }
   // Use this command to "eject" a note back onto the floor
-  public Command reverseLauncher() {
+  public Command reverseClimber() {
     return this.startEnd(
         () -> {
-          setLauncherSpeed(kClimberSpeed * -0.5);
+          setClimberSpeed(kClimberSpeed * -1.0);
         },
         () -> {
           stop();
         });
   }
 
-
-    //END OF Climber Class
+  // END OF Climber Class
 }

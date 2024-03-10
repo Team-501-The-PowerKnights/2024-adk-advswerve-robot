@@ -34,7 +34,7 @@ public class Feeder extends SubsystemBase {
   public Command runFeeder() {
     return this.startEnd(
         () -> {
-          setFeederSpeed(kFeederSpeed);
+          setFeederSpeed(kFeederSpeed * -1.0);
         },
         () -> {
           stop();
@@ -44,7 +44,7 @@ public class Feeder extends SubsystemBase {
   public Command reverseFeeder() {
     return this.startEnd(
         () -> {
-          setFeederSpeed(kFeederSpeed * -0.5);
+          setFeederSpeed(kFeederSpeed * 0.5);
         },
         () -> {
           stop();

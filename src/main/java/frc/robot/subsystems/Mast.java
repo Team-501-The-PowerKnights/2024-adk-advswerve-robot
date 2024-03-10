@@ -39,6 +39,7 @@ public class Mast extends SubsystemBase {
   private static double mastPosAmp;
   private static double mastPosLoad;
   private static double mastPosSubwoofer;
+  private static double mastClimber;
   private static double mastPosCamera;
   private static double mastPosTrap;
   private static double mastAbsAngle;
@@ -54,11 +55,12 @@ public class Mast extends SubsystemBase {
     mastMaxNegOut = -0.1;
     mastSetpoint = 0.0;
 
-    mastPosAmp = 40.0;
+    mastPosAmp = 90.0;
     mastPosLoad = 0.0;
     mastPosSubwoofer = 10.0;
+    mastClimber = 55.0;
     mastPosCamera = 0.0;
-    mastPosTrap = 0.0;
+    mastPosTrap = -45.0;
 
     mastLeft = new CANSparkMax(kMastLeft, MotorType.kBrushless);
     mastLeft.restoreFactoryDefaults();
@@ -75,7 +77,7 @@ public class Mast extends SubsystemBase {
     mastLeft.setIdleMode(IdleMode.kBrake); // Turn on the brake for PID
     mastRight.setIdleMode(IdleMode.kCoast); // Turn off the brake other motor
     mastLeft.setInverted(true);
-    mastRight.setInverted(true);
+    mastRight.setInverted(false);
     // mastRight.follow(mastLeft);
 
     absMastLeftEncoder = new DutyCycleEncoder(2);
@@ -156,6 +158,14 @@ public class Mast extends SubsystemBase {
     return this.runOnce(
         () -> {
           setMastPID(mastPosTrap);
+        });
+  }
+
+  public Command setClimberCommand() {
+    return this.runOnce(
+        () -> {
+          setMastPID(mastClimber);
+          System.out.println("RUNNING MAST CLIMBER" + mastClimber);
         });
   }
 

@@ -13,18 +13,19 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Incrementer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Mast;
-import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -34,12 +35,9 @@ import frc.robot.subsystems.drive.ModuleIOSparkFlex;
 import frc.robot.subsystems.drive.ModuleIOSparkMax;
 
 /**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in
- * the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of
- * the robot (including
+ * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
@@ -56,21 +54,20 @@ public class RobotContainer {
   private final CommandXboxController driverPad = new CommandXboxController(0);
   private final CommandXboxController operPad = new CommandXboxController(1);
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
         switch (Constants.currentRobot) {
           case PROTO:
-            drive = new Drive(
-                new GyroIOPigeon2(false),
-                new ModuleIOSparkMax(0), // FL
-                new ModuleIOSparkMax(1), // FR
-                new ModuleIOSparkMax(2), // BL
-                new ModuleIOSparkMax(3)); // BR
+            drive =
+                new Drive(
+                    new GyroIOPigeon2(false),
+                    new ModuleIOSparkMax(0), // FL
+                    new ModuleIOSparkMax(1), // FR
+                    new ModuleIOSparkMax(2), // BL
+                    new ModuleIOSparkMax(3)); // BR
 
             m_intake = null;
             m_feeder = null;
@@ -81,12 +78,13 @@ public class RobotContainer {
             break;
 
           case REAL:
-            drive = new Drive(
-                new GyroIOPigeon2(false),
-                new ModuleIOSparkFlex(0), // FL
-                new ModuleIOSparkFlex(1), // FR
-                new ModuleIOSparkFlex(2), // BL
-                new ModuleIOSparkFlex(3)); // BR
+            drive =
+                new Drive(
+                    new GyroIOPigeon2(false),
+                    new ModuleIOSparkFlex(0), // FL
+                    new ModuleIOSparkFlex(1), // FR
+                    new ModuleIOSparkFlex(2), // BL
+                    new ModuleIOSparkFlex(3)); // BR
 
             m_intake = new Intake();
             m_feeder = new Feeder();
@@ -98,17 +96,13 @@ public class RobotContainer {
 
           case SUITCASE:
           default:
-            drive = new Drive(
-                new GyroIO() {
-                },
-                new ModuleIO() {
-                },
-                new ModuleIO() {
-                },
-                new ModuleIO() {
-                },
-                new ModuleIO() {
-                });
+            drive =
+                new Drive(
+                    new GyroIO() {},
+                    new ModuleIO() {},
+                    new ModuleIO() {},
+                    new ModuleIO() {},
+                    new ModuleIO() {});
 
             m_intake = null;
             m_feeder = null;
@@ -122,13 +116,13 @@ public class RobotContainer {
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
-        drive = new Drive(
-            new GyroIO() {
-            },
-            new ModuleIOSim(),
-            new ModuleIOSim(),
-            new ModuleIOSim(),
-            new ModuleIOSim());
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim());
         m_intake = null;
         m_feeder = null;
         m_incrementer = null;
@@ -139,17 +133,13 @@ public class RobotContainer {
 
       default:
         // Replayed robot, disable IO implementations
-        drive = new Drive(
-            new GyroIO() {
-            },
-            new ModuleIO() {
-            },
-            new ModuleIO() {
-            },
-            new ModuleIO() {
-            },
-            new ModuleIO() {
-            });
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {});
         m_intake = null;
         m_feeder = null;
         m_incrementer = null;
@@ -171,11 +161,9 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be
-   * created by
+   * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
-   * it to a {@link
+   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
@@ -205,26 +193,45 @@ public class RobotContainer {
         drive.setDefaultCommand(
             DriveCommands.joystickDrive(
                 drive,
-                () -> (-driverPad.getLeftY() * 0.85),
-                () -> (-driverPad.getLeftX() * 0.85),
-                () -> (driverPad.getRightX() * 0.85)));
+                () -> (MathUtil.applyDeadband(-driverPad.getLeftY() * .85, .07)),
+                () -> (MathUtil.applyDeadband(-driverPad.getLeftX() * .85, .07)),
+                () -> (MathUtil.applyDeadband(driverPad.getRightX() * 0.85, .07))));
 
         // Set Operator Controls:
 
-        operPad.leftBumper().whileTrue(new ParallelCommandGroup(m_feeder.runFeeder(), m_incrementer.runIncrementer()));
-        operPad.leftTrigger().whileTrue(new ParallelCommandGroup(m_feeder.reverseFeeder(), m_incrementer.reverseIncrementer()));
-        operPad.a().whileTrue(new ParallelCommandGroup(m_launcher.runLauncher(), m_incrementer.runIncrementer()));
+        operPad
+            .leftBumper()
+            .whileTrue(
+                new ParallelCommandGroup(m_feeder.runFeeder(), m_incrementer.runIncrementer()));
+        operPad
+            .leftTrigger()
+            .whileTrue(
+                new ParallelCommandGroup(
+                    m_feeder.reverseFeeder(), m_incrementer.reverseIncrementer()));
+        operPad
+            .a()
+            .whileTrue(
+                new ParallelCommandGroup(m_launcher.runLauncher(), m_incrementer.runIncrementer()));
         // m_mast.setDefaultCommand(m_mast.mastUpDown(-operPad.getLeftY(), operPad));
         operPad.b().whileTrue(m_mast.setAmpCommand());
-        operPad.x().whileTrue(m_mast.setSubwooferCommand());
         operPad.y().whileTrue(m_mast.setLoadingCommand());
+        operPad.x().whileTrue(m_mast.setSubwooferCommand());
+        operPad.rightBumper().whileTrue(m_mast.setClimberCommand());
+        operPad.rightTrigger().whileTrue(m_mast.setTrapCommand());
         // operPad.y().whileTrue(m_mast.setTrapCommand());
 
         // Set Driver Controls:
         // Pick up Note from floor to Feeder
-        driverPad.leftBumper().whileTrue(new ParallelCommandGroup(m_intake.runIntake(), m_feeder.runFeeder()));
-        driverPad.leftTrigger().whileTrue(new ParallelCommandGroup(m_intake.reverseIntake(), m_feeder.reverseFeeder()));
+        driverPad
+            .leftBumper()
+            .whileTrue(new ParallelCommandGroup(m_intake.runIntake(), m_feeder.runFeeder()));
+        driverPad
+            .leftTrigger()
+            .whileTrue(
+                new ParallelCommandGroup(m_intake.reverseIntake(), m_feeder.reverseFeeder()));
 
+        driverPad.x().whileTrue(m_climber.runClimber());
+        driverPad.y().whileTrue(m_climber.reverseClimber());
         // // Intake controls:
         // operPad.leftBumper().whileTrue(m_intake.runIntake());
         // operPad.leftTrigger().whileTrue(m_intake.reverseIntake());
