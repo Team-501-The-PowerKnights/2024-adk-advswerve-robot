@@ -24,6 +24,7 @@ import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Incrementer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Mast;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -50,6 +51,7 @@ public class RobotContainer {
   private final Incrementer m_incrementer;
   private final Launcher m_launcher;
   private final Mast m_mast;
+  private final Climber m_climber;
 
   // Controller
   private final CommandXboxController driverPad = new CommandXboxController(0);
@@ -75,6 +77,7 @@ public class RobotContainer {
             m_feeder = null;
             m_incrementer = null;
             m_launcher = null;
+            m_climber = null;
             m_mast = null;
             break;
 
@@ -91,6 +94,7 @@ public class RobotContainer {
             m_incrementer = new Incrementer();
             m_launcher = new Launcher();
             m_mast = new Mast();
+            m_climber = new Climber();
             break;
 
           case SUITCASE:
@@ -112,6 +116,7 @@ public class RobotContainer {
             m_incrementer = null;
             m_launcher = null;
             m_mast = null;
+            m_climber = null;
             break;
         }
         break;
@@ -130,6 +135,7 @@ public class RobotContainer {
         m_incrementer = null;
         m_launcher = null;
         m_mast = null;
+        m_climber = null;
         break;
 
       default:
@@ -150,6 +156,7 @@ public class RobotContainer {
         m_incrementer = null;
         m_launcher = null;
         m_mast = null;
+        m_climber = null;
         break;
     }
 
@@ -202,6 +209,32 @@ public class RobotContainer {
                 () -> (MathUtil.applyDeadband(-driverPad.getLeftY() * 0.85, 0.05)),
                 () -> (MathUtil.applyDeadband(-driverPad.getLeftX() * 0.85, 0.05)),
                 () -> (MathUtil.applyDeadband(driverPad.getRightX() * 0.85, 0.05))));
+
+
+         // Intake Note and Load into Launcher
+         driverPad
+         .leftTrigger()
+         .whileTrue(
+             Commands.race(
+                 m_intake.setTask(Intake.Task.IDLE),
+                 m_feeder.setTask(Feeder.Task.IDLE),
+                 m_mast.setTask(Mast.Task.PUTTRAP),
+                 m_incrementer.setTask(Incrementer.Task.IDLE),
+                 m_launcher.setTask(Launcher.Task.IDLE),
+                 m_climber.setTask(Climber.Task.CLIMBING)));
+
+                  // Intake Note and Load into Launcher
+         driverPad
+         .rightTrigger()
+         .whileTrue(
+             Commands.race(
+                 m_intake.setTask(Intake.Task.IDLE),
+                 m_feeder.setTask(Feeder.Task.IDLE),
+                 m_mast.setTask(Mast.Task.PUTTRAP),
+                 m_incrementer.setTask(Incrementer.Task.IDLE),
+                 m_launcher.setTask(Launcher.Task.IDLE),
+                 m_climber.setTask(Climber.Task.LOWERING)));
+
 
         // Intake Note and Load into Launcher
         operPad

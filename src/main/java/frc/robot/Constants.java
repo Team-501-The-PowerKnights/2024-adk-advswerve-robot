@@ -91,4 +91,14 @@ public final class Constants {
     public static final double kMastSpeed = 1;
     public static final int kMastCurrentLimit = 20;
   }
+
+  public static final class ClimberConstants {
+    // SPARK MAX CAN IDs
+    public static final int kClimber = 50;
+
+    // Speed Controller Speeds
+    public static final double kClimberSpeed = 1;
+    public static final int kClimberCurrentLimit = 20;
+  }
+
 }
