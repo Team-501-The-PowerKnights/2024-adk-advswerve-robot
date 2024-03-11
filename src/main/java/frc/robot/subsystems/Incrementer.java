@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.IncrementerConstants.*;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -51,7 +52,20 @@ public class Incrementer extends SubsystemBase {
 
     incrementerLeft.setInverted(false);
     incrementerRight.setInverted(false);
-    // incrementerRight.follow(incrementerLeft);
+   
+    //Reduce canbus chatter
+    incrementerLeft.setPeriodicFramePeriod(PeriodicFrame.kStatus0,100);
+    incrementerLeft.setPeriodicFramePeriod(PeriodicFrame.kStatus1,10000);
+    incrementerLeft.setPeriodicFramePeriod(PeriodicFrame.kStatus2,10000);
+    incrementerLeft.setPeriodicFramePeriod(PeriodicFrame.kStatus4,10000);
+    incrementerLeft.setPeriodicFramePeriod(PeriodicFrame.kStatus5,10000);
+
+    incrementerRight.setPeriodicFramePeriod(PeriodicFrame.kStatus0,100);
+    incrementerRight.setPeriodicFramePeriod(PeriodicFrame.kStatus1,10000);
+    incrementerRight.setPeriodicFramePeriod(PeriodicFrame.kStatus2,10000);
+    incrementerRight.setPeriodicFramePeriod(PeriodicFrame.kStatus4,10000);
+    incrementerRight.setPeriodicFramePeriod(PeriodicFrame.kStatus5,10000);
+
     incrementerSpeed = kIncrementerSpeed;
     System.out.println("Incrementer Constructed!!");
   }
