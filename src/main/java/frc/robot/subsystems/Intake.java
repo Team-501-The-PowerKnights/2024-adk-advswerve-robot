@@ -72,8 +72,6 @@ public class Intake extends SubsystemBase {
         intakeRear.setPeriodicFramePeriod(PeriodicFrame.kStatus5,10000);
 
 
-+
-
     System.out.println("Intake Constructed!!");
   }
 
