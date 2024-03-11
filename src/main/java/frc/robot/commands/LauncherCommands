@@ -1,0 +1,32 @@
+
+
+class LauncherCommands extends Command {
+
+  private final Launcher m_launcher;
+
+  LauncherCommands (Launcher subsystem) {
+    addRequirements(m_launcher);
+  }
+
+  @Override
+  public void initialize() {
+    m_launcher.setTask(Launcher.Task.IDLE);
+  }
+
+  public void set Task(Task task){
+    m_launcher.setLauncherSpeedOL(task.speed);
+  }
+
+
+  @Override
+  public void end(boolean interrupted) {
+    m_launcher.setTask(Launcher.Task.IDLE);
+  }
+
+  @Override
+  public boolean isFinished() {
+    return true;
+  }
+}
+
+

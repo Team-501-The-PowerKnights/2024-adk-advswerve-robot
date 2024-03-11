@@ -206,9 +206,9 @@ public class RobotContainer {
         drive.setDefaultCommand(
             DriveCommands.joystickDrive(
                 drive,
-                () -> (MathUtil.applyDeadband(-driverPad.getLeftY() * 0.85, 0.05)),
-                () -> (MathUtil.applyDeadband(-driverPad.getLeftX() * 0.85, 0.05)),
-                () -> (MathUtil.applyDeadband(driverPad.getRightX() * 0.85, 0.05))));
+                () -> (MathUtil.applyDeadband(driverPad.getLeftY() * 0.85, 0.05)),
+                () -> (MathUtil.applyDeadband(driverPad.getLeftX() * 0.85, 0.05)),
+                () -> (MathUtil.applyDeadband(-driverPad.getRightX() * 0.85, 0.05))));
 
 
          // Intake Note and Load into Launcher
