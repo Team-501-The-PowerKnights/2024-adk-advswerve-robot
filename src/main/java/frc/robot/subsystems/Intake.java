@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.IntakeConstants.*;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -57,8 +58,21 @@ public class Intake extends SubsystemBase {
     intakeFront.setSmartCurrentLimit(kIntakeCurrentLimit);
     intakeRear.setSmartCurrentLimit(kIntakeCurrentLimit);
 
-// curent launcher task
+        //Reduce canbus chatter
+        intakeFront.setPeriodicFramePeriod(PeriodicFrame.kStatus0,100);
+        intakeFront.setPeriodicFramePeriod(PeriodicFrame.kStatus1,10000);
+        intakeFront.setPeriodicFramePeriod(PeriodicFrame.kStatus2,10000);
+        intakeFront.setPeriodicFramePeriod(PeriodicFrame.kStatus4,10000);
+        intakeFront.setPeriodicFramePeriod(PeriodicFrame.kStatus5,10000);
 
+        intakeRear.setPeriodicFramePeriod(PeriodicFrame.kStatus0,100);
+        intakeRear.setPeriodicFramePeriod(PeriodicFrame.kStatus1,10000);
+        intakeRear.setPeriodicFramePeriod(PeriodicFrame.kStatus2,10000);
+        intakeRear.setPeriodicFramePeriod(PeriodicFrame.kStatus4,10000);
+        intakeRear.setPeriodicFramePeriod(PeriodicFrame.kStatus5,10000);
+
+
++
 
     System.out.println("Intake Constructed!!");
   }
