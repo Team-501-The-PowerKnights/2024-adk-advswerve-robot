@@ -71,12 +71,13 @@ public class Launcher extends SubsystemBase {
     launcherLeft.setInverted(true);
     launcherRight.setInverted(false);
 
+      //Define what signals we need from the Talon(s)
     BaseStatusSignal.setUpdateFrequencyForAll(10,
         launcherLeft.getPosition(),
         launcherLeft.getVelocity(),
         launcherLeft.getMotorVoltage());
 
-    // Only Send updates we ask for defining a specific signal update rate.
+    // Don't send data over the canbus anything except defined above.
     launcherLeft.optimizeBusUtilization();
     launcherRight.optimizeBusUtilization();
 
