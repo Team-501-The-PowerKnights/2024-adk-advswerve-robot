@@ -2,8 +2,10 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.FeederConstants.*;
 
-import com.revrobotics.CANSparkLowLevel.MotorType;
+
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import edu.wpi.first.wpilibj.DigitalGlitchFilter;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -39,18 +41,28 @@ public class Feeder extends SubsystemBase {
     }
   }
 
-  CANSparkMax feederRight;
+  CANSparkMax feeder;
   double feederSpeed;
   DigitalInput feederSensor;
   DigitalGlitchFilter feederSensorFilter;
   Task currentTask;
 
   public Feeder() {
-    feederRight = new CANSparkMax(kFeederRight, MotorType.kBrushless);
-    feederRight.restoreFactoryDefaults();
+    //Construct Motors
+    feeder = new CANSparkMax(kFeederRight, MotorType.kBrushless);
+    feeder.restoreFactoryDefaults();
 
-    feederRight.setSmartCurrentLimit(kFeederCurrentLimit);
-    feederRight.setInverted(true);
+    feeder.setSmartCurrentLimit(kFeederCurrentLimit);
+    feeder.setInverted(true);
+
+    //Reduce canbus chatter
+    feeder.setPeriodicFramePeriod(PeriodicFrame.kStatus0,100);
+    feeder.setPeriodicFramePeriod(PeriodicFrame.kStatus1,10000);
+    feeder.setPeriodicFramePeriod(PeriodicFrame.kStatus2,10000);
+    feeder.setPeriodicFramePeriod(PeriodicFrame.kStatus4,10000);
+    feeder.setPeriodicFramePeriod(PeriodicFrame.kStatus5,10000);
+
+
     feederSpeed = kFeederSpeed;
 
     // Note Detection Sensor
@@ -62,11 +74,11 @@ public class Feeder extends SubsystemBase {
   }
   // Sets the speed of the lead motor
   public void setFeederSpeed(double speed) {
-    feederRight.set(speed);
+    feeder.set(speed);
   }
   // Sets the speed of the lead motor to 0
   public void stop() {
-    feederRight.set(0);
+    feeder.set(0);
   }
 
   // Use this command to run a common subsystem task
