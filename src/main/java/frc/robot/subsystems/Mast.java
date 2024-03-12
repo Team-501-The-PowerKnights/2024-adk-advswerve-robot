@@ -2,10 +2,10 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.MastConstants.*;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAbsoluteEncoder;
@@ -114,7 +114,7 @@ public class Mast extends SubsystemBase {
     mastRight.enableVoltageCompensation(12.0);
 
     mastLeft.setIdleMode(IdleMode.kBrake); // Turn on the brake for PID
-    mastRight.setIdleMode(IdleMode.kCoast); // Turn off the brake other motor
+    mastRight.setIdleMode(IdleMode.kBrake); // Turn off the brake other motor
     mastLeft.setInverted(true);
     mastRight.setInverted(true);
     // mastRight.follow(mastLeft);
@@ -221,7 +221,7 @@ public class Mast extends SubsystemBase {
     return this.run(
         () -> {
           SmartDashboard.putBoolean("Mast.moving", true);
-          System.out.println("running mastUpDown = " + operator.getLeftY());
+          //  System.out.println("running mastUpDown = " + operator.getLeftY());
           if (operator.getLeftY() > 0.5 || operator.getLeftY() < -0.5) {
 
             mastLeftPIDController.setReference(operator.getLeftY(), ControlType.kVoltage);
