@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
- 
+
   public enum Task {
     INTAKING("Intaking", 1.0),
     LAUNCHMAN("LaunchMan-Idle", 0.00),
@@ -41,14 +41,13 @@ public class Intake extends SubsystemBase {
   CANSparkMax intakeRear;
   double intakeSpeed;
 
-  //current intake task
+  // current intake task
   private Task currentTask;
 
   public Intake() {
 
- // Startup in Idle
- currentTask = Task.IDLE;
-
+    // Startup in Idle
+    currentTask = Task.IDLE;
 
     intakeFront = new CANSparkMax(kIntakeFront, MotorType.kBrushless);
     intakeFront.restoreFactoryDefaults();
@@ -58,19 +57,22 @@ public class Intake extends SubsystemBase {
     intakeFront.setSmartCurrentLimit(kIntakeCurrentLimit);
     intakeRear.setSmartCurrentLimit(kIntakeCurrentLimit);
 
-        //Reduce canbus chatter
-        intakeFront.setPeriodicFramePeriod(PeriodicFrame.kStatus0,100);
-        intakeFront.setPeriodicFramePeriod(PeriodicFrame.kStatus1,10000);
-        intakeFront.setPeriodicFramePeriod(PeriodicFrame.kStatus2,10000);
-        intakeFront.setPeriodicFramePeriod(PeriodicFrame.kStatus4,10000);
-        intakeFront.setPeriodicFramePeriod(PeriodicFrame.kStatus5,10000);
+    // Reduce canbus chatter
+    intakeFront.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
+    intakeFront.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 10000);
+    intakeFront.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 10000);
+    intakeFront.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 10000);
+    intakeFront.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 10000);
+    intakeFront.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10000);
+    intakeFront.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 10000);
 
-        intakeRear.setPeriodicFramePeriod(PeriodicFrame.kStatus0,100);
-        intakeRear.setPeriodicFramePeriod(PeriodicFrame.kStatus1,10000);
-        intakeRear.setPeriodicFramePeriod(PeriodicFrame.kStatus2,10000);
-        intakeRear.setPeriodicFramePeriod(PeriodicFrame.kStatus4,10000);
-        intakeRear.setPeriodicFramePeriod(PeriodicFrame.kStatus5,10000);
-
+    intakeRear.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
+    intakeRear.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 10000);
+    intakeRear.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 10000);
+    intakeRear.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 10000);
+    intakeRear.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 10000);
+    intakeRear.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10000);
+    intakeRear.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 10000);
 
     System.out.println("Intake Constructed!!");
   }
@@ -113,16 +115,16 @@ public class Intake extends SubsystemBase {
   public Command setTask(Task task) {
 
     return this.startEnd(
-      () -> {
-        currentTask = task; // let subsystem know current task
-      },
-      () -> {
-        currentTask = Task.IDLE;
-      });
+        () -> {
+          currentTask = task; // let subsystem know current task
+        },
+        () -> {
+          currentTask = Task.IDLE;
+        });
   }
 
-   //runs when no commands are active
-   public Command defaultCommand() {
+  // runs when no commands are active
+  public Command defaultCommand() {
     return this.run(
         () -> {
           setIntakeSpeed(currentTask.getSpeed());
