@@ -172,9 +172,9 @@ public class RobotContainer {
         drive.setDefaultCommand(
             DriveCommands.joystickDrive(
                 drive,
-                () -> (-driverPad.getLeftY() * 0.5),
-                () -> (-driverPad.getLeftX() * 0.5),
-                () -> (driverPad.getRightX() * 0.5)));
+                () -> (MathUtil.applyDeadband(driverPad.getLeftY() * .5, .07)),
+                () -> (MathUtil.applyDeadband(driverPad.getLeftX() * .5, .07)),
+                () -> (MathUtil.applyDeadband(-driverPad.getRightX() * 0.5, .07))));
         // drive.setDefaultCommand(
         // DriveCommands.joystickDrive(
         // drive,
@@ -193,9 +193,9 @@ public class RobotContainer {
         drive.setDefaultCommand(
             DriveCommands.joystickDrive(
                 drive,
-                () -> (MathUtil.applyDeadband(-driverPad.getLeftY() * .85, .07)),
-                () -> (MathUtil.applyDeadband(-driverPad.getLeftX() * .85, .07)),
-                () -> (MathUtil.applyDeadband(driverPad.getRightX() * 0.85, .07))));
+                () -> (MathUtil.applyDeadband(driverPad.getLeftY() * .85, .07)),
+                () -> (MathUtil.applyDeadband(driverPad.getLeftX() * .85, .07)),
+                () -> (MathUtil.applyDeadband(-driverPad.getRightX() * 0.85, .07))));
 
         // Set Operator Controls:
 
