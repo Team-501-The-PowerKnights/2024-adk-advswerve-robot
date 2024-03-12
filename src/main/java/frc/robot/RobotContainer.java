@@ -14,6 +14,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -164,9 +165,9 @@ public class RobotContainer {
         drive.setDefaultCommand(
             DriveCommands.joystickDrive(
                 drive,
-                () -> (driverPad.getLeftY() * 0.5),
-                () -> (driverPad.getLeftX() * 0.5),
-                () -> (-driverPad.getRightX() * 0.5)));
+                () -> (MathUtil.applyDeadband(driverPad.getLeftY() * .5, .07)),
+                () -> (MathUtil.applyDeadband(driverPad.getLeftX() * .5, .07)),
+                () -> (MathUtil.applyDeadband(-driverPad.getRightX() * 0.5, .07))));
         // drive.setDefaultCommand(
         //     DriveCommands.joystickDrive(
         //         drive,
@@ -185,9 +186,9 @@ public class RobotContainer {
         drive.setDefaultCommand(
             DriveCommands.joystickDrive(
                 drive,
-                () -> (-driverPad.getLeftY() * 0.85),
-                () -> (-driverPad.getLeftX() * 0.85),
-                () -> (driverPad.getRightX() * 0.85)));
+                () -> (MathUtil.applyDeadband(-driverPad.getLeftY() * .85, .07)),
+                () -> (MathUtil.applyDeadband(-driverPad.getLeftX() * .85, .07)),
+                () -> (MathUtil.applyDeadband(driverPad.getRightX() * 0.85, .07))));
 
         // Intake controls:
         operPad.leftBumper().whileTrue(m_intake.runIntake());
