@@ -19,6 +19,7 @@ import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAbsoluteEncoder;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -26,6 +27,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.AnalogInput;
 // import edu.wpi.first.wpilibj.RobotController;
+import java.util.OptionalDouble;
 import java.util.Queue;
 
 /**
@@ -44,8 +46,6 @@ public class ModuleIOSparkFlex implements ModuleIO {
   private static final double SWERVE_PINION_TEETH = 14;
   private static final double DRIVE_GEAR_RATIO = (45.0 * 22) / (SWERVE_PINION_TEETH * 15);
   private static final double TURN_GEAR_RATIO = (9424.0 / 203); // Rev Steering
-
-  private static final double ABS_OFFSET[] = {270.0, 180.0, 0.0, 90.0};
 
   private final CANSparkFlex driveSparkFlex;
   private final CANSparkMax turnSparkMax;
@@ -73,14 +73,14 @@ public class ModuleIOSparkFlex implements ModuleIO {
         turnSparkMax = new CANSparkMax(2, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
         // MUST BE CALIBRATED
-        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(273.95));
+        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(-90.0));
         break;
       case 1: // FR
         driveSparkFlex = new CANSparkFlex(5, MotorType.kBrushless);
         turnSparkMax = new CANSparkMax(6, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
         // MUST BE CALIBRATED
-        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(179.49));
+        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(-180.0));
         break;
       case 2: // BL
         driveSparkFlex = new CANSparkFlex(3, MotorType.kBrushless);
@@ -94,7 +94,7 @@ public class ModuleIOSparkFlex implements ModuleIO {
         turnSparkMax = new CANSparkMax(8, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
         // MUST BE CALIBRATED
-        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(88.85)); // 88.85
+        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(90.0));
         break;
       default:
         throw new RuntimeException("Invalid module index");
@@ -121,11 +121,6 @@ public class ModuleIOSparkFlex implements ModuleIO {
     driveEncoder.setAverageDepth(2);
 
     turnRelativeEncoder.setPosition(0.0);
-    // double position =
-    //     Rotation2d.fromRotations(turnAbsoluteEncoder.getPosition())
-    //         .minus(absoluteEncoderOffset)
-    //         .getRotations();
-    // turnRelativeEncoder.setPosition(position * TURN_GEAR_RATIO);
     turnRelativeEncoder.setMeasurementPeriod(10);
     turnRelativeEncoder.setAverageDepth(2);
 
@@ -138,10 +133,27 @@ public class ModuleIOSparkFlex implements ModuleIO {
         PeriodicFrame.kStatus2, (int) (1000.0 / Module.ODOMETRY_FREQUENCY));
     timestampQueue = SparkMaxOdometryThread.getInstance().makeTimestampQueue();
     drivePositionQueue =
-        SparkMaxOdometryThread.getInstance().registerSignal(driveEncoder::getPosition);
+        SparkMaxOdometryThread.getInstance()
+            .registerSignal(
+                () -> {
+                  double value = driveEncoder.getPosition();
+                  if (driveSparkFlex.getLastError() == REVLibError.kOk) {
+                    return OptionalDouble.of(value);
+                  } else {
+                    return OptionalDouble.empty();
+                  }
+                });
     turnPositionQueue =
-        SparkMaxOdometryThread.getInstance().registerSignal(turnRelativeEncoder::getPosition);
-
+        SparkMaxOdometryThread.getInstance()
+            .registerSignal(
+                () -> {
+                  double value = turnRelativeEncoder.getPosition();
+                  if (driveSparkFlex.getLastError() == REVLibError.kOk) {
+                    return OptionalDouble.of(value);
+                  } else {
+                    return OptionalDouble.empty();
+                  }
+                });
     driveSparkFlex.burnFlash();
     turnSparkMax.burnFlash();
   }
@@ -157,10 +169,10 @@ public class ModuleIOSparkFlex implements ModuleIO {
 
     /* Original */
     // inputs.turnAbsolutePosition =
-    //     new Rotation2d(
-    //             turnAbsoluteEncoder.getVoltage() / RobotController.getVoltage5V() * 2.0 *
+    // new Rotation2d(
+    // turnAbsoluteEncoder.getVoltage() / RobotController.getVoltage5V() * 2.0 *
     // Math.PI)
-    //         .minus(absoluteEncoderOffset);
+    // .minus(absoluteEncoderOffset);
 
     /* For Calibration of Offsets */
     inputs.turnAbsolutePosition = Rotation2d.fromRotations(turnAbsoluteEncoder.getPosition());
