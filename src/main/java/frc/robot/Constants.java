@@ -100,5 +100,4 @@ public final class Constants {
     public static final double kClimberSpeed = 1;
     public static final int kClimberCurrentLimit = 20;
   }
-
 }

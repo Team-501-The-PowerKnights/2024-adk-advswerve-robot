@@ -28,7 +28,6 @@ public class Climber extends SubsystemBase {
     Task(String taskName, double speed) {
       this.taskName = taskName;
       this.speed = speed;
-
     }
 
     public String getTaskName() {
@@ -38,7 +37,6 @@ public class Climber extends SubsystemBase {
     public double getSpeed() {
       return this.speed;
     }
-
   }
 
   // Motors - Speed Controls
@@ -64,10 +62,8 @@ public class Climber extends SubsystemBase {
     climber.setInverted(true);
 
     // Define what signals we need from the Talon(s)
-    BaseStatusSignal.setUpdateFrequencyForAll(10,
-        climber.getPosition(),
-        climber.getVelocity(),
-        climber.getMotorVoltage());
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        10, climber.getPosition(), climber.getVelocity(), climber.getMotorVoltage());
 
     // Don't send data over the canbus anything except defined above.
     climber.optimizeBusUtilization();
@@ -79,20 +75,21 @@ public class Climber extends SubsystemBase {
     // Configrue and share between Motors
     configFX = new TalonFXConfiguration();
 
-
     configFX.Voltage.PeakForwardVoltage = 11;
     configFX.Voltage.PeakReverseVoltage = -11;
 
     configFX.TorqueCurrent.PeakForwardTorqueCurrent = 40;
     configFX.TorqueCurrent.PeakReverseTorqueCurrent = -40;
 
+    configFX.CurrentLimits.StatorCurrentLimit = 40.00;
+    configFX.CurrentLimits.StatorCurrentLimitEnable = true;
+
     // Apply Motor Configs
     StatusCode status = StatusCode.StatusCodeNotInitialized;
-   
+
     for (int i = 0; i < 5; ++i) {
       status = climber.getConfigurator().apply(configFX);
-        if (status.isOK())
-        break;
+      if (status.isOK()) break;
     }
     if (!status.isOK()) {
       System.out.println("Could not apply configs, to Climber error code: " + status.toString());
@@ -101,7 +98,7 @@ public class Climber extends SubsystemBase {
     // TODO: Impliment Automatic Speed Control
     launcherSpeedAuto = kClimberSpeed;
 
-    System.out.println("Launcher Constructed!!");
+    System.out.println("Climber Constructed!!");
   }
 
   // Sets the speed of the lead motor open loop
@@ -113,7 +110,6 @@ public class Climber extends SubsystemBase {
   public void stop() {
     currentTask = Task.IDLE;
     climber.set(0);
-
   }
 
   // Use this command will command the Launcher to Do Something and goes to idle
