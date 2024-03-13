@@ -12,10 +12,11 @@ import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
 import edu.wpi.first.wpilibj.DigitalGlitchFilter;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 // @AutoLog
 public class Mast extends SubsystemBase {
@@ -27,7 +28,8 @@ public class Mast extends SubsystemBase {
     PUTAMP("PutAmp", 1.00, 90.0),
     PUTTRAP("PutTrap", 1.00, 80.0),
     CLEARJAM("Clear", 1.00, 0.0),
-    CLIMBINGM("Clear", 1.00, 0.0),
+    CLIMBINGM("Climbing", 1.00, 0.0),
+    TESTING("Testing", 0.0, 0.0),
     IDLE("Idle", 0.0, 0.0);
 
     private final String taskName;
@@ -64,6 +66,12 @@ public class Mast extends SubsystemBase {
   CommandXboxController operPad;
   AbsoluteEncoder absMastLeftEncoder;
 
+  private static double leftEncAngle;
+  private static double rightEncAngle;
+  private static double absEncAngle;
+  private static double mastStartingAngleOffset;
+  private static double testingAngle;
+
   public static double mastKp;
   public static double mastKi;
   public static double mastKd;
@@ -75,14 +83,8 @@ public class Mast extends SubsystemBase {
   SparkPIDController mastLeftPIDController;
   SparkPIDController mastRightPIDController;
 
-  private static double mastPosAmp;
-  private static double mastPosLoad;
-  private static double mastPosSubwoofer;
-  private static double mastPosCamera;
-  private static double mastPosTrap;
-  private static double mastAbsAngle;
-  private static double mastStartingAngleOffset;
-  private static double mastAbsOffset;
+  LoggedDashboardNumber testingAngleNumber;
+
   private static Task currentTask;
   private static final double gearRatio = (48.0 / 32.0) * 25.0 * -1;
 
@@ -92,6 +94,10 @@ public class Mast extends SubsystemBase {
 
     currentTask = Task.IDLE;
 
+    leftEncAngle = 0.0;
+    rightEncAngle = 0.0;
+    absEncAngle = 0.0;
+    testingAngle = 0.0;
 
     mastKp = 1.0;
     mastKi = 0.0;
@@ -100,12 +106,6 @@ public class Mast extends SubsystemBase {
     mastMaxPosOut = 0.1;
     mastMaxNegOut = -0.1;
     mastSetpoint = 0.0;
-
-    mastPosAmp = 40.0;
-    mastPosLoad = 0.0;
-    mastPosSubwoofer = 10.0;
-    mastPosCamera = 0.0;
-    mastPosTrap = 0.0;
 
     mastLeft = new CANSparkMax(kMastLeft, MotorType.kBrushless);
     mastLeft.restoreFactoryDefaults();
@@ -126,6 +126,7 @@ public class Mast extends SubsystemBase {
     // mastRight.follow(mastLeft);
 
     absMastLeftEncoder = mastLeft.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
+    mastStartingAngleOffset = absMastLeftEncoder.getPosition();
 
     relmastLeftEncoder = mastLeft.getEncoder();
     relmastRightEncoder = mastRight.getEncoder();
@@ -146,28 +147,24 @@ public class Mast extends SubsystemBase {
     mastRightPIDController.setFF(mastFF);
     mastRightPIDController.setOutputRange(mastMaxNegOut, mastMaxPosOut);
 
-    // Note Detection Sensor
-    mastSensor = new DigitalInput(1);
-    mastSensorFilter = new DigitalGlitchFilter();
-    mastSensorFilter.add(mastSensor);
-    mastSensorFilter.setPeriodNanoSeconds(50000000); // 50ms constant to filter glitch
+    testingAngleNumber = new LoggedDashboardNumber("Mast/Test_Angle", testingAngle);
 
-    // mastSpeed = kMastSpeed;//Speed will be controlled by axis from remote
     System.out.println("Mast Constructed!!");
   }
 
   // Sets the speed of the lead motor
-  public void setMastSpeed(double speed) {
-    System.out.println("running setMastSpeed = " + speed);
-    if (Math.abs(speed) > 0.1) {
-      mastLeft.set(speed / 5);
-      mastRight.set(speed / 5);
-    } else {
-      mastLeft.set(0);
-      mastRight.set(0);
+  /*
+    public void setMastSpeed(double speed) {
+      System.out.println("running setMastSpeed = " + speed);
+      if (Math.abs(speed) > 0.1) {
+        mastLeft.set(speed / 5);
+        mastRight.set(speed / 5);
+      } else {
+        mastLeft.set(0);
+        mastRight.set(0);
+      }
     }
-  }
-
+  */
   // Sets the speed of the lead motor to 0
   public void stop() {
     // mastLeft.set(0);
@@ -180,87 +177,46 @@ public class Mast extends SubsystemBase {
     mastRightPIDController.setReference(mastSetpoint, ControlType.kPosition);
   }
 
-  // Use this command to set PID to Amp Angle
-  public Command setAmpCommand() {
-    return this.runOnce(
-        () -> {
-          setMastPID(mastPosAmp);
-        });
-  }
-
-  // Use this command to set PID to Speaker Subwoofer
-  public Command setSubwooferCommand() {
-    return this.runOnce(
-        () -> {
-          setMastPID(mastPosSubwoofer);
-        });
-  }
-
-  // Use this command to set PID to Load from Intake
-  public Command setLoadingCommand() {
-    return this.runOnce(
-        () -> {
-          setMastPID(mastPosLoad);
-        });
-  }
-
-  // Use this command to set PID to Score in Trap
-  public Command setTrapCommand() {
-    return this.runOnce(
-        () -> {
-          setMastPID(mastPosTrap);
-        });
-  }
-
-  public Command setTask(Task taskIn) {
+  public Command setTask(Task task) {
 
     return this.runOnce(
         () -> {
-          setMastPID(taskIn.getAngle());
+          currentTask = task;
         });
   }
 
-  public Command mastUpDown(double controllerSpeed, CommandXboxController operator) {
+  // Hopefully this runs once constructed every 20ms...
+  @Override
+  public void periodic() {
+    // Update Pid Angle
+    if(currentTask == Task.TESTING) {
+      setMastPID(testingAngle);
+    } else {
+      setMastPID(currentTask.getAngle());
+    }
 
-    // double operLeftY = 0.0;
-    return this.run(
-        () -> {
-          if(currentTask != Task.IDLE){
-            setMastPID(currentTask.angle);
-          }
-          SmartDashboard.putBoolean("Mast.moving", true);
-          //  System.out.println("running mastUpDown = " + operator.getLeftY());
-          /*
-          if (operator.getLeftY() > 0.5 || operator.getLeftY() < -0.5) {
+    // Update Dashboard with Mast Task
+    // SmartDashboard.putString("Mast/Task", currentTask.taskName);
 
-            mastLeftPIDController.setReference(operator.getLeftY(), ControlType.kVoltage);
-            mastRightPIDController.setReference(operator.getLeftY(), ControlType.kVoltage);
-          }
-          */
-          double leftEnc = relmastLeftEncoder.getPosition() * 360 / gearRatio;
-          double rightEnc = relmastRightEncoder.getPosition() * 360 / gearRatio;
-          SmartDashboard.putNumber("Mast Left Encoder", leftEnc);
-          SmartDashboard.putNumber("Mast Right Encoder", rightEnc);
-          SmartDashboard.putNumber("Mast Abs Encoder", absMastLeftEncoder.getPosition());
-        });
-    // return this.startEnd(
-    // () -> {
-    // SmartDashboard.putBoolean("Mast.moving", true);
-    // setMastSpeed(controllerSpeed);
-    // },
-    // () -> {
-    // SmartDashboard.putBoolean("Mast.moving", false);
-    // stop();
-    // });
+    // Get Datafrom Sensors
+    leftEncAngle =
+        (relmastLeftEncoder.getPosition() * 360 / gearRatio); // + mastStartingAngleOffset;
+    rightEncAngle =
+        (relmastRightEncoder.getPosition() * 360 / gearRatio); // + mastStartingAngleOffset;
+    absEncAngle = absMastLeftEncoder.getPosition();
+
+    // SmartDashboard.putNumber("Mast/Left_Enc", leftEncAngle);
+    // SmartDashboard.putNumber("Mast/Right_Enc", rightEncAngle);
+    // SmartDashboard.putNumber("Mast/Abs_Enc", absEncAngle);
+    
+    //Uses Logger to log dashboard value and create dashboard field
+    testingAngle = testingAngleNumber.get();
+
+    Logger.recordOutput("Mast/Left_Enc", leftEncAngle);
+    Logger.recordOutput("Mast/Right_Enc", rightEncAngle);
+    Logger.recordOutput("Mast/Abs_Enc", absEncAngle);
+    Logger.recordOutput("Mast/Current_Tsk", currentTask.getTaskName());
   }
-
-  // public double getMastPosition(){
-
-  // }
-
-  // public Command mastTargetAmp(){
-  // return this.runOnce();
-  // }
 
   // END OF Mast Class
 }
