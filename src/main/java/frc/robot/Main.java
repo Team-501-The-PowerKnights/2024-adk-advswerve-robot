@@ -30,5 +30,7 @@ public final class Main {
    */
   public static void main(String... args) {
     RobotBase.startRobot(Robot::new);
+    // This disables the CTRE Diagnostic Server, saves 5% canbus use.
+    com.ctre.phoenix6.unmanaged.jni.UnmanagedJNI.JNI_SetPhoenixDiagnosticsStartTime(-1);
   }
 }
