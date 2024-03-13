@@ -7,6 +7,8 @@ import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
+import org.littletonrobotics.junction.Logger;
 
 public class Feeder extends SubsystemBase {
 
@@ -19,6 +21,7 @@ public class Feeder extends SubsystemBase {
     PUTAMP("PutAmp", 0.00),
     PUTRAP("PutTrap", 0.00),
     CLEARJAM("Clear", -1.00),
+    TRANSFER("Transfer", 1.00),
     IDLE("Idle", 0.0);
 
     private final String taskName;
@@ -41,7 +44,8 @@ public class Feeder extends SubsystemBase {
   CANSparkMax feeder;
   double feederSpeed;
 
-  Task currentTask;
+  // Keeps the current task
+  private static Task currentTask;
 
   public Feeder() {
     // Construct Motors
@@ -62,6 +66,8 @@ public class Feeder extends SubsystemBase {
 
     feederSpeed = kFeederSpeed;
 
+    currentTask = Task.IDLE;
+
     System.out.println("Feeder Constructed!!");
   }
   // Sets the speed of the lead motor
@@ -73,33 +79,38 @@ public class Feeder extends SubsystemBase {
     feeder.set(0);
   }
 
-  // Use this command to run a common subsystem task
   public Command setTask(Task task) {
     return this.runOnce(
         () -> {
-          setFeederSpeed(task.getSpeed());
+          currentTask = task;
         });
   }
 
-  // Use this command to run a common subsystem task
-  public Command runFeeder() {
-    return this.startEnd(
-        () -> {
-          setFeederSpeed(kFeederSpeed);
-        },
-        () -> {
-          stop();
-        });
-  }
-  // Use this command to "eject" a note back onto the floor
-  public Command reverseFeeder() {
-    return this.startEnd(
-        () -> {
-          setFeederSpeed(kFeederSpeed * -0.5);
-        },
-        () -> {
-          stop();
-        });
+  // Runs with Periodic Thread
+  @Override
+  public void periodic() {
+    // Update Current Task
+    setFeederSpeed(currentTask.getSpeed());
+
+    if (currentTask == Task.INTAKING) {
+      // If the Feeder Sensor is Intaking and finds the Note go IDLE
+      if (RobotContainer.m_topFeederSensor.get()) {
+        currentTask = Task.IDLE;
+        System.out.println("Note Loaded");
+      }
+    }
+
+    if (currentTask == Task.TRANSFER) {
+      // If the Feeder Sensor is Intaking and finds the Note go IDLE
+      if (!RobotContainer.m_topFeederSensor.get() || RobotContainer.m_topIncrementerSensor.get()) {
+        currentTask = Task.IDLE;
+        System.out.println("Note Transfered");
+      }
+    }
+
+    // Log Data
+    Logger.recordOutput("Feeder/Output", feeder.get());
+    Logger.recordOutput("Feeder/Current_Tsk", currentTask.getTaskName());
   }
 
   // END OF Feeder Class

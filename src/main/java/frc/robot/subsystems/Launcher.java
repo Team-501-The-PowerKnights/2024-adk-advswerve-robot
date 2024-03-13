@@ -8,9 +8,10 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.*;
+
 public class Launcher extends SubsystemBase {
 
   public enum Task {
@@ -154,9 +155,9 @@ public class Launcher extends SubsystemBase {
         });
   }
 
-@Override
-public void periodic() {
-  /*
+  @Override
+  public void periodic() {
+    /*
     switch (getTaskName) {
 
       case Task.IDLE:
@@ -170,8 +171,7 @@ public void periodic() {
 
     // TODO Auto-generated method stub
     super.periodic();
-}
-
+  }
 
   // END OF Lancher Class
 }

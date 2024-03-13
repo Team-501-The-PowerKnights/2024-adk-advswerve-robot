@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Feeder.Task;
 import frc.robot.subsystems.Incrementer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
@@ -52,8 +53,9 @@ public class RobotContainer {
   private final Launcher m_launcher;
   private final Mast m_mast;
   private final Climber m_climber;
-  private final TopFeederSensor m_topFeederSensor;
-  private final TopIncrementerSensor m_topIncrementerSensor;
+  public static final TopFeederSensor m_topFeederSensor = new TopFeederSensor();
+  public static final TopIncrementerSensor m_topIncrementerSensor = new TopIncrementerSensor();
+  ;
 
   // Controller
   private final CommandXboxController driverPad = new CommandXboxController(0);
@@ -80,8 +82,6 @@ public class RobotContainer {
             m_launcher = null;
             m_climber = null;
             m_mast = null;
-            m_topFeederSensor = null;
-            m_topIncrementerSensor = null;
             break;
 
           case REAL:
@@ -99,8 +99,6 @@ public class RobotContainer {
             m_launcher = new Launcher();
             m_mast = new Mast();
             m_climber = new Climber();
-            m_topFeederSensor = new TopFeederSensor();
-            m_topIncrementerSensor = new TopIncrementerSensor();
             break;
 
           case SUITCASE:
@@ -119,8 +117,6 @@ public class RobotContainer {
             m_launcher = null;
             m_mast = null;
             m_climber = null;
-            m_topFeederSensor = null;
-            m_topIncrementerSensor = null;
             break;
         }
         break;
@@ -134,14 +130,12 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
-        m_intake = null;
-        m_feeder = null;
-        m_incrementer = null;
-        m_launcher = null;
-        m_mast = null;
-        m_climber = null;
-        m_topFeederSensor = null;
-        m_topIncrementerSensor = null;
+        m_intake = new Intake();
+        m_feeder = new Feeder();
+        m_incrementer = new Incrementer();
+        m_launcher = new Launcher();
+        m_mast = new Mast();
+        m_climber = new Climber();
         break;
 
       default:
@@ -159,8 +153,6 @@ public class RobotContainer {
         m_launcher = null;
         m_mast = null;
         m_climber = null;
-        m_topFeederSensor = null;
-        m_topIncrementerSensor = null;
         break;
     }
 
@@ -168,7 +160,6 @@ public class RobotContainer {
     configureButtonBindings();
   }
 
-  
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
@@ -221,6 +212,30 @@ public class RobotContainer {
                     m_incrementer.setTask(Incrementer.Task.INTAKING),
                     new WaitUntilCommand(m_topIncrementerSensor::get),
                     m_launcher.setTask(Launcher.Task.IDLE)));
+
+        driverPad
+            .a()
+            .whileTrue(
+                Commands.sequence(
+                    m_mast.setTask(Mast.Task.INTAKING),
+                    m_intake.setTask(Intake.Task.INTAKING),
+                    m_feeder.setTask(Feeder.Task.INTAKING),
+                    new WaitUntilCommand(m_topFeederSensor::get),
+                    m_feeder.setTask(Task.IDLE),
+                    m_feeder.setTask(Feeder.Task.IDLE)));
+
+        driverPad
+            .b()
+            .whileTrue(
+                Commands.sequence(
+                    m_mast.setTask(Mast.Task.INTAKING),
+                    new WaitUntilCommand(m_topFeederSensor::get),
+                    m_feeder.setTask(Feeder.Task.TRANSFER),
+                    m_incrementer.setTask(Incrementer.Task.TRANSFER),
+                    new WaitUntilCommand(m_topIncrementerSensor::get),
+                    m_feeder.setTask(Feeder.Task.IDLE),
+                    m_incrementer.setTask(Incrementer.Task.IDLE)));
+
         // Intake Note and Load into Launcher
         operPad
             .leftTrigger()
@@ -268,13 +283,10 @@ public class RobotContainer {
 
         // Mast Controls:
         // operPad.leftStick().whileTrue(m_mast.mastUpDown(operPad.getLeftY()));
-        m_mast.setDefaultCommand(m_mast.mastUpDown(-operPad.getLeftY(), operPad));
-        m_launcher.setDefaultCommand(m_launcher.defaultCommand());
+        // Do we need to define defaults if we have @ periodic??
+        // m_mast.setDefaultCommand(m_mast.mastUpDown(-operPad.getLeftY(), operPad));
+        // m_launcher.setDefaultCommand(m_launcher.defaultCommand());
 
-        driverPad.a().whileTrue(m_mast.setAmpCommand());
-        driverPad.b().whileTrue(m_mast.setSubwooferCommand());
-        driverPad.x().whileTrue(m_mast.setLoadingCommand());
-        driverPad.y().whileTrue(m_mast.setTrapCommand());
         break;
 
       case SUITCASE:

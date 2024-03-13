@@ -2,29 +2,34 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalGlitchFilter;
 import edu.wpi.first.wpilibj.DigitalInput;
-
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.junction.Logger;
 
 public class TopIncrementerSensor extends SubsystemBase {
-  DigitalInput feederSensor;
-  DigitalGlitchFilter feederSensorFilter;
+  DigitalInput incrementerSensor;
+  DigitalGlitchFilter incrementerSensorFilter;
 
   public TopIncrementerSensor() {
-  
 
-    // Note Detection Sensor
-    feederSensor = new DigitalInput(1);
-    feederSensorFilter = new DigitalGlitchFilter();
-    feederSensorFilter.add(feederSensor);
-    feederSensorFilter.setPeriodNanoSeconds(50000000); // 50ms constant to filter glitch
+    incrementerSensor = new DigitalInput(1);
+
+    if (RobotBase.isReal()) {
+      // Note Detection Filter for Real Robots
+      incrementerSensorFilter = new DigitalGlitchFilter();
+      incrementerSensorFilter.add(incrementerSensor);
+      incrementerSensorFilter.setPeriodNanoSeconds(50000000); // 50ms constant to filter glitch
+    }
   }
 
   // so other subsystems can read sensor
   public boolean get() {
-    return feederSensor.get();
+    return !incrementerSensor.get();
   }
 
-
-
+  // Runs in with Periodic
+  @Override
+  public void periodic() {
+    Logger.recordOutput("Increment/NotePOS", get());
+  }
 }

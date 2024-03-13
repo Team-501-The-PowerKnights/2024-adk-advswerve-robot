@@ -7,6 +7,8 @@ import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
+import org.littletonrobotics.junction.Logger;
 
 public class Intake extends SubsystemBase {
 
@@ -16,6 +18,7 @@ public class Intake extends SubsystemBase {
     LAUNCHAUTO("LaunchAuto-Idle", 0.0),
     PUTAMP("PutAmp-Idle", 0.0),
     PUTTRAP("PutTrap-Idle", 0.0),
+    TRANSFER("Transfer", 0.0),
     CLEARJAM("Clearing", -1.00),
     IDLE("Idle", 0.0);
 
@@ -42,7 +45,7 @@ public class Intake extends SubsystemBase {
   double intakeSpeed;
 
   // current intake task
-  private Task currentTask;
+  private static Task currentTask;
 
   public Intake() {
 
@@ -83,53 +86,42 @@ public class Intake extends SubsystemBase {
     intakeRear.set(-speed);
   }
 
-  // Sets the speed of the lead motor to 0
-  public void stop() {
-    intakeFront.set(0);
-    intakeRear.set(0);
-  }
+  // Use this command to pull a note off the floor manual control
+  /*
+    public Command setTask(Task task) {
 
-  // Use this command to pull a note off the floor
-  public Command runIntake() {
-    return this.startEnd(
-        () -> {
-          setIntakeSpeed(kIntakeSpeed);
-        },
-        () -> {
-          stop();
-        });
-  }
+      return this.startEnd(
+          () -> {
+            currentTask = task; // let subsystem know current task
+          },
+          () -> {
+            currentTask = Task.IDLE;
+          });
+    }
+  */
 
-  // Use this command to "eject" a note back onto the floor
-  public Command reverseIntake() {
-    return this.startEnd(
-        () -> {
-          setIntakeSpeed(kIntakeSpeed * -0.5);
-        },
-        () -> {
-          stop();
-        });
-  }
-
-  // Use this command to pull a note off the floor
   public Command setTask(Task task) {
-
-    return this.startEnd(
+    return this.runOnce(
         () -> {
-          currentTask = task; // let subsystem know current task
-        },
-        () -> {
-          currentTask = Task.IDLE;
+          currentTask = task;
         });
   }
 
-  // runs when no commands are active
-  public Command defaultCommand() {
-    return this.run(
-        () -> {
-          setIntakeSpeed(currentTask.getSpeed());
-          // setLauncherSpeedCL(currentTask.getRPM());
-        });
+  // Runs with Periodic Thread
+  @Override
+  public void periodic() {
+    // Update Current Task
+    setIntakeSpeed(currentTask.getSpeed());
+
+    // If the FeederSensor or IncrementerSensor is on got back to idle.
+    if (RobotContainer.m_topFeederSensor.get() || RobotContainer.m_topIncrementerSensor.get()) {
+      currentTask = Task.IDLE;
+    }
+
+    // Log Status
+    Logger.recordOutput("Intake/Output_Front", intakeFront.get());
+    Logger.recordOutput("Intake/Output_Rear", intakeRear.get());
+    Logger.recordOutput("Intake/Current_Tsk", currentTask.getTaskName());
   }
   // END OF INTAKE CLASS
 }

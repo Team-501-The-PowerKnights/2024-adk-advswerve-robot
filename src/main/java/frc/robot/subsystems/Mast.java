@@ -92,7 +92,7 @@ public class Mast extends SubsystemBase {
 
   public Mast() {
 
-    currentTask = Task.IDLE;
+    currentTask = Task.LAUNCHMAN;
 
     leftEncAngle = 0.0;
     rightEncAngle = 0.0;
@@ -189,7 +189,7 @@ public class Mast extends SubsystemBase {
   @Override
   public void periodic() {
     // Update Pid Angle
-    if(currentTask == Task.TESTING) {
+    if (currentTask == Task.TESTING) {
       setMastPID(testingAngle);
     } else {
       setMastPID(currentTask.getAngle());
@@ -208,13 +208,15 @@ public class Mast extends SubsystemBase {
     // SmartDashboard.putNumber("Mast/Left_Enc", leftEncAngle);
     // SmartDashboard.putNumber("Mast/Right_Enc", rightEncAngle);
     // SmartDashboard.putNumber("Mast/Abs_Enc", absEncAngle);
-    
-    //Uses Logger to log dashboard value and create dashboard field
+
+    // Uses Logger to log dashboard value and create dashboard field
     testingAngle = testingAngleNumber.get();
 
     Logger.recordOutput("Mast/Left_Enc", leftEncAngle);
     Logger.recordOutput("Mast/Right_Enc", rightEncAngle);
     Logger.recordOutput("Mast/Abs_Enc", absEncAngle);
+    Logger.recordOutput("Mast/LeftMotorOutput", mastLeft.get());
+    Logger.recordOutput("Mast/RightMotorOutput", mastRight.get());
     Logger.recordOutput("Mast/Current_Tsk", currentTask.getTaskName());
   }
 

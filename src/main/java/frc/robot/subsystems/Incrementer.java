@@ -7,6 +7,8 @@ import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
+import org.littletonrobotics.junction.Logger;
 
 public class Incrementer extends SubsystemBase {
 
@@ -17,6 +19,7 @@ public class Incrementer extends SubsystemBase {
     PUTAMP("PutAmp", 1.00),
     PUTRAP("PutTrap", 1.00),
     CLEARJAM("Clear", 1.00),
+    TRANSFER("Transfer", 1.00),
     IDLE("Idle", 0.0);
 
     private final String taskName;
@@ -39,7 +42,9 @@ public class Incrementer extends SubsystemBase {
   CANSparkMax incrementerLeft;
   CANSparkMax incrementerRight;
   double incrementerSpeed;
-  Task currentTask;
+
+  // current intake task
+  private static Task currentTask;
 
   public Incrementer() {
     incrementerLeft = new CANSparkMax(kIncrementerLeft, MotorType.kBrushless);
@@ -66,7 +71,7 @@ public class Incrementer extends SubsystemBase {
     incrementerRight.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 10000);
     incrementerRight.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10000);
 
-    incrementerSpeed = kIncrementerSpeed;
+    currentTask = Task.IDLE;
     System.out.println("Incrementer Constructed!!");
   }
   // Sets the speed of the lead motor
@@ -74,40 +79,47 @@ public class Incrementer extends SubsystemBase {
     incrementerLeft.set(-speed);
     incrementerRight.set(speed);
   }
-  // Sets the speed of the lead motor to 0
-  public void stop() {
-    incrementerLeft.set(0);
-    incrementerRight.set(0);
-  }
-  // Use this command to pull a note off the floor
-  public Command runIncrementer() {
-    return this.startEnd(
+
+  // Use this command to pull a note off the floor manual control
+  /*
+    public Command setTask(Task task) {
+
+      return this.startEnd(
+          () -> {
+            currentTask = task; // let subsystem know current task
+          },
+          () -> {
+            currentTask = Task.IDLE;
+          });
+    }
+  */
+
+  public Command setTask(Task task) {
+    return this.runOnce(
         () -> {
-          setIncrementerSpeed(kIncrementerSpeed);
-        },
-        () -> {
-          stop();
+          currentTask = task;
         });
   }
 
-  // Use this command to pull a note off the floor
-  public Command setTask(Task task) {
-    return this.startEnd(
-        () -> {
-          setIncrementerSpeed(task.getSpeed());
-        },
-        () -> {
-          stop();
-        });
+  // Runs with Periodic Thread
+  @Override
+  public void periodic() {
+    // Update Current Task
+    setIncrementerSpeed(currentTask.getSpeed());
+
+    if (currentTask == Task.TRANSFER || currentTask == Task.INTAKING) {
+      // If the Increment Sensor finds the Note while Intaking/Transfering go IDLE
+      if (RobotContainer.m_topIncrementerSensor.get()) {
+        currentTask = Task.IDLE;
+        System.out.println("Note Locked & Loaded");
+      }
+    }
+
+    // Log Status
+    Logger.recordOutput("Increment/Output_Left", incrementerLeft.get());
+    Logger.recordOutput("Increment/Output_Right", incrementerRight.get());
+    Logger.recordOutput("Increment/Current_Tsk", currentTask.getTaskName());
   }
-  // Use this command to "eject" a note back onto the floor
-  public Command reverseIncrementer() {
-    return this.startEnd(
-        () -> {
-          setIncrementerSpeed(kIncrementerSpeed * -0.5);
-        },
-        () -> {
-          stop();
-        });
-  }
+  // END OF INTAKE CLASS
+
 }
