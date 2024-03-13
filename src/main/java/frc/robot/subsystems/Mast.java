@@ -22,32 +22,27 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 public class Mast extends SubsystemBase {
 
   public enum Task {
-    INTAKING("Intaking", 1.0, 0.0),
-    LAUNCHMAN("Launch Manual", 1.00, 10.0),
-    LAUNCHAUTO("Launch Auto", 1.00, 60.0),
-    PUTAMP("PutAmp", 1.00, 90.0),
-    PUTTRAP("PutTrap", 1.00, 80.0),
-    CLEARJAM("Clear", 1.00, 0.0),
-    CLIMBINGM("Climbing", 1.00, 0.0),
-    TESTING("Testing", 0.0, 0.0),
-    IDLE("Idle", 0.0, 0.0);
+    INTAKING("Intaking", 0.0),
+    LAUNCHSUB("Launch Subwoofer", 10.0),
+    LAUCNHKEY("Launch Key", 15),
+    LAUNCHAUTO("Launch Auto", 60.0),
+    PUTAMP("PutAmp", 90.0),
+    PUTTRAP("PutTrap", 80.0),
+    CLEARJAM("Clear", 0.0),
+    CLIMBINGM("Climbing", 0.0),
+    TESTING("Testing", 0.0),
+    IDLE("Idle", 0.0);
 
     private final String taskName;
-    private final double speed;
     private final double angle;
 
-    Task(String taskName, double speed, double angle) {
+    Task(String taskName, double angle) {
       this.taskName = taskName;
-      this.speed = speed;
       this.angle = angle;
     }
 
     public String getTaskName() {
       return taskName;
-    }
-
-    public double getSpeed() {
-      return this.speed;
     }
 
     public double getAngle() {
@@ -92,7 +87,7 @@ public class Mast extends SubsystemBase {
 
   public Mast() {
 
-    currentTask = Task.LAUNCHMAN;
+    currentTask = Task.LAUNCHSUB;
 
     leftEncAngle = 0.0;
     rightEncAngle = 0.0;

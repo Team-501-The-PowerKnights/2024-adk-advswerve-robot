@@ -115,6 +115,10 @@ public class Incrementer extends SubsystemBase {
       }
     }
 
+    if (currentTask == Task.LAUNCHMAN && !RobotContainer.m_launcher.atSpeed()) {
+      currentTask = Task.IDLE;
+    }
+
     // Log Status
     Logger.recordOutput("Increment/Output_Left", incrementerLeft.get());
     Logger.recordOutput("Increment/Output_Right", incrementerRight.get());

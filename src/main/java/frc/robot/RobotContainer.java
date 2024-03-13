@@ -50,7 +50,7 @@ public class RobotContainer {
   private final Intake m_intake;
   private final Feeder m_feeder;
   private final Incrementer m_incrementer;
-  private final Launcher m_launcher;
+  public static final Launcher m_launcher = new Launcher();
   private final Mast m_mast;
   private final Climber m_climber;
   public static final TopFeederSensor m_topFeederSensor = new TopFeederSensor();
@@ -79,7 +79,7 @@ public class RobotContainer {
             m_intake = null;
             m_feeder = null;
             m_incrementer = null;
-            m_launcher = null;
+            // m_launcher = null;
             m_climber = null;
             m_mast = null;
             break;
@@ -96,7 +96,7 @@ public class RobotContainer {
             m_intake = new Intake();
             m_feeder = new Feeder();
             m_incrementer = new Incrementer();
-            m_launcher = new Launcher();
+            // m_launcher = new Launcher();
             m_mast = new Mast();
             m_climber = new Climber();
             break;
@@ -114,7 +114,7 @@ public class RobotContainer {
             m_intake = null;
             m_feeder = null;
             m_incrementer = null;
-            m_launcher = null;
+            // m_launcher = null;
             m_mast = null;
             m_climber = null;
             break;
@@ -133,7 +133,7 @@ public class RobotContainer {
         m_intake = new Intake();
         m_feeder = new Feeder();
         m_incrementer = new Incrementer();
-        m_launcher = new Launcher();
+        // m_launcher = new Launcher();
         m_mast = new Mast();
         m_climber = new Climber();
         break;
@@ -150,7 +150,7 @@ public class RobotContainer {
         m_intake = null;
         m_feeder = null;
         m_incrementer = null;
-        m_launcher = null;
+        // m_launcher = null;
         m_mast = null;
         m_climber = null;
         break;
@@ -224,8 +224,9 @@ public class RobotContainer {
                     m_feeder.setTask(Task.IDLE),
                     m_feeder.setTask(Feeder.Task.IDLE)));
 
-        driverPad
-            .b()
+        // Tranfer Note into Launcher
+        operPad
+            .leftTrigger()
             .whileTrue(
                 Commands.sequence(
                     m_mast.setTask(Mast.Task.INTAKING),
@@ -235,28 +236,6 @@ public class RobotContainer {
                     new WaitUntilCommand(m_topIncrementerSensor::get),
                     m_feeder.setTask(Feeder.Task.IDLE),
                     m_incrementer.setTask(Incrementer.Task.IDLE)));
-
-        // Intake Note and Load into Launcher
-        operPad
-            .leftTrigger()
-            .whileTrue(
-                Commands.race(
-                    m_intake.setTask(Intake.Task.INTAKING),
-                    m_feeder.setTask(Feeder.Task.INTAKING),
-                    m_mast.setTask(Mast.Task.INTAKING),
-                    m_incrementer.setTask(Incrementer.Task.INTAKING),
-                    m_launcher.setTask(Launcher.Task.INTAKING)));
-
-        // Launch Note at Speaker Manually from Stage Key
-        operPad
-            .a()
-            .whileTrue(
-                Commands.race(
-                    m_intake.setTask(Intake.Task.LAUNCHMAN),
-                    m_feeder.setTask(Feeder.Task.LAUNCHMAN),
-                    m_mast.setTask(Mast.Task.LAUNCHMAN),
-                    m_incrementer.setTask(Incrementer.Task.LAUNCHMAN),
-                    m_launcher.setTask(Launcher.Task.LAUNCHMAN)));
 
         // Eject Note at AMP
         operPad
@@ -268,6 +247,26 @@ public class RobotContainer {
                     m_mast.setTask(Mast.Task.PUTAMP),
                     m_incrementer.setTask(Incrementer.Task.PUTAMP),
                     m_launcher.setTask(Launcher.Task.PUTAMP)));
+
+        // Launch Note Manual Mode Subwoofer
+        driverPad
+            .b()
+            .whileTrue(
+                Commands.sequence(
+                    m_mast.setTask(Mast.Task.LAUNCHSUB),
+                    m_launcher.setTask(Launcher.Task.LAUNCHSUB),
+                    new WaitUntilCommand(m_launcher::atSpeed),
+                    m_incrementer.setTask(Incrementer.Task.LAUNCHMAN)));
+
+        // Launch Note Manual Mode Key
+        driverPad
+            .x()
+            .whileTrue(
+                Commands.sequence(
+                    m_mast.setTask(Mast.Task.LAUCNHKEY),
+                    m_launcher.setTask(Launcher.Task.LAUNCHKEY),
+                    new WaitUntilCommand(m_launcher::atSpeed),
+                    m_incrementer.setTask(Incrementer.Task.LAUNCHMAN)));
 
         // Clear Jammed System
         operPad
@@ -281,11 +280,7 @@ public class RobotContainer {
                     m_incrementer.setTask(Incrementer.Task.CLEARJAM),
                     m_launcher.setTask(Launcher.Task.CLEARJAM)));
 
-        // Mast Controls:
-        // operPad.leftStick().whileTrue(m_mast.mastUpDown(operPad.getLeftY()));
-        // Do we need to define defaults if we have @ periodic??
-        // m_mast.setDefaultCommand(m_mast.mastUpDown(-operPad.getLeftY(), operPad));
-        // m_launcher.setDefaultCommand(m_launcher.defaultCommand());
+
 
         break;
 
