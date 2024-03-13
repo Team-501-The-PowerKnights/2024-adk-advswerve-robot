@@ -52,19 +52,19 @@ public class Incrementer extends SubsystemBase {
 
     incrementerLeft.setInverted(false);
     incrementerRight.setInverted(false);
-   
-    //Reduce canbus chatter
-    incrementerLeft.setPeriodicFramePeriod(PeriodicFrame.kStatus0,100);
-    incrementerLeft.setPeriodicFramePeriod(PeriodicFrame.kStatus1,10000);
-    incrementerLeft.setPeriodicFramePeriod(PeriodicFrame.kStatus2,10000);
-    incrementerLeft.setPeriodicFramePeriod(PeriodicFrame.kStatus4,10000);
-    incrementerLeft.setPeriodicFramePeriod(PeriodicFrame.kStatus5,10000);
 
-    incrementerRight.setPeriodicFramePeriod(PeriodicFrame.kStatus0,100);
-    incrementerRight.setPeriodicFramePeriod(PeriodicFrame.kStatus1,10000);
-    incrementerRight.setPeriodicFramePeriod(PeriodicFrame.kStatus2,10000);
-    incrementerRight.setPeriodicFramePeriod(PeriodicFrame.kStatus4,10000);
-    incrementerRight.setPeriodicFramePeriod(PeriodicFrame.kStatus5,10000);
+    // Reduce canbus chatter
+    incrementerLeft.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
+    incrementerLeft.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 10000);
+    incrementerLeft.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 10000);
+    incrementerLeft.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 10000);
+    incrementerLeft.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10000);
+
+    incrementerRight.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
+    incrementerRight.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 10000);
+    incrementerRight.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 10000);
+    incrementerRight.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 10000);
+    incrementerRight.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 10000);
 
     incrementerSpeed = kIncrementerSpeed;
     System.out.println("Incrementer Constructed!!");

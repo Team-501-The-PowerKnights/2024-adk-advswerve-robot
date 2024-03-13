@@ -5,8 +5,6 @@ import static frc.robot.Constants.FeederConstants.*;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
-import edu.wpi.first.wpilibj.DigitalGlitchFilter;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -42,8 +40,7 @@ public class Feeder extends SubsystemBase {
 
   CANSparkMax feeder;
   double feederSpeed;
-  DigitalInput feederSensor;
-  DigitalGlitchFilter feederSensorFilter;
+
   Task currentTask;
 
   public Feeder() {
@@ -65,11 +62,6 @@ public class Feeder extends SubsystemBase {
 
     feederSpeed = kFeederSpeed;
 
-    // Note Detection Sensor
-    feederSensor = new DigitalInput(0);
-    feederSensorFilter = new DigitalGlitchFilter();
-    feederSensorFilter.add(feederSensor);
-    feederSensorFilter.setPeriodNanoSeconds(50000000); // 50ms constant to filter glitch
     System.out.println("Feeder Constructed!!");
   }
   // Sets the speed of the lead motor
@@ -83,12 +75,9 @@ public class Feeder extends SubsystemBase {
 
   // Use this command to run a common subsystem task
   public Command setTask(Task task) {
-    return this.startEnd(
+    return this.runOnce(
         () -> {
           setFeederSpeed(task.getSpeed());
-        },
-        () -> {
-          stop();
         });
   }
 

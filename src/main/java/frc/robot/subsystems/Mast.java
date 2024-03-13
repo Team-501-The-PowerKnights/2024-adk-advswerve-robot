@@ -21,12 +21,13 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 public class Mast extends SubsystemBase {
 
   public enum Task {
-    INTAKING("Intaking", 1.0, 25.0),
-    LAUNCHMAN("Launch Manual", 1.00, 55.0),
+    INTAKING("Intaking", 1.0, 0.0),
+    LAUNCHMAN("Launch Manual", 1.00, 10.0),
     LAUNCHAUTO("Launch Auto", 1.00, 60.0),
-    PUTAMP("PutAmp", 1.00, 45.0),
+    PUTAMP("PutAmp", 1.00, 90.0),
     PUTTRAP("PutTrap", 1.00, 80.0),
     CLEARJAM("Clear", 1.00, 0.0),
+    CLIMBINGM("Clear", 1.00, 0.0),
     IDLE("Idle", 0.0, 0.0);
 
     private final String taskName;
@@ -82,10 +83,15 @@ public class Mast extends SubsystemBase {
   private static double mastAbsAngle;
   private static double mastStartingAngleOffset;
   private static double mastAbsOffset;
+  private static Task currentTask;
+  private static final double gearRatio = (48.0 / 32.0) * 25.0 * -1;
 
   // TODO: Populate values with encoder values
 
   public Mast() {
+
+    currentTask = Task.IDLE;
+
 
     mastKp = 1.0;
     mastKi = 0.0;
@@ -207,6 +213,7 @@ public class Mast extends SubsystemBase {
   }
 
   public Command setTask(Task taskIn) {
+
     return this.runOnce(
         () -> {
           setMastPID(taskIn.getAngle());
@@ -215,20 +222,23 @@ public class Mast extends SubsystemBase {
 
   public Command mastUpDown(double controllerSpeed, CommandXboxController operator) {
 
-    double gearRatioLeft = (48.0 / 32.0) * 25.0 * -1;
-    double gearRatioRight = (48.0 / 32.0) * 25.0 * -1;
     // double operLeftY = 0.0;
     return this.run(
         () -> {
+          if(currentTask != Task.IDLE){
+            setMastPID(currentTask.angle);
+          }
           SmartDashboard.putBoolean("Mast.moving", true);
           //  System.out.println("running mastUpDown = " + operator.getLeftY());
+          /*
           if (operator.getLeftY() > 0.5 || operator.getLeftY() < -0.5) {
 
             mastLeftPIDController.setReference(operator.getLeftY(), ControlType.kVoltage);
             mastRightPIDController.setReference(operator.getLeftY(), ControlType.kVoltage);
           }
-          double leftEnc = relmastLeftEncoder.getPosition() * 360 / gearRatioLeft;
-          double rightEnc = relmastRightEncoder.getPosition() * 360 / gearRatioRight;
+          */
+          double leftEnc = relmastLeftEncoder.getPosition() * 360 / gearRatio;
+          double rightEnc = relmastRightEncoder.getPosition() * 360 / gearRatio;
           SmartDashboard.putNumber("Mast Left Encoder", leftEnc);
           SmartDashboard.putNumber("Mast Right Encoder", rightEnc);
           SmartDashboard.putNumber("Mast Abs Encoder", absMastLeftEncoder.getPosition());

@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Climber;
@@ -26,6 +27,8 @@ import frc.robot.subsystems.Incrementer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Mast;
+import frc.robot.subsystems.TopFeederSensor;
+import frc.robot.subsystems.TopIncrementerSensor;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -49,6 +52,8 @@ public class RobotContainer {
   private final Launcher m_launcher;
   private final Mast m_mast;
   private final Climber m_climber;
+  private final TopFeederSensor m_topFeederSensor;
+  private final TopIncrementerSensor m_topIncrementerSensor;
 
   // Controller
   private final CommandXboxController driverPad = new CommandXboxController(0);
@@ -75,6 +80,8 @@ public class RobotContainer {
             m_launcher = null;
             m_climber = null;
             m_mast = null;
+            m_topFeederSensor = null;
+            m_topIncrementerSensor = null;
             break;
 
           case REAL:
@@ -92,6 +99,8 @@ public class RobotContainer {
             m_launcher = new Launcher();
             m_mast = new Mast();
             m_climber = new Climber();
+            m_topFeederSensor = new TopFeederSensor();
+            m_topIncrementerSensor = new TopIncrementerSensor();
             break;
 
           case SUITCASE:
@@ -110,6 +119,8 @@ public class RobotContainer {
             m_launcher = null;
             m_mast = null;
             m_climber = null;
+            m_topFeederSensor = null;
+            m_topIncrementerSensor = null;
             break;
         }
         break;
@@ -129,6 +140,8 @@ public class RobotContainer {
         m_launcher = null;
         m_mast = null;
         m_climber = null;
+        m_topFeederSensor = null;
+        m_topIncrementerSensor = null;
         break;
 
       default:
@@ -146,6 +159,8 @@ public class RobotContainer {
         m_launcher = null;
         m_mast = null;
         m_climber = null;
+        m_topFeederSensor = null;
+        m_topIncrementerSensor = null;
         break;
     }
 
@@ -153,13 +168,7 @@ public class RobotContainer {
     configureButtonBindings();
   }
 
-  // STU
-  private static class ZeroSupplier {
-    public static double zero() {
-      return 0.0;
-    }
-  }
-
+  
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
@@ -202,14 +211,16 @@ public class RobotContainer {
         driverPad
             .rightTrigger()
             .whileTrue(
-                Commands.race(
+                Commands.sequence(
+                    m_intake.setTask(Intake.Task.INTAKING),
+                    m_feeder.setTask(Feeder.Task.INTAKING),
+                    m_mast.setTask(Mast.Task.INTAKING),
+                    new WaitUntilCommand(m_topFeederSensor::get),
                     m_intake.setTask(Intake.Task.IDLE),
                     m_feeder.setTask(Feeder.Task.IDLE),
-                    m_mast.setTask(Mast.Task.PUTTRAP),
-                    m_incrementer.setTask(Incrementer.Task.IDLE),
-                    m_launcher.setTask(Launcher.Task.IDLE),
-                    m_climber.setTask(Climber.Task.LOWERING)));
-
+                    m_incrementer.setTask(Incrementer.Task.INTAKING),
+                    new WaitUntilCommand(m_topIncrementerSensor::get),
+                    m_launcher.setTask(Launcher.Task.IDLE)));
         // Intake Note and Load into Launcher
         operPad
             .leftTrigger()

@@ -8,14 +8,14 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import edu.wpi.first.wpilibj2.command.*;
 public class Launcher extends SubsystemBase {
 
   public enum Task {
     INTAKING("Intaking", 0.0, 0.0),
+    LOADINC("Load INC", 0.0, 0.0),
     LAUNCHMAN("Launch Manual", 1.0, 4000.00),
     LAUNCHAUTO("Launch Auto", 0.0, 0.0),
     PUTAMP("Note->Amp", 0.0, 0.0),
@@ -71,11 +71,9 @@ public class Launcher extends SubsystemBase {
     launcherLeft.setInverted(true);
     launcherRight.setInverted(false);
 
-      //Define what signals we need from the Talon(s)
-    BaseStatusSignal.setUpdateFrequencyForAll(10,
-        launcherLeft.getPosition(),
-        launcherLeft.getVelocity(),
-        launcherLeft.getMotorVoltage());
+    // Define what signals we need from the Talon(s)
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        10, launcherLeft.getPosition(), launcherLeft.getVelocity(), launcherLeft.getMotorVoltage());
 
     // Don't send data over the canbus anything except defined above.
     launcherLeft.optimizeBusUtilization();
@@ -98,14 +96,15 @@ public class Launcher extends SubsystemBase {
     for (int i = 0; i < 5; ++i) {
       statusL = launcherLeft.getConfigurator().apply(configFX);
       statusR = launcherRight.getConfigurator().apply(configFX);
-      if (statusL.isOK() && statusR.isOK())
-        break;
+      if (statusL.isOK() && statusR.isOK()) break;
     }
     if (!statusL.isOK()) {
-      System.out.println("Could not apply configs, to Left Launcher error code: " + statusL.toString());
+      System.out.println(
+          "Could not apply configs, to Left Launcher error code: " + statusL.toString());
     }
     if (!statusR.isOK()) {
-      System.out.println("Could not apply configs, to Right Launcher error code: " + statusR.toString());
+      System.out.println(
+          "Could not apply configs, to Right Launcher error code: " + statusR.toString());
     }
 
     // TODO: Impliment Automatic Speed Control
@@ -124,7 +123,6 @@ public class Launcher extends SubsystemBase {
   public void setLauncherSpeedOL(double speed) {
     launcherLeft.set(-speed);
     launcherRight.set(-speed);
-
   }
 
   // Sets the speed of the lead motor to 0
@@ -155,6 +153,25 @@ public class Launcher extends SubsystemBase {
           // setLauncherSpeedCL(currentTask.getRPM());
         });
   }
+
+@Override
+public void periodic() {
+  /*
+    switch (getTaskName) {
+
+      case Task.IDLE:
+
+      case Task.LOADINC:
+
+      default:
+        //do nothing??
+    }
+    */
+
+    // TODO Auto-generated method stub
+    super.periodic();
+}
+
 
   // END OF Lancher Class
 }
