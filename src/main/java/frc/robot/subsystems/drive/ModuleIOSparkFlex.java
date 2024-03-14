@@ -25,8 +25,6 @@ import com.revrobotics.SparkAbsoluteEncoder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// import edu.wpi.first.wpilibj.AnalogInput;
-// import edu.wpi.first.wpilibj.RobotController;
 import java.util.OptionalDouble;
 import java.util.Queue;
 
@@ -73,28 +71,28 @@ public class ModuleIOSparkFlex implements ModuleIO {
         turnSparkMax = new CANSparkMax(2, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
         // MUST BE CALIBRATED
-        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(-90.0));
+        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(87.80));
         break;
       case 1: // FR
         driveSparkFlex = new CANSparkFlex(5, MotorType.kBrushless);
         turnSparkMax = new CANSparkMax(6, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
         // MUST BE CALIBRATED
-        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(-180.0));
+        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(0.71));
         break;
       case 2: // BL
         driveSparkFlex = new CANSparkFlex(3, MotorType.kBrushless);
         turnSparkMax = new CANSparkMax(4, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
         // MUST BE CALIBRATED
-        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(0.0));
+        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(182.67));
         break;
       case 3: // BR
         driveSparkFlex = new CANSparkFlex(7, MotorType.kBrushless);
         turnSparkMax = new CANSparkMax(8, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
         // MUST BE CALIBRATED
-        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(90.0));
+        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(269.73));
         break;
       default:
         throw new RuntimeException("Invalid module index");

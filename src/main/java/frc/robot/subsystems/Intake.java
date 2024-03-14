@@ -87,19 +87,20 @@ public class Intake extends SubsystemBase {
   }
 
   // Use this command to pull a note off the floor manual control
-  /*
-    public Command setTask(Task task) {
 
-      return this.startEnd(
-          () -> {
-            currentTask = task; // let subsystem know current task
-          },
-          () -> {
-            currentTask = Task.IDLE;
-          });
-    }
-  */
+  // Command Idles System when Letting go of button
+  public Command setTaskEnd(Task task) {
 
+    return this.startEnd(
+        () -> {
+          currentTask = task; // let subsystem know current task
+        },
+        () -> {
+          currentTask = Task.IDLE;
+        });
+  }
+
+  // Fire and Forget Command
   public Command setTask(Task task) {
     return this.runOnce(
         () -> {

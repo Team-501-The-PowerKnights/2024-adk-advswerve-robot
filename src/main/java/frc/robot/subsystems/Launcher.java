@@ -83,8 +83,8 @@ public class Launcher extends SubsystemBase {
 
     // configure motors
     // One must be inverted
-    launcherLeft.setInverted(true);
-    launcherRight.setInverted(false);
+    // launcherLeft.setInverted(false);
+    // launcherRight.setInverted(true);
 
     // Define what signals we need from the Talon(s)
     BaseStatusSignal.setUpdateFrequencyForAll(
@@ -141,15 +141,20 @@ public class Launcher extends SubsystemBase {
 
   // Sets the speed of the lead motor open loop
   public void setLauncherSpeedOL(double speed) {
-    launcherLeft.set(-speed);
-    launcherRight.set(-speed);
+    launcherLeft.set(speed);
+    launcherRight.set(speed);
   }
 
-  // Sets the speed of the lead motor to 0
-  public void stop() {
-    currentTask = Task.IDLE;
-    launcherLeft.set(0);
-    launcherRight.set(0);
+  // Command Idles System when Letting go of button
+  public Command setTaskEnd(Task task) {
+
+    return this.startEnd(
+        () -> {
+          currentTask = task; // let subsystem know current task
+        },
+        () -> {
+          currentTask = Task.IDLE;
+        });
   }
 
   // Use this command will command the Launcher to Do Something and goes to idle
@@ -162,25 +167,16 @@ public class Launcher extends SubsystemBase {
         });
   }
 
-  // runs when no commands are active
-  public Command defaultCommand() {
-    return this.run(
-        () -> {
-          setLauncherSpeedOL(currentTask.getSpeed());
-          // setLauncherSpeedCL(currentTask.getRPM());
-        });
-  }
-
   // Until we can get closed loop running just make sure motors are spinning
   // "fast" before
   // incrimenting into launcher
   public boolean atSpeed() {
     // Real Robot
-    if ((launcherVelocityLeft.getValue() * 60) > 1500 && RobotBase.isReal()) {
+    if ((launcherVelocityLeft.getValue() * 60) > 1500 && RobotBase.isSimulation()) {
       return true;
     } else {
       // for Simulation
-      if (RobotBase.isSimulation() && timer.get() > 1.0) {
+      if (RobotBase.isReal() && timer.get() > 1.0) {
         return true;
       } else {
         return false;
@@ -190,6 +186,8 @@ public class Launcher extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    setLauncherSpeedOL(currentTask.getSpeed());
 
     if (currentTask == Task.IDLE) {
       timer.stop();

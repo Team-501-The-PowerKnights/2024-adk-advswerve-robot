@@ -80,19 +80,17 @@ public class Incrementer extends SubsystemBase {
     incrementerRight.set(speed);
   }
 
-  // Use this command to pull a note off the floor manual control
-  /*
-    public Command setTask(Task task) {
+  // Command Idles System when Letting go of button
+  public Command setTaskEnd(Task task) {
 
-      return this.startEnd(
-          () -> {
-            currentTask = task; // let subsystem know current task
-          },
-          () -> {
-            currentTask = Task.IDLE;
-          });
-    }
-  */
+    return this.startEnd(
+        () -> {
+          currentTask = task; // let subsystem know current task
+        },
+        () -> {
+          currentTask = Task.IDLE;
+        });
+  }
 
   public Command setTask(Task task) {
     return this.runOnce(

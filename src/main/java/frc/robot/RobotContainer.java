@@ -187,6 +187,7 @@ public class RobotContainer {
                 () -> (MathUtil.applyDeadband(-driverPad.getRightX() * 0.85, .07))));
 
         // Intake Note and Load into Launcher
+        /*
         driverPad
             .leftTrigger()
             .whileTrue(
@@ -197,7 +198,7 @@ public class RobotContainer {
                     m_incrementer.setTask(Incrementer.Task.IDLE),
                     m_launcher.setTask(Launcher.Task.IDLE),
                     m_climber.setTask(Climber.Task.CLIMBING)));
-
+        */
         // Intake Note and Load into Launcher
         driverPad
             .rightTrigger()
@@ -213,6 +214,9 @@ public class RobotContainer {
                     new WaitUntilCommand(m_topIncrementerSensor::get),
                     m_launcher.setTask(Launcher.Task.IDLE)));
 
+        // Right bumber mast preset
+        operPad.rightBumper().whileTrue(Commands.sequence(m_mast.setTask(Mast.Task.TESTING)));
+
         driverPad
             .a()
             .whileTrue(
@@ -226,7 +230,7 @@ public class RobotContainer {
 
         // Tranfer Note into Launcher
         operPad
-            .leftTrigger()
+            .x()
             .whileTrue(
                 Commands.sequence(
                     m_mast.setTask(Mast.Task.INTAKING),
@@ -249,8 +253,8 @@ public class RobotContainer {
                     m_launcher.setTask(Launcher.Task.PUTAMP)));
 
         // Launch Note Manual Mode Subwoofer
-        driverPad
-            .b()
+        operPad
+            .a()
             .whileTrue(
                 Commands.sequence(
                     m_mast.setTask(Mast.Task.LAUNCHSUB),
@@ -259,8 +263,9 @@ public class RobotContainer {
                     m_incrementer.setTask(Incrementer.Task.LAUNCHMAN)));
 
         // Launch Note Manual Mode Key
+
         driverPad
-            .x()
+            .y()
             .whileTrue(
                 Commands.sequence(
                     m_mast.setTask(Mast.Task.LAUCNHKEY),
@@ -274,13 +279,11 @@ public class RobotContainer {
             .and(operPad.rightBumper())
             .whileTrue(
                 Commands.race(
-                    m_intake.setTask(Intake.Task.CLEARJAM),
-                    m_feeder.setTask(Feeder.Task.CLEARJAM),
+                    m_intake.setTaskEnd(Intake.Task.CLEARJAM),
+                    m_feeder.setTaskEnd(Feeder.Task.CLEARJAM),
                     m_mast.setTask(Mast.Task.CLEARJAM),
-                    m_incrementer.setTask(Incrementer.Task.CLEARJAM),
-                    m_launcher.setTask(Launcher.Task.CLEARJAM)));
-
-
+                    m_incrementer.setTaskEnd(Incrementer.Task.CLEARJAM),
+                    m_launcher.setTaskEnd(Launcher.Task.CLEARJAM)));
 
         break;
 

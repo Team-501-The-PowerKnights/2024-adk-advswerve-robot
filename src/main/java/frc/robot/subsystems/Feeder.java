@@ -15,13 +15,13 @@ public class Feeder extends SubsystemBase {
   // CANSparkMax feederLeft;
 
   public enum Task {
-    INTAKING("Intaking", 1.0),
+    INTAKING("Intaking", 0.5),
     LAUNCHMAN("Launching", 0.00),
     LAUNCHAUTO("Launching", 0.00),
     PUTAMP("PutAmp", 0.00),
     PUTRAP("PutTrap", 0.00),
-    CLEARJAM("Clear", -1.00),
-    TRANSFER("Transfer", 1.00),
+    CLEARJAM("Clear", 1.00),
+    TRANSFER("Transfer", 0.50),
     IDLE("Idle", 0.0);
 
     private final String taskName;
@@ -53,7 +53,7 @@ public class Feeder extends SubsystemBase {
     feeder.restoreFactoryDefaults();
 
     feeder.setSmartCurrentLimit(kFeederCurrentLimit);
-    feeder.setInverted(true);
+    feeder.setInverted(false);
 
     // Reduce canbus chatter
     feeder.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
@@ -77,6 +77,18 @@ public class Feeder extends SubsystemBase {
   // Sets the speed of the lead motor to 0
   public void stop() {
     feeder.set(0);
+  }
+
+  // Command Idles System when Letting go of button
+  public Command setTaskEnd(Task task) {
+
+    return this.startEnd(
+        () -> {
+          currentTask = task; // let subsystem know current task
+        },
+        () -> {
+          currentTask = Task.IDLE;
+        });
   }
 
   public Command setTask(Task task) {

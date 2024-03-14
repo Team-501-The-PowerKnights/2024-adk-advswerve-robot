@@ -21,17 +21,26 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 // @AutoLog
 public class Mast extends SubsystemBase {
 
+///TODO: Sync with ABS Encoder
+//Mast at StartPos Abs=57.5, Rel= 108.0
+//Mast at 0 Deg    AbS=108,  Rel= -54.0 = 5deg (cancles out 
+//Mast at 90 Deg   Abs=16.0, Rel= 43.00
+
+
   public enum Task {
-    INTAKING("Intaking", 0.0),
-    LAUNCHSUB("Launch Subwoofer", 10.0),
-    LAUCNHKEY("Launch Key", 15),
-    LAUNCHAUTO("Launch Auto", 60.0),
-    PUTAMP("PutAmp", 90.0),
+    INTAKING("Intaking", -17.0),
+    LAUNCHSUB("Launch Subwoofer", 6.0),
+    LAUCNHKEY("Launch Key", 5.0),
+    LAUNCHAUTO("Launch Auto", 6.0),
+    PUTAMP("PutAmp", -90.0), //tested
     PUTTRAP("PutTrap", 80.0),
-    CLEARJAM("Clear", 0.0),
-    CLIMBINGM("Climbing", 0.0),
+    CLEARJAM("Clear", 10.0),
+    CLIMBING("Climbing", -50.0),
     TESTING("Testing", 0.0),
-    IDLE("Idle", 0.0);
+    IDLE("Idle", 0.0),
+    OFFKICKSTAND("Off Kickstand",10.0),
+    BUMPUP("Bump Up",1.0),
+    BUMPDOWN("Bump Down",-1.0);
 
     private final String taskName;
     private final double angle;
@@ -63,8 +72,7 @@ public class Mast extends SubsystemBase {
 
   private static double leftEncAngle;
   private static double rightEncAngle;
-  private static double absEncAngle;
-  private static double mastStartingAngleOffset;
+  private static double AbsEncOffset;
   private static double testingAngle;
 
   public static double mastKp;
@@ -87,19 +95,18 @@ public class Mast extends SubsystemBase {
 
   public Mast() {
 
-    currentTask = Task.LAUNCHSUB;
+    currentTask = Task.LAUCNHKEY;
 
     leftEncAngle = 0.0;
     rightEncAngle = 0.0;
-    absEncAngle = 0.0;
     testingAngle = 0.0;
 
     mastKp = 1.0;
-    mastKi = 0.0;
+    mastKi = 0.001;
     mastKd = 0.0;
     mastFF = 0.0;
-    mastMaxPosOut = 0.1;
-    mastMaxNegOut = -0.1;
+    mastMaxPosOut = 0.4;
+    mastMaxNegOut = -0.4;
     mastSetpoint = 0.0;
 
     mastLeft = new CANSparkMax(kMastLeft, MotorType.kBrushless);
@@ -117,11 +124,12 @@ public class Mast extends SubsystemBase {
     mastLeft.setIdleMode(IdleMode.kBrake); // Turn on the brake for PID
     mastRight.setIdleMode(IdleMode.kBrake); // Turn off the brake other motor
     mastLeft.setInverted(true);
-    mastRight.setInverted(true);
+    mastRight.setInverted(false);
     // mastRight.follow(mastLeft);
 
     absMastLeftEncoder = mastLeft.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
-    mastStartingAngleOffset = absMastLeftEncoder.getPosition();
+    AbsEncOffset = 54.0;  //Offset in Degrees bsMastLeftEncoder.getPosition();
+    absMastLeftEncoder.setInverted(true);
 
     relmastLeftEncoder = mastLeft.getEncoder();
     relmastRightEncoder = mastRight.getEncoder();
@@ -147,29 +155,17 @@ public class Mast extends SubsystemBase {
     System.out.println("Mast Constructed!!");
   }
 
-  // Sets the speed of the lead motor
-  /*
-    public void setMastSpeed(double speed) {
-      System.out.println("running setMastSpeed = " + speed);
-      if (Math.abs(speed) > 0.1) {
-        mastLeft.set(speed / 5);
-        mastRight.set(speed / 5);
-      } else {
-        mastLeft.set(0);
-        mastRight.set(0);
-      }
-    }
-  */
-  // Sets the speed of the lead motor to 0
-  public void stop() {
-    // mastLeft.set(0);
-    mastRight.set(0);
-  }
 
   private void setMastPID(double setPoint) {
-    mastSetpoint = -setPoint * 37.5 / 360;
+    mastSetpoint = setPoint * 37.5 / 360;
     mastLeftPIDController.setReference(mastSetpoint, ControlType.kPosition);
     mastRightPIDController.setReference(mastSetpoint, ControlType.kPosition);
+    System.out.println(mastSetpoint);
+  }
+
+  private double getAbsoluteEncoderDegrees(){
+   //Read ABS Encoder
+   return (absMastLeftEncoder.getPosition() * 360) - AbsEncOffset;
   }
 
   public Command setTask(Task task) {
@@ -183,6 +179,17 @@ public class Mast extends SubsystemBase {
   // Hopefully this runs once constructed every 20ms...
   @Override
   public void periodic() {
+    ///TODO: Offer Bump Command
+    /*
+    if(currentTask == Task.BUMPUP){
+      
+    }
+
+    if(currentTask == Task.BUMPDOWN){
+      
+    }
+    */
+    
     // Update Pid Angle
     if (currentTask == Task.TESTING) {
       setMastPID(testingAngle);
@@ -198,7 +205,7 @@ public class Mast extends SubsystemBase {
         (relmastLeftEncoder.getPosition() * 360 / gearRatio); // + mastStartingAngleOffset;
     rightEncAngle =
         (relmastRightEncoder.getPosition() * 360 / gearRatio); // + mastStartingAngleOffset;
-    absEncAngle = absMastLeftEncoder.getPosition();
+      
 
     // SmartDashboard.putNumber("Mast/Left_Enc", leftEncAngle);
     // SmartDashboard.putNumber("Mast/Right_Enc", rightEncAngle);
@@ -209,7 +216,7 @@ public class Mast extends SubsystemBase {
 
     Logger.recordOutput("Mast/Left_Enc", leftEncAngle);
     Logger.recordOutput("Mast/Right_Enc", rightEncAngle);
-    Logger.recordOutput("Mast/Abs_Enc", absEncAngle);
+    Logger.recordOutput("Mast/Abs_Enc", getAbsoluteEncoderDegrees());
     Logger.recordOutput("Mast/LeftMotorOutput", mastLeft.get());
     Logger.recordOutput("Mast/RightMotorOutput", mastRight.get());
     Logger.recordOutput("Mast/Current_Tsk", currentTask.getTaskName());
