@@ -20,8 +20,8 @@ public class Launcher extends SubsystemBase {
   public enum Task {
     INTAKING("Intaking", 0.0, 0.0),
     LOADINC("Load INC", 0.0, 0.0),
-    LAUNCHSUB("Launch Subwoofer", 0.5, 3000.00),
-    LAUNCHKEY("Launch Protected", 1.0, 4000),
+    LAUNCHSUB("Launch Subwoofer", 0.4, 3000.00),
+    LAUNCHKEY("Launch Protected", 0.8, 4000),
     LAUNCHAUTO("Launch Auto", 0.0, 0.0),
     PUTAMP("Note->Amp", 0.0, 0.0),
     PUTRAP("Note->Trap", 0.0, 0.0),
@@ -197,7 +197,7 @@ public class Launcher extends SubsystemBase {
         timer.start();
       }
 
-      if (timer.get() > 5) {
+      if (timer.get() > 3) {
         currentTask = Task.IDLE;
       }
     }

@@ -13,13 +13,13 @@ import org.littletonrobotics.junction.Logger;
 public class Incrementer extends SubsystemBase {
 
   public enum Task {
-    INTAKING("Intaking", 1.0),
+    INTAKING("Intaking", 0.4),
     LAUNCHMAN("Launch Manual", 1.00),
     LAUNCHAUTO("Launch Auto", 1.00),
-    PUTAMP("PutAmp", 1.00),
+    PUTAMP("PutAmp", -1.00),
     PUTRAP("PutTrap", 1.00),
-    CLEARJAM("Clear", 1.00),
-    TRANSFER("Transfer", 1.00),
+    CLEARJAM("Clear", -1.00),
+    TRANSFER("Transfer", 0.40),
     IDLE("Idle", 0.0);
 
     private final String taskName;

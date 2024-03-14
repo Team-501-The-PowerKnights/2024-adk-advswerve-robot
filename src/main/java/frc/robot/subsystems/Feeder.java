@@ -21,7 +21,7 @@ public class Feeder extends SubsystemBase {
     PUTAMP("PutAmp", 0.00),
     PUTRAP("PutTrap", 0.00),
     CLEARJAM("Clear", 1.00),
-    TRANSFER("Transfer", 0.50),
+    TRANSFER("Transfer", 0.40),
     IDLE("Idle", 0.0);
 
     private final String taskName;

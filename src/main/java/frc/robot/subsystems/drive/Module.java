@@ -25,7 +25,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class Module {
   private static final double WHEEL_RADIUS = Units.inchesToMeters(1.5);
-  static final double ODOMETRY_FREQUENCY = 150.0; // STU:
+  static final double ODOMETRY_FREQUENCY = 100.0; // STU:
 
   private final ModuleIO io;
   private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
@@ -133,7 +133,6 @@ public class Module {
     // Update setpoints, controllers run in "periodic"
     angleSetpoint = optimizedState.angle;
     speedSetpoint = optimizedState.speedMetersPerSecond;
-
     return optimizedState;
   }
 

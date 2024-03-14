@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
@@ -182,23 +183,23 @@ public class RobotContainer {
         drive.setDefaultCommand(
             DriveCommands.joystickDrive(
                 drive,
-                () -> (MathUtil.applyDeadband(driverPad.getLeftY() * .85, .07)),
-                () -> (MathUtil.applyDeadband(driverPad.getLeftX() * .85, .07)),
-                () -> (MathUtil.applyDeadband(-driverPad.getRightX() * 0.85, .07))));
+                () -> (MathUtil.applyDeadband(driverPad.getLeftY() * .5, .07)),
+                () -> (MathUtil.applyDeadband(driverPad.getLeftX() * .5, .07)),
+                () -> (MathUtil.applyDeadband(-driverPad.getRightX() * 0.5, .07))));
 
         // Intake Note and Load into Launcher
         /*
-        driverPad
-            .leftTrigger()
-            .whileTrue(
-                Commands.race(
-                    m_intake.setTask(Intake.Task.IDLE),
-                    m_feeder.setTask(Feeder.Task.IDLE),
-                    m_mast.setTask(Mast.Task.PUTTRAP),
-                    m_incrementer.setTask(Incrementer.Task.IDLE),
-                    m_launcher.setTask(Launcher.Task.IDLE),
-                    m_climber.setTask(Climber.Task.CLIMBING)));
-        */
+         * driverPad
+         * .leftTrigger()
+         * .whileTrue(
+         * Commands.race(
+         * m_intake.setTask(Intake.Task.IDLE),
+         * m_feeder.setTask(Feeder.Task.IDLE),
+         * m_mast.setTask(Mast.Task.PUTTRAP),
+         * m_incrementer.setTask(Incrementer.Task.IDLE),
+         * m_launcher.setTask(Launcher.Task.IDLE),
+         * m_climber.setTask(Climber.Task.CLIMBING)));
+         */
         // Intake Note and Load into Launcher
         driverPad
             .rightTrigger()
@@ -214,9 +215,6 @@ public class RobotContainer {
                     new WaitUntilCommand(m_topIncrementerSensor::get),
                     m_launcher.setTask(Launcher.Task.IDLE)));
 
-        // Right bumber mast preset
-        operPad.rightBumper().whileTrue(Commands.sequence(m_mast.setTask(Mast.Task.TESTING)));
-
         driverPad
             .a()
             .whileTrue(
@@ -227,6 +225,12 @@ public class RobotContainer {
                     new WaitUntilCommand(m_topFeederSensor::get),
                     m_feeder.setTask(Task.IDLE),
                     m_feeder.setTask(Feeder.Task.IDLE)));
+
+        /********************************************************************
+         * Operator Commands
+         * *****************************************************************/
+        // Mast Preset for Climbing
+        operPad.rightBumper().whileTrue(Commands.sequence(m_mast.setTask(Mast.Task.CLIMBING)));
 
         // Tranfer Note into Launcher
         operPad
@@ -245,14 +249,12 @@ public class RobotContainer {
         operPad
             .b()
             .whileTrue(
-                Commands.race(
-                    m_intake.setTask(Intake.Task.PUTAMP),
-                    m_feeder.setTask(Feeder.Task.PUTAMP),
+                Commands.sequence(
                     m_mast.setTask(Mast.Task.PUTAMP),
-                    m_incrementer.setTask(Incrementer.Task.PUTAMP),
-                    m_launcher.setTask(Launcher.Task.PUTAMP)));
+                    new WaitCommand(.5),
+                    m_incrementer.setTaskEnd(Incrementer.Task.PUTAMP)));
 
-        // Launch Note Manual Mode Subwoofer
+        // Launch Note Manual Mode at the Subwoofer
         operPad
             .a()
             .whileTrue(
@@ -262,9 +264,8 @@ public class RobotContainer {
                     new WaitUntilCommand(m_launcher::atSpeed),
                     m_incrementer.setTask(Incrementer.Task.LAUNCHMAN)));
 
-        // Launch Note Manual Mode Key
-
-        driverPad
+        // Launch Note Manual Mode at the Key
+        operPad
             .y()
             .whileTrue(
                 Commands.sequence(
@@ -278,7 +279,7 @@ public class RobotContainer {
             .leftBumper()
             .and(operPad.rightBumper())
             .whileTrue(
-                Commands.race(
+                Commands.parallel(
                     m_intake.setTaskEnd(Intake.Task.CLEARJAM),
                     m_feeder.setTaskEnd(Feeder.Task.CLEARJAM),
                     m_mast.setTask(Mast.Task.CLEARJAM),
