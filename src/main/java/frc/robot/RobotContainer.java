@@ -305,7 +305,7 @@ public class RobotContainer {
     // @formatter:off
     doNothing("doNothing", null),
     //
-    doTest("doTest", "West Test Path"),
+    doTest("doTest", "Angle Test Auto"),
     //
     doSimpleBackward("doSimpleBackward", null),
     doSimpleForward("doSimpleForward", null);
