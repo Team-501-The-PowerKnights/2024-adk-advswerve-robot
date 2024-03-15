@@ -13,9 +13,12 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -159,6 +162,9 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+
+    // Create the auto chooser for dashboard
+    createAutoChooser();
   }
 
   /**
@@ -228,7 +234,7 @@ public class RobotContainer {
 
         /********************************************************************
          * Operator Commands
-         * *****************************************************************/
+         *****************************************************************/
         // Mast Preset for Climbing
         operPad.rightBumper().whileTrue(Commands.sequence(m_mast.setTask(Mast.Task.CLIMBING)));
 
@@ -294,12 +300,72 @@ public class RobotContainer {
     }
   }
 
+  //
+  private enum AutoSelection {
+    // @formatter:off
+    doNothing("doNothing", null),
+    //
+    doTest("doTest", "Angle Test Auto"),
+    //
+    doSimpleBackward("doSimpleBackward", null),
+    doSimpleForward("doSimpleForward", null);
+    // @formatter:on
+
+    private final String name;
+
+    private final String pathName;
+
+    private AutoSelection(String name, String pathName) {
+      this.name = name;
+      this.pathName = pathName;
+    }
+
+    @SuppressWarnings("unused")
+    public String getName() {
+      return name;
+    }
+
+    public String getPathName() {
+      return pathName;
+    }
+  }
+
+  // Chooser for autonomous command from Dashboard
+  private SendableChooser<AutoSelection> autoChooser;
+  // Command that was selected
+  private AutoSelection autoSelected;
+
+  public void createAutoChooser() {
+    autoChooser = new SendableChooser<>();
+
+    // Default option is safety of "do nothing"
+    autoChooser.setDefaultOption("Do Nothing", AutoSelection.doNothing);
+
+    /** Test */
+    //
+    autoChooser.addOption("Do Test", AutoSelection.doTest);
+
+    /** Drive */
+    //
+    autoChooser.addOption("Simple BACKWARD", AutoSelection.doSimpleBackward);
+    //
+    autoChooser.addOption("Simple FORWARD", AutoSelection.doSimpleForward);
+
+    // Put the chooser on the dashboard
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+  }
+
+  public boolean isRealAutoSelected() {
+    return (autoChooser.getSelected() != AutoSelection.doNothing);
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return null;
+    autoSelected = autoChooser.getSelected();
+    return new PathPlannerAuto(autoSelected.getPathName());
   }
 }
