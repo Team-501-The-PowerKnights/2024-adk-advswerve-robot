@@ -65,7 +65,7 @@ public class Module {
     }
 
     turnFeedback.enableContinuousInput(-Math.PI, Math.PI);
-    setBrakeMode(true);
+    setBrakeMode(true, false);
 
     SmartDashboard.putBoolean("turnInitialized[" + this.index + "]", false);
   }
@@ -156,10 +156,10 @@ public class Module {
     speedSetpoint = null;
   }
 
-  /** Sets whether brake mode is enabled. */
-  public void setBrakeMode(boolean enabled) {
-    io.setDriveBrakeMode(enabled);
-    io.setTurnBrakeMode(enabled);
+  /** Sets whether brake mode is enabled. Turn, Drive */
+  public void setBrakeMode(boolean enabledT, boolean enableD) {
+    io.setDriveBrakeMode(enableD);
+    io.setTurnBrakeMode(enabledT);
   }
 
   /** Returns the current turn angle of the module. */
