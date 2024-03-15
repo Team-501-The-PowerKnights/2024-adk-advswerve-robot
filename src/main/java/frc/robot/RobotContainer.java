@@ -14,10 +14,11 @@
 package frc.robot;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -42,12 +43,9 @@ import frc.robot.subsystems.drive.ModuleIOSparkFlex;
 import frc.robot.subsystems.drive.ModuleIOSparkMax;
 
 /**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in
- * the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of
- * the robot (including
+ * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
@@ -60,27 +58,27 @@ public class RobotContainer {
   private final Mast m_mast;
   private final Climber m_climber;
   public static final TopFeederSensor m_topFeederSensor = new TopFeederSensor();
-  public static final TopIncrementerSensor m_topIncrementerSensor = new TopIncrementerSensor();;
+  public static final TopIncrementerSensor m_topIncrementerSensor = new TopIncrementerSensor();
+  ;
 
   // Controller
   private final CommandXboxController driverPad = new CommandXboxController(0);
   private final CommandXboxController operPad = new CommandXboxController(1);
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
         switch (Constants.currentRobot) {
           case PROTO:
-            drive = new Drive(
-                new GyroIOPigeon2(false),
-                new ModuleIOSparkMax(0), // FL
-                new ModuleIOSparkMax(1), // FR
-                new ModuleIOSparkMax(2), // BL
-                new ModuleIOSparkMax(3)); // BR
+            drive =
+                new Drive(
+                    new GyroIOPigeon2(false),
+                    new ModuleIOSparkMax(0), // FL
+                    new ModuleIOSparkMax(1), // FR
+                    new ModuleIOSparkMax(2), // BL
+                    new ModuleIOSparkMax(3)); // BR
 
             m_intake = null;
             m_feeder = null;
@@ -91,12 +89,13 @@ public class RobotContainer {
             break;
 
           case REAL:
-            drive = new Drive(
-                new GyroIOPigeon2(false),
-                new ModuleIOSparkFlex(0), // FL
-                new ModuleIOSparkFlex(1), // FR
-                new ModuleIOSparkFlex(2), // BL
-                new ModuleIOSparkFlex(3)); // BR
+            drive =
+                new Drive(
+                    new GyroIOPigeon2(false),
+                    new ModuleIOSparkFlex(0), // FL
+                    new ModuleIOSparkFlex(1), // FR
+                    new ModuleIOSparkFlex(2), // BL
+                    new ModuleIOSparkFlex(3)); // BR
 
             m_intake = new Intake();
             m_feeder = new Feeder();
@@ -108,17 +107,13 @@ public class RobotContainer {
 
           case SUITCASE:
           default:
-            drive = new Drive(
-                new GyroIO() {
-                },
-                new ModuleIO() {
-                },
-                new ModuleIO() {
-                },
-                new ModuleIO() {
-                },
-                new ModuleIO() {
-                });
+            drive =
+                new Drive(
+                    new GyroIO() {},
+                    new ModuleIO() {},
+                    new ModuleIO() {},
+                    new ModuleIO() {},
+                    new ModuleIO() {});
 
             m_intake = null;
             m_feeder = null;
@@ -132,13 +127,13 @@ public class RobotContainer {
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
-        drive = new Drive(
-            new GyroIO() {
-            },
-            new ModuleIOSim(),
-            new ModuleIOSim(),
-            new ModuleIOSim(),
-            new ModuleIOSim());
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim());
         m_intake = new Intake();
         m_feeder = new Feeder();
         m_incrementer = new Incrementer();
@@ -149,17 +144,13 @@ public class RobotContainer {
 
       default:
         // Replayed robot, disable IO implementations
-        drive = new Drive(
-            new GyroIO() {
-            },
-            new ModuleIO() {
-            },
-            new ModuleIO() {
-            },
-            new ModuleIO() {
-            },
-            new ModuleIO() {
-            });
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {});
         m_intake = null;
         m_feeder = null;
         m_incrementer = null;
@@ -171,14 +162,15 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+
+    // Create the auto chooser for dashboard
+    createAutoChooser();
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be
-   * created by
+   * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
-   * it to a {@link
+   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
@@ -308,12 +300,72 @@ public class RobotContainer {
     }
   }
 
+  //
+  private enum AutoSelection {
+    // @formatter:off
+    doNothing("doNothing", null),
+    //
+    doTest("doTest", "West Test Path"),
+    //
+    doSimpleBackward("doSimpleBackward", null),
+    doSimpleForward("doSimpleForward", null);
+    // @formatter:on
+
+    private final String name;
+
+    private final String pathName;
+
+    private AutoSelection(String name, String pathName) {
+      this.name = name;
+      this.pathName = pathName;
+    }
+
+    @SuppressWarnings("unused")
+    public String getName() {
+      return name;
+    }
+
+    public String getPathName() {
+      return pathName;
+    }
+  }
+
+  // Chooser for autonomous command from Dashboard
+  private SendableChooser<AutoSelection> autoChooser;
+  // Command that was selected
+  private AutoSelection autoSelected;
+
+  public void createAutoChooser() {
+    autoChooser = new SendableChooser<>();
+
+    // Default option is safety of "do nothing"
+    autoChooser.setDefaultOption("Do Nothing", AutoSelection.doNothing);
+
+    /** Test */
+    //
+    autoChooser.addOption("Do Test", AutoSelection.doTest);
+
+    /** Drive */
+    //
+    autoChooser.addOption("Simple BACKWARD", AutoSelection.doSimpleBackward);
+    //
+    autoChooser.addOption("Simple FORWARD", AutoSelection.doSimpleForward);
+
+    // Put the chooser on the dashboard
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+  }
+
+  public boolean isRealAutoSelected() {
+    return (autoChooser.getSelected() != AutoSelection.doNothing);
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("West Test Auto");
+    autoSelected = autoChooser.getSelected();
+    return new PathPlannerAuto(autoSelected.getPathName());
   }
 }
