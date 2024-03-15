@@ -21,7 +21,7 @@ public class Launcher extends SubsystemBase {
     INTAKING("Intaking", 0.0, 0.0),
     LOADINC("Load INC", 0.0, 0.0),
     LAUNCHSUB("Launch Subwoofer", 0.4, 3000.00),
-    LAUNCHKEY("Launch Protected", 0.8, 4000),
+    LAUNCHKEY("Launch Protected", 0.6, 4000),
     LAUNCHAUTO("Launch Auto", 0.0, 0.0),
     PUTAMP("Note->Amp", 0.0, 0.0),
     PUTRAP("Note->Trap", 0.0, 0.0),
