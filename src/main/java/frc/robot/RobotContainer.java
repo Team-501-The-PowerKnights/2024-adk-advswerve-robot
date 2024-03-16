@@ -206,18 +206,18 @@ public class RobotContainer {
         drive.setDefaultCommand(
             DriveCommands.joystickDrive(
                 drive,
-                () -> (MathUtil.applyDeadband(driverPad.getLeftY() * .65, .07)),
-                () -> (MathUtil.applyDeadband(driverPad.getLeftX() * .65, .07)),
-                () -> (MathUtil.applyDeadband(-driverPad.getRightX() * .65, .07))));
+                () -> (MathUtil.applyDeadband(-driverPad.getLeftY() * .65, .07)),
+                () -> (MathUtil.applyDeadband(-driverPad.getLeftX() * .65, .07)),
+                () -> (MathUtil.applyDeadband(driverPad.getRightX() * .65, .07))));
 
         driverPad
             .leftBumper()
             .whileTrue(
                 DriveCommands.joystickDrive(
                     drive,
-                    () -> (MathUtil.applyDeadband(driverPad.getLeftY(), .07)),
-                    () -> (MathUtil.applyDeadband(driverPad.getLeftX() * .65, .07)),
-                    () -> (MathUtil.applyDeadband(-driverPad.getRightX() * .65, .07))));
+                    () -> (MathUtil.applyDeadband(-driverPad.getLeftY(), .07)),
+                    () -> (MathUtil.applyDeadband(-driverPad.getLeftX() * .65, .07)),
+                    () -> (MathUtil.applyDeadband(driverPad.getRightX() * .65, .07))));
 
         // Intake Note and Load into Launcher
         /*
@@ -355,12 +355,12 @@ public class RobotContainer {
   //
   private enum AutoSelection {
     // @formatter:off
-    doNothing("doNothing", null),
+    doNothing("doNothing", "Do Nothing Auto"),
     //
-    doTest("doTest", "Angle Test Auto"),
+    doSimpleTest("doSimpleTest", "Simple Test Auto");
     //
-    doSimpleBackward("doSimpleBackward", null),
-    doSimpleForward("doSimpleForward", null);
+    // doSimpleBackward("doSimpleBackward", null),
+    // doSimpleForward("doSimpleForward", null);
     // @formatter:on
 
     private final String name;
@@ -395,13 +395,13 @@ public class RobotContainer {
 
     /** Test */
     //
-    autoChooser.addOption("Do Test", AutoSelection.doTest);
+    autoChooser.addOption("Do Test", AutoSelection.doSimpleTest);
 
     /** Drive */
     //
-    autoChooser.addOption("Simple BACKWARD", AutoSelection.doSimpleBackward);
+    // autoChooser.addOption("Simple BACKWARD", AutoSelection.doSimpleBackward);
     //
-    autoChooser.addOption("Simple FORWARD", AutoSelection.doSimpleForward);
+    // autoChooser.addOption("Simple FORWARD", AutoSelection.doSimpleForward);
 
     // Put the chooser on the dashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -419,5 +419,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     autoSelected = autoChooser.getSelected();
     return new PathPlannerAuto(autoSelected.getPathName());
+    // return null;
   }
 }
