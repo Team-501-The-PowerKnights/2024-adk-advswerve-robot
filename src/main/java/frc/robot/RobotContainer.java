@@ -54,7 +54,7 @@ public class RobotContainer {
   private final Intake m_intake;
   private final Feeder m_feeder;
   private final Incrementer m_incrementer;
-  public static final Launcher m_launcher = new Launcher();
+  private final Launcher m_launcher;
   private final Mast m_mast;
   private final Climber m_climber;
   public static final TopFeederSensor m_topFeederSensor = new TopFeederSensor();
@@ -83,12 +83,18 @@ public class RobotContainer {
             m_intake = null;
             m_feeder = null;
             m_incrementer = null;
-            // m_launcher = null;
+            m_launcher = null;
             m_climber = null;
             m_mast = null;
             break;
 
           case REAL:
+            // try {
+            // wait(2000);
+            // } catch (InterruptedException e) {
+            // System.err.println("interrupted wait");
+            // e.printStackTrace();
+            // }
             drive =
                 new Drive(
                     new GyroIOPigeon2(false),
@@ -97,10 +103,16 @@ public class RobotContainer {
                     new ModuleIOSparkFlex(2), // BL
                     new ModuleIOSparkFlex(3)); // BR
 
+            // try {
+            // wait(2000);
+            // } catch (InterruptedException e) {
+            // System.err.println("interrupted wait");
+            // e.printStackTrace();
+            // }
             m_intake = new Intake();
             m_feeder = new Feeder();
+            m_launcher = new Launcher();
             m_incrementer = new Incrementer();
-            // m_launcher = new Launcher();
             m_mast = new Mast();
             m_climber = new Climber();
             break;
@@ -118,7 +130,7 @@ public class RobotContainer {
             m_intake = null;
             m_feeder = null;
             m_incrementer = null;
-            // m_launcher = null;
+            m_launcher = null;
             m_mast = null;
             m_climber = null;
             break;
@@ -137,7 +149,7 @@ public class RobotContainer {
         m_intake = new Intake();
         m_feeder = new Feeder();
         m_incrementer = new Incrementer();
-        // m_launcher = new Launcher();
+        m_launcher = new Launcher();
         m_mast = new Mast();
         m_climber = new Climber();
         break;
@@ -154,7 +166,7 @@ public class RobotContainer {
         m_intake = null;
         m_feeder = null;
         m_incrementer = null;
-        // m_launcher = null;
+        m_launcher = null;
         m_mast = null;
         m_climber = null;
         break;
@@ -206,7 +218,8 @@ public class RobotContainer {
          * m_launcher.setTask(Launcher.Task.IDLE),
          * m_climber.setTask(Climber.Task.CLIMBING)));
          */
-        // Intake Note and Load into Launcher
+
+        // Intake Note and Pass to Launcher (stop high)
         driverPad
             .rightTrigger()
             .whileTrue(
@@ -221,6 +234,7 @@ public class RobotContainer {
                     new WaitUntilCommand(m_topIncrementerSensor::get),
                     m_launcher.setTask(Launcher.Task.IDLE)));
 
+        // Intake Note and Load Feeder (stop low)
         driverPad
             .a()
             .whileTrue(
@@ -232,11 +246,35 @@ public class RobotContainer {
                     m_feeder.setTask(Task.IDLE),
                     m_feeder.setTask(Feeder.Task.IDLE)));
 
+        // Climb Up
+        driverPad
+            .y()
+            .whileTrue(
+                Commands.parallel(
+                    m_climber.setTaskEnd(Climber.Task.CLIMBING),
+                    m_mast.setTask(Mast.Task.CLIMBING)));
+
+        // Climb Down
+        driverPad
+            .x()
+            .whileTrue(
+                Commands.parallel(
+                    m_climber.setTaskEnd(Climber.Task.LOWERING),
+                    m_mast.setTask(Mast.Task.CLIMBING)));
+
         /********************************************************************
          * Operator Commands
          *****************************************************************/
+
         // Mast Preset for Climbing
-        operPad.rightBumper().whileTrue(Commands.sequence(m_mast.setTask(Mast.Task.CLIMBING)));
+        operPad
+            .leftBumper()
+            .whileTrue(
+                Commands.sequence(
+                    m_mast.setTask(Mast.Task.CLIMBING),
+                    m_launcher.setTask(Launcher.Task.LAUNCHTRAP),
+                    new WaitUntilCommand(m_launcher::atSpeed),
+                    m_incrementer.setTask(Incrementer.Task.LAUNCHMAN)));
 
         // Tranfer Note into Launcher
         operPad

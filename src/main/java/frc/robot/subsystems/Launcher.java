@@ -24,7 +24,7 @@ public class Launcher extends SubsystemBase {
     LAUNCHKEY("Launch Protected", 0.6, 4000),
     LAUNCHAUTO("Launch Auto", 0.0, 0.0),
     PUTAMP("Note->Amp", 0.0, 0.0),
-    PUTRAP("Note->Trap", 0.0, 0.0),
+    LAUNCHTRAP("Launch Tap", 0.3, 1000),
     CLEARJAM("Clear", 0.25, 1000.0),
     IDLE("Idle", 0.0, 0.0);
 
@@ -66,6 +66,8 @@ public class Launcher extends SubsystemBase {
 
   // Timer for Luancher Spin Time
   private static Timer timer;
+
+  private static Launcher myInstance;
 
   public Launcher() {
 
@@ -130,7 +132,13 @@ public class Launcher extends SubsystemBase {
     // TODO: Impliment Automatic Speed Control
     launcherSpeedAuto = kLauncherSpeed;
 
+    Launcher.myInstance = this;
+
     System.out.println("Launcher Constructed!!");
+  }
+
+  public static Launcher getInstance() {
+    return Launcher.myInstance;
   }
 
   /// TODO: Impliment PID Launcher Velocity

@@ -19,8 +19,8 @@ public class Climber extends SubsystemBase {
     PUTRAP("Note->Trap", 0.0),
     CLEARJAM("Clear", 0.0),
     IDLE("Idle", 0.0),
-    CLIMBING("Climbing", 0.0),
-    LOWERING("Lowering", 0.0);
+    CLIMBING("Climbing", 1.0),
+    LOWERING("Lowering", -1.0);
 
     private final String taskName;
     private final double speed;
@@ -110,6 +110,18 @@ public class Climber extends SubsystemBase {
   public void stop() {
     currentTask = Task.IDLE;
     climber.set(0);
+  }
+
+  // Command Idles System when Letting go of button
+  public Command setTaskEnd(Task task) {
+
+    return this.startEnd(
+        () -> {
+          currentTask = task; // let subsystem know current task
+        },
+        () -> {
+          currentTask = Task.IDLE;
+        });
   }
 
   // Use this command will command the Launcher to Do Something and goes to idle

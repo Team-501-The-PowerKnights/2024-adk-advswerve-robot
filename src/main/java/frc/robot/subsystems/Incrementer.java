@@ -74,6 +74,7 @@ public class Incrementer extends SubsystemBase {
     currentTask = Task.IDLE;
     System.out.println("Incrementer Constructed!!");
   }
+
   // Sets the speed of the lead motor
   public void setIncrementerSpeed(double speed) {
     incrementerLeft.set(-speed);
@@ -113,7 +114,7 @@ public class Incrementer extends SubsystemBase {
       }
     }
 
-    if (currentTask == Task.LAUNCHMAN && !RobotContainer.m_launcher.atSpeed()) {
+    if (currentTask == Task.LAUNCHMAN && !Launcher.getInstance().atSpeed()) {
       currentTask = Task.IDLE;
     }
 
