@@ -68,8 +68,6 @@ public class Climber extends SubsystemBase {
     // Don't send data over the canbus anything except defined above.
     climber.optimizeBusUtilization();
 
-    configFX = new TalonFXConfiguration();
-
     // TODO: Enable Voltage Compensation for Climber
 
     // Configrue and share between Motors
@@ -92,7 +90,7 @@ public class Climber extends SubsystemBase {
       if (status.isOK()) break;
     }
     if (!status.isOK()) {
-      System.out.println("Could not apply configs, to Climber error code: " + status.toString());
+      System.err.println("Could not apply configs, to Climber error code: " + status.toString());
     }
 
     // TODO: Impliment Automatic Speed Control
@@ -102,7 +100,7 @@ public class Climber extends SubsystemBase {
   }
 
   // Sets the speed of the lead motor open loop
-  public void setLauncherSpeedOL(double speed) {
+  public void setClimberSpeedOL(double speed) {
     climber.set(-speed);
   }
 
@@ -124,16 +122,10 @@ public class Climber extends SubsystemBase {
         });
   }
 
-  // Use this command will command the Launcher to Do Something and goes to idle
-  // when button
-  // released
   public Command setTask(Task task) {
-    return this.startEnd(
+    return this.runOnce(
         () -> {
-          currentTask = task; // let subsystem know current task
-        },
-        () -> {
-          currentTask = Task.IDLE;
+          currentTask = task;
         });
   }
 
@@ -141,7 +133,7 @@ public class Climber extends SubsystemBase {
   public Command defaultCommand() {
     return this.run(
         () -> {
-          setLauncherSpeedOL(currentTask.getSpeed());
+          setClimberSpeedOL(currentTask.getSpeed());
           // setLauncherSpeedCL(currentTask.getRPM());
         });
   }
