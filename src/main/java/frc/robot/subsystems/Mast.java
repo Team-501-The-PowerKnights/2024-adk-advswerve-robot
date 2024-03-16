@@ -23,7 +23,7 @@ public class Mast extends SubsystemBase {
 
   /// TODO: Sync with ABS Encoder
   // Mast at StartPos Abs=57.5, Rel= 108.0
-  // Mast at 0 Deg AbS=108, Rel= -54.0 = 5deg (cancles out
+  // Mast at 0 Deg AbS=108, Rel= -54.0 = 5deg (cancels out
   // Mast at 90 Deg Abs=16.0, Rel= 43.00
 
   public enum Task {
