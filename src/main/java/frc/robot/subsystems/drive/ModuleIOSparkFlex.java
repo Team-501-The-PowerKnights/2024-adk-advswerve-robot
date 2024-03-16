@@ -98,8 +98,8 @@ public class ModuleIOSparkFlex implements ModuleIO {
         throw new RuntimeException("Invalid module index");
     }
 
-    driveSparkFlex.restoreFactoryDefaults();
-    turnSparkMax.restoreFactoryDefaults();
+    // driveSparkFlex.restoreFactoryDefaults();
+    // turnSparkMax.restoreFactoryDefaults();
 
     driveSparkFlex.setCANTimeout(250);
     turnSparkMax.setCANTimeout(250);
