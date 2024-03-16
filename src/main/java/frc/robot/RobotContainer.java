@@ -60,7 +60,6 @@ public class RobotContainer {
   private final Climber m_climber;
   public static final TopFeederSensor m_topFeederSensor = new TopFeederSensor();
   public static final TopIncrementerSensor m_topIncrementerSensor = new TopIncrementerSensor();
-  CameraServer cameraServer;
 
   // Controller
   private final CommandXboxController driverPad = new CommandXboxController(0);
@@ -69,7 +68,8 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    cameraServer.startAutomaticCapture();
+    CameraServer.startAutomaticCapture();
+
     final double FWDSpeed = 0.75; // Starting Robot FWD Speed;
 
     switch (Constants.currentMode) {
@@ -262,7 +262,7 @@ public class RobotContainer {
 
         // Climb Up
         driverPad
-            .y()
+            .x()
             .whileTrue(
                 Commands.parallel(
                     m_climber.setTaskEnd(Climber.Task.CLIMBING),
@@ -270,7 +270,7 @@ public class RobotContainer {
 
         // Climb Down
         driverPad
-            .x()
+            .y()
             .whileTrue(
                 Commands.parallel(
                     m_climber.setTaskEnd(Climber.Task.LOWERING),
@@ -280,7 +280,7 @@ public class RobotContainer {
          * Operator Commands
          *****************************************************************/
 
-        // Mast Preset for Climbing
+        // Mast Preset for Climbing and launch it
         operPad
             .leftBumper()
             .whileTrue(

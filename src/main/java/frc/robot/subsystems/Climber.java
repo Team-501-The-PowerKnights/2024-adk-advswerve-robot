@@ -57,7 +57,7 @@ public class Climber extends SubsystemBase {
     climber = new TalonFX(50);
 
     // configure motor(s)
-    climber.setInverted(false);
+    climber.setInverted(true);
 
     // Define what signals we need from the Talon(s)
     // BaseStatusSignal.setUpdateFrequencyForAll(
