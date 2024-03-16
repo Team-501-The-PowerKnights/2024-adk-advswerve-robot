@@ -89,12 +89,12 @@ public class RobotContainer {
             break;
 
           case REAL:
-            // try {
-            // wait(2000);
-            // } catch (InterruptedException e) {
-            // System.err.println("interrupted wait");
-            // e.printStackTrace();
-            // }
+            try {
+              Thread.sleep(2000);
+            } catch (InterruptedException e) {
+              System.err.println("interrupted wait");
+              e.printStackTrace();
+            }
             drive =
                 new Drive(
                     new GyroIOPigeon2(false),
@@ -103,12 +103,12 @@ public class RobotContainer {
                     new ModuleIOSparkFlex(2), // BL
                     new ModuleIOSparkFlex(3)); // BR
 
-            // try {
-            // wait(2000);
-            // } catch (InterruptedException e) {
-            // System.err.println("interrupted wait");
-            // e.printStackTrace();
-            // }
+            try {
+              Thread.sleep(2000);
+            } catch (InterruptedException e) {
+              System.err.println("interrupted wait");
+              e.printStackTrace();
+            }
             m_intake = new Intake();
             m_feeder = new Feeder();
             m_launcher = new Launcher();
