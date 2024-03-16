@@ -14,6 +14,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -59,7 +60,7 @@ public class RobotContainer {
   private final Climber m_climber;
   public static final TopFeederSensor m_topFeederSensor = new TopFeederSensor();
   public static final TopIncrementerSensor m_topIncrementerSensor = new TopIncrementerSensor();
-  ;
+  CameraServer cameraServer;
 
   // Controller
   private final CommandXboxController driverPad = new CommandXboxController(0);
@@ -67,6 +68,10 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    cameraServer.startAutomaticCapture();
+    final double FWDSpeed = 0.75; // Starting Robot FWD Speed;
+
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
@@ -201,9 +206,18 @@ public class RobotContainer {
         drive.setDefaultCommand(
             DriveCommands.joystickDrive(
                 drive,
-                () -> (MathUtil.applyDeadband(driverPad.getLeftY() * .5, .07)),
-                () -> (MathUtil.applyDeadband(driverPad.getLeftX() * .5, .07)),
-                () -> (MathUtil.applyDeadband(-driverPad.getRightX() * 0.5, .07))));
+                () -> (MathUtil.applyDeadband(-driverPad.getLeftY() * .75, .07)),
+                () -> (MathUtil.applyDeadband(-driverPad.getLeftX() * .75, .07)),
+                () -> (MathUtil.applyDeadband(driverPad.getRightX() * .75, .07))));
+
+        driverPad
+            .leftBumper()
+            .whileTrue(
+                DriveCommands.joystickDrive(
+                    drive,
+                    () -> (MathUtil.applyDeadband(-driverPad.getLeftY(), .07)),
+                    () -> (MathUtil.applyDeadband(-driverPad.getLeftX() * .75, .07)),
+                    () -> (MathUtil.applyDeadband(driverPad.getRightX() * .75, .07))));
 
         // Intake Note and Load into Launcher
         /*
