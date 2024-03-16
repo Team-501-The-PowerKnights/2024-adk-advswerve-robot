@@ -34,7 +34,7 @@ public class Mast extends SubsystemBase {
     PUTAMP("PutAmp", -35.0), // tested
     PUTTRAP("PutTrap", 3.0),
     CLEARJAM("Clear", 40.0),
-    CLIMBING("Climbing", 0.0),
+    CLIMBING("Climbing", 10.0),
     TESTING("Testing", 0.0),
     IDLE("Idle", 0.0),
     OFFKICKSTAND("Off Kickstand", 70.00),
