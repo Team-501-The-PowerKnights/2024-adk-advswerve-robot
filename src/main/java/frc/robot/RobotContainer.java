@@ -65,12 +65,12 @@ public class RobotContainer {
   private final CommandXboxController driverPad = new CommandXboxController(0);
   private final CommandXboxController operPad = new CommandXboxController(1);
 
+  private double directionSign;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
     CameraServer.startAutomaticCapture();
-
-    final double FWDSpeed = 0.75; // Starting Robot FWD Speed;
 
     switch (Constants.currentMode) {
       case REAL:
@@ -208,7 +208,7 @@ public class RobotContainer {
                 drive,
                 () -> (MathUtil.applyDeadband(-driverPad.getLeftY() * .65, .07)),
                 () -> (MathUtil.applyDeadband(-driverPad.getLeftX() * .65, .07)),
-                () -> (MathUtil.applyDeadband(driverPad.getRightX() * .65, .07))));
+                () -> (MathUtil.applyDeadband(-driverPad.getRightX() * .65, .07))));
 
         driverPad
             .leftBumper()
@@ -217,7 +217,7 @@ public class RobotContainer {
                     drive,
                     () -> (MathUtil.applyDeadband(-driverPad.getLeftY(), .07)),
                     () -> (MathUtil.applyDeadband(-driverPad.getLeftX() * .65, .07)),
-                    () -> (MathUtil.applyDeadband(driverPad.getRightX() * .65, .07))));
+                    () -> (MathUtil.applyDeadband(-driverPad.getRightX() * .65, .07))));
 
         // Intake Note and Load into Launcher
         /*
@@ -355,9 +355,11 @@ public class RobotContainer {
   //
   private enum AutoSelection {
     // @formatter:off
-    doNothing("doNothing", "Do Nothing Auto"),
+    doNothing("Do Nothing", "Do Nothing Auto"),
     //
-    doSimpleTest("doSimpleTest", "Simple Test Auto");
+    sitStill("Sit Still", "Sit Still Auto"),
+    //
+    simpleTest("Simple Test", "Simple Test Auto");
     //
     // doSimpleBackward("doSimpleBackward", null),
     // doSimpleForward("doSimpleForward", null);
@@ -395,7 +397,9 @@ public class RobotContainer {
 
     /** Test */
     //
-    autoChooser.addOption("Do Test", AutoSelection.doSimpleTest);
+    autoChooser.addOption("Sit Still", AutoSelection.sitStill);
+    //
+    autoChooser.addOption("Simple Test", AutoSelection.simpleTest);
 
     /** Drive */
     //
@@ -418,7 +422,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     autoSelected = autoChooser.getSelected();
-    return new PathPlannerAuto(autoSelected.getPathName());
-    // return null;
+    if (autoSelected == AutoSelection.doNothing) {
+      return null;
+    } else {
+      return new PathPlannerAuto(autoSelected.getPathName());
+    }
   }
 }
