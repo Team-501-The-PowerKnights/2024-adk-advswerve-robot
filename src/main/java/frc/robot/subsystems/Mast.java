@@ -32,9 +32,9 @@ public class Mast extends SubsystemBase {
     LAUCNHKEY("Launch Key", 65.0),
     LAUNCHAUTO("Launch Auto", 6.0),
     PUTAMP("PutAmp", -35.0), // tested
-    PUTTRAP("PutTrap", 3.0),
+    PUTTRAP("PutTrap", 7.0),
     CLEARJAM("Clear", 40.0),
-    CLIMBING("Climbing", 10.0),
+    CLIMBING("Climbing", 7.0),
     TESTING("Testing", 0.0),
     IDLE("Idle", 0.0),
     OFFKICKSTAND("Off Kickstand", 70.00),
