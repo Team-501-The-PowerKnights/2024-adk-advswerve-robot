@@ -380,8 +380,8 @@ public class RobotContainer {
     // doSimpleBackward("doSimpleBackward", null),
     // doSimpleForward("doSimpleForward", null);
     //
-    rightShootAuto("R Shoot Auto", "Right Shoot Auto"),
-    leftShootAuto("L Shoot Auto", "Left Shoot Auto");
+    wideShootAuto("Wide Shoot Auto", "Wide Shoot Auto"),
+    narrowShootAuto("Narrow Shoot Auto", "Narrow Shoot Auto");
     // @formatter:on
 
     private final String name;
@@ -429,9 +429,9 @@ public class RobotContainer {
     // autoChooser.addOption("Simple FORWARD", AutoSelection.doSimpleForward);
 
     /** Simple Shoot w/ Starting Note */
-    autoChooser.addOption("L Scoot & Shoot", AutoSelection.leftShootAuto);
+    autoChooser.addOption("Narrow Scoot & Shoot", AutoSelection.narrowShootAuto);
     //
-    autoChooser.addOption("R Scoot & Shoot", AutoSelection.rightShootAuto);
+    autoChooser.addOption("Wide Scoot & Shoot", AutoSelection.wideShootAuto);
 
     // Put the chooser on the dashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
