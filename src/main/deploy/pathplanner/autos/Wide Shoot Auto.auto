@@ -22,6 +22,12 @@
           "data": {
             "name": "Shoot Auto w/ Pre-Load"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wide 02 Path"
+          }
         }
       ]
     }
