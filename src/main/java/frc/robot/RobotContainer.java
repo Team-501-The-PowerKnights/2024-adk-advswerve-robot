@@ -13,6 +13,7 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
@@ -179,6 +180,9 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+
+    // Register the commands for Path Planner
+    configurePathPlannerCommands();
 
     // Create the auto chooser for dashboard
     createAutoChooser();
@@ -352,17 +356,32 @@ public class RobotContainer {
     }
   }
 
+  void configurePathPlannerCommands() {
+    NamedCommands.registerCommand(
+        "Shoot Auto w/ Pre-Load",
+        Commands.sequence(
+            new WaitCommand(1.0),
+            m_mast.setTask(Mast.Task.LAUNCHSUB),
+            m_launcher.setTask(Launcher.Task.LAUNCHSUB),
+            new WaitUntilCommand(m_launcher::atSpeed),
+            m_incrementer.setTask(Incrementer.Task.LAUNCHMAN)));
+  }
+
   //
   private enum AutoSelection {
     // @formatter:off
     doNothing("Do Nothing", "Do Nothing Auto"),
     //
     sitStill("Sit Still", "Sit Still Auto"),
+    sitStillShootAuto("Sit Still and Shoot", "Sit Still and Shoot Auto"),
     //
-    simpleTest("Simple Test", "Simple Test Auto");
+    simpleTest("Simple Test", "Simple Test Auto"),
     //
     // doSimpleBackward("doSimpleBackward", null),
     // doSimpleForward("doSimpleForward", null);
+    //
+    rightShootAuto("R Shoot Auto", "Right Shoot Auto"),
+    leftShootAuto("L Shoot Auto", "Left Shoot Auto");
     // @formatter:on
 
     private final String name;
@@ -399,6 +418,8 @@ public class RobotContainer {
     //
     autoChooser.addOption("Sit Still", AutoSelection.sitStill);
     //
+    autoChooser.addOption("Sit Still and Shoot", AutoSelection.sitStillShootAuto);
+    //
     autoChooser.addOption("Simple Test", AutoSelection.simpleTest);
 
     /** Drive */
@@ -406,6 +427,11 @@ public class RobotContainer {
     // autoChooser.addOption("Simple BACKWARD", AutoSelection.doSimpleBackward);
     //
     // autoChooser.addOption("Simple FORWARD", AutoSelection.doSimpleForward);
+
+    /** Simple Shoot w/ Starting Note */
+    autoChooser.addOption("L Scoot & Shoot", AutoSelection.leftShootAuto);
+    //
+    autoChooser.addOption("R Scoot & Shoot", AutoSelection.rightShootAuto);
 
     // Put the chooser on the dashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
