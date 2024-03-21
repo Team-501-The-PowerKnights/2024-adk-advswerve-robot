@@ -13,7 +13,9 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -54,19 +56,23 @@ public class RobotContainer {
   private final Intake m_intake;
   private final Feeder m_feeder;
   private final Incrementer m_incrementer;
-  public static final Launcher m_launcher = new Launcher();
+  private final Launcher m_launcher;
   private final Mast m_mast;
   private final Climber m_climber;
   public static final TopFeederSensor m_topFeederSensor = new TopFeederSensor();
   public static final TopIncrementerSensor m_topIncrementerSensor = new TopIncrementerSensor();
-  ;
 
   // Controller
   private final CommandXboxController driverPad = new CommandXboxController(0);
   private final CommandXboxController operPad = new CommandXboxController(1);
 
+  private double directionSign;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    CameraServer.startAutomaticCapture();
+
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
@@ -83,12 +89,18 @@ public class RobotContainer {
             m_intake = null;
             m_feeder = null;
             m_incrementer = null;
-            // m_launcher = null;
+            m_launcher = null;
             m_climber = null;
             m_mast = null;
             break;
 
           case REAL:
+            try {
+              Thread.sleep(2000);
+            } catch (InterruptedException e) {
+              System.err.println("interrupted wait");
+              e.printStackTrace();
+            }
             drive =
                 new Drive(
                     new GyroIOPigeon2(false),
@@ -97,10 +109,16 @@ public class RobotContainer {
                     new ModuleIOSparkFlex(2), // BL
                     new ModuleIOSparkFlex(3)); // BR
 
+            try {
+              Thread.sleep(2000);
+            } catch (InterruptedException e) {
+              System.err.println("interrupted wait");
+              e.printStackTrace();
+            }
             m_intake = new Intake();
             m_feeder = new Feeder();
+            m_launcher = new Launcher();
             m_incrementer = new Incrementer();
-            // m_launcher = new Launcher();
             m_mast = new Mast();
             m_climber = new Climber();
             break;
@@ -118,7 +136,7 @@ public class RobotContainer {
             m_intake = null;
             m_feeder = null;
             m_incrementer = null;
-            // m_launcher = null;
+            m_launcher = null;
             m_mast = null;
             m_climber = null;
             break;
@@ -137,7 +155,7 @@ public class RobotContainer {
         m_intake = new Intake();
         m_feeder = new Feeder();
         m_incrementer = new Incrementer();
-        // m_launcher = new Launcher();
+        m_launcher = new Launcher();
         m_mast = new Mast();
         m_climber = new Climber();
         break;
@@ -154,7 +172,7 @@ public class RobotContainer {
         m_intake = null;
         m_feeder = null;
         m_incrementer = null;
-        // m_launcher = null;
+        m_launcher = null;
         m_mast = null;
         m_climber = null;
         break;
@@ -162,6 +180,9 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+
+    // Register the commands for Path Planner
+    configurePathPlannerCommands();
 
     // Create the auto chooser for dashboard
     createAutoChooser();
@@ -189,9 +210,18 @@ public class RobotContainer {
         drive.setDefaultCommand(
             DriveCommands.joystickDrive(
                 drive,
-                () -> (MathUtil.applyDeadband(driverPad.getLeftY() * .5, .07)),
-                () -> (MathUtil.applyDeadband(driverPad.getLeftX() * .5, .07)),
-                () -> (MathUtil.applyDeadband(-driverPad.getRightX() * 0.5, .07))));
+                () -> (MathUtil.applyDeadband(-driverPad.getLeftY() * .65, .07)),
+                () -> (MathUtil.applyDeadband(-driverPad.getLeftX() * .65, .07)),
+                () -> (MathUtil.applyDeadband(-driverPad.getRightX() * .65, .07))));
+
+        driverPad
+            .leftBumper()
+            .whileTrue(
+                DriveCommands.joystickDrive(
+                    drive,
+                    () -> (MathUtil.applyDeadband(-driverPad.getLeftY(), .07)),
+                    () -> (MathUtil.applyDeadband(-driverPad.getLeftX() * .65, .07)),
+                    () -> (MathUtil.applyDeadband(-driverPad.getRightX() * .65, .07))));
 
         // Intake Note and Load into Launcher
         /*
@@ -206,7 +236,8 @@ public class RobotContainer {
          * m_launcher.setTask(Launcher.Task.IDLE),
          * m_climber.setTask(Climber.Task.CLIMBING)));
          */
-        // Intake Note and Load into Launcher
+
+        // Intake Note and Pass to Launcher (stop high)
         driverPad
             .rightTrigger()
             .whileTrue(
@@ -221,6 +252,7 @@ public class RobotContainer {
                     new WaitUntilCommand(m_topIncrementerSensor::get),
                     m_launcher.setTask(Launcher.Task.IDLE)));
 
+        // Intake Note and Load Feeder (stop low)
         driverPad
             .a()
             .whileTrue(
@@ -232,11 +264,35 @@ public class RobotContainer {
                     m_feeder.setTask(Task.IDLE),
                     m_feeder.setTask(Feeder.Task.IDLE)));
 
+        // Climb Up
+        driverPad
+            .x()
+            .whileTrue(
+                Commands.parallel(
+                    m_climber.setTaskEnd(Climber.Task.CLIMBING),
+                    m_mast.setTask(Mast.Task.CLIMBING)));
+
+        // Climb Down
+        driverPad
+            .y()
+            .whileTrue(
+                Commands.parallel(
+                    m_climber.setTaskEnd(Climber.Task.LOWERING),
+                    m_mast.setTask(Mast.Task.CLIMBING)));
+
         /********************************************************************
          * Operator Commands
          *****************************************************************/
-        // Mast Preset for Climbing
-        operPad.rightBumper().whileTrue(Commands.sequence(m_mast.setTask(Mast.Task.CLIMBING)));
+
+        // Mast Preset for Climbing and launch it
+        operPad
+            .leftBumper()
+            .whileTrue(
+                Commands.sequence(
+                    m_mast.setTask(Mast.Task.CLIMBING),
+                    m_launcher.setTask(Launcher.Task.LAUNCHTRAP),
+                    new WaitUntilCommand(m_launcher::atSpeed),
+                    m_incrementer.setTask(Incrementer.Task.LAUNCHMAN)));
 
         // Tranfer Note into Launcher
         operPad
@@ -300,15 +356,32 @@ public class RobotContainer {
     }
   }
 
+  void configurePathPlannerCommands() {
+    NamedCommands.registerCommand(
+        "Shoot Auto w/ Pre-Load",
+        Commands.sequence(
+            new WaitCommand(1.0),
+            m_mast.setTask(Mast.Task.LAUNCHSUB),
+            m_launcher.setTask(Launcher.Task.LAUNCHSUB),
+            new WaitUntilCommand(m_launcher::atSpeed),
+            m_incrementer.setTask(Incrementer.Task.LAUNCHMAN)));
+  }
+
   //
   private enum AutoSelection {
     // @formatter:off
-    doNothing("doNothing", null),
+    doNothing("Do Nothing", "Do Nothing Auto"),
     //
-    doTest("doTest", "Angle Test Auto"),
+    sitStill("Sit Still", "Sit Still Auto"),
+    sitStillShootAuto("Sit Still and Shoot", "Sit Still and Shoot Auto"),
     //
-    doSimpleBackward("doSimpleBackward", null),
-    doSimpleForward("doSimpleForward", null);
+    simpleTest("Simple Test", "Simple Test Auto"),
+    //
+    // doSimpleBackward("doSimpleBackward", null),
+    // doSimpleForward("doSimpleForward", null);
+    //
+    wideShootAuto("Wide Shoot Auto", "Wide Shoot Auto"),
+    narrowShootAuto("Narrow Shoot Auto", "Narrow Shoot Auto");
     // @formatter:on
 
     private final String name;
@@ -343,13 +416,22 @@ public class RobotContainer {
 
     /** Test */
     //
-    autoChooser.addOption("Do Test", AutoSelection.doTest);
+    autoChooser.addOption("Sit Still", AutoSelection.sitStill);
+    //
+    autoChooser.addOption("Sit Still and Shoot", AutoSelection.sitStillShootAuto);
+    //
+    autoChooser.addOption("Simple Test", AutoSelection.simpleTest);
 
     /** Drive */
     //
-    autoChooser.addOption("Simple BACKWARD", AutoSelection.doSimpleBackward);
+    // autoChooser.addOption("Simple BACKWARD", AutoSelection.doSimpleBackward);
     //
-    autoChooser.addOption("Simple FORWARD", AutoSelection.doSimpleForward);
+    // autoChooser.addOption("Simple FORWARD", AutoSelection.doSimpleForward);
+
+    /** Simple Shoot w/ Starting Note */
+    autoChooser.addOption("Narrow Scoot & Shoot", AutoSelection.narrowShootAuto);
+    //
+    autoChooser.addOption("Wide Scoot & Shoot", AutoSelection.wideShootAuto);
 
     // Put the chooser on the dashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -366,6 +448,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     autoSelected = autoChooser.getSelected();
-    return new PathPlannerAuto(autoSelected.getPathName());
+    if (autoSelected == AutoSelection.doNothing) {
+      return null;
+    } else {
+      return new PathPlannerAuto(autoSelected.getPathName());
+    }
   }
 }
