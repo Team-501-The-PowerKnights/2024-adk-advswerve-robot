@@ -13,11 +13,16 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.Feeder;
@@ -144,6 +149,12 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+
+    // Register the commands for Path Planner
+    configurePathPlannerCommands();
+
+    // Create the auto chooser for dashboard
+    createAutoChooser();
   }
 
   // STU
@@ -217,12 +228,101 @@ public class RobotContainer {
     }
   }
 
+  void configurePathPlannerCommands() {
+    NamedCommands.registerCommand(
+        "Shoot Auto w/ Pre-Load", Commands.sequence(new WaitCommand(3.0)));
+  }
+
+  //
+  private enum AutoSelection {
+    // @formatter:off
+    doNothing("Do Nothing", "Do Nothing Auto"),
+    //
+    simpleTest("Simple Test", "Simple Test Auto"),
+    complexText("Complex Test", "Complex Test Auto"),
+    //
+    sitStill("Sit Still", "Sit Still Auto"),
+    sitStillShootAuto("Sit Still and Shoot", "Sit Still and Shoot Auto"),
+    //
+    // doSimpleBackward("doSimpleBackward", null),
+    // doSimpleForward("doSimpleForward", null);
+    //
+    wideShootAuto("Wide Shoot Auto", "Wide Shoot Auto"),
+    narrowShootAuto("Narrow Shoot Auto", "Narrow Shoot Auto");
+    // @formatter:on
+
+    private final String name;
+
+    private final String pathName;
+
+    private AutoSelection(String name, String pathName) {
+      this.name = name;
+      this.pathName = pathName;
+    }
+
+    @SuppressWarnings("unused")
+    public String getName() {
+      return name;
+    }
+
+    public String getPathName() {
+      return pathName;
+    }
+  }
+
+  // Chooser for autonomous command from Dashboard
+  private SendableChooser<AutoSelection> autoChooser;
+  // Command that was selected
+  private AutoSelection autoSelected;
+
+  public void createAutoChooser() {
+    autoChooser = new SendableChooser<>();
+
+    // Default option is safety of "do nothing"
+    autoChooser.setDefaultOption("Do Nothing", AutoSelection.doNothing);
+
+    /** Test */
+    //
+    autoChooser.addOption("Simple Test", AutoSelection.simpleTest);
+    //
+    autoChooser.addOption("Complex Test", AutoSelection.complexText);
+
+    /** Simple */
+    //
+    autoChooser.addOption("Sit Still", AutoSelection.sitStill);
+    //
+    autoChooser.addOption("Sit Still and Shoot", AutoSelection.sitStillShootAuto);
+
+    /** Drive */
+    //
+    // autoChooser.addOption("Simple BACKWARD", AutoSelection.doSimpleBackward);
+    //
+    // autoChooser.addOption("Simple FORWARD", AutoSelection.doSimpleForward);
+
+    /** Simple Shoot w/ Starting Note */
+    autoChooser.addOption("Narrow Scoot & Shoot", AutoSelection.narrowShootAuto);
+    //
+    autoChooser.addOption("Wide Scoot & Shoot", AutoSelection.wideShootAuto);
+
+    // Put the chooser on the dashboard
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+  }
+
+  public boolean isRealAutoSelected() {
+    return (autoChooser.getSelected() != AutoSelection.doNothing);
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("Stu Auto");
+    autoSelected = autoChooser.getSelected();
+    if (autoSelected == AutoSelection.doNothing) {
+      return null;
+    } else {
+      return new PathPlannerAuto(autoSelected.getPathName());
+    }
   }
 }

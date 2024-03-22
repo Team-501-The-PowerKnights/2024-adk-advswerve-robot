@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.54,
+      "y": 3.96
+    },
+    "rotation": 0.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wide 01 Path"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Auto w/ Pre-Load"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wide 02 Path"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
