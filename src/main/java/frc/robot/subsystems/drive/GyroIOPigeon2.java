@@ -64,7 +64,7 @@ public class GyroIOPigeon2 implements GyroIO {
     inputs.yawPosition = Rotation2d.fromDegrees(yaw.getValueAsDouble());
     inputs.yawVelocityRadPerSec = Units.degreesToRadians(yawVelocity.getValueAsDouble());
 
-    SmartDashboard.putNumber("STU.yawPosition", inputs.yawPosition.getRadians());
+    SmartDashboard.putNumber("STU.yawPosition", inputs.yawPosition.getDegrees());
     SmartDashboard.putNumber("STU.yawVelocity", inputs.yawVelocityRadPerSec);
 
     inputs.odometryYawTimestamps =
