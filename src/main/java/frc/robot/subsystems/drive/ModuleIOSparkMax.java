@@ -72,35 +72,35 @@ public class ModuleIOSparkMax implements ModuleIO {
         turnSparkMax = new CANSparkMax(2, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
         // MUST BE CALIBRATED
-        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(89.87)); // 92.35
+        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(91.26)); // 92.35
         break;
       case 1: // FR
         driveSparkMax = new CANSparkMax(5, MotorType.kBrushless);
         turnSparkMax = new CANSparkMax(6, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
         // MUST BE CALIBRATED
-        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(0.71)); // 0.00
+        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(1.08)); // 0.00
         break;
       case 2: // BL
         driveSparkMax = new CANSparkMax(3, MotorType.kBrushless);
         turnSparkMax = new CANSparkMax(4, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
         // MUST BE CALIBRATED
-        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(183.99)); // 182.64
+        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(186.45)); // 182.64
         break;
       case 3: // BR
         driveSparkMax = new CANSparkMax(7, MotorType.kBrushless);
         turnSparkMax = new CANSparkMax(8, MotorType.kBrushless);
         turnAbsoluteEncoder = turnSparkMax.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
         // MUST BE CALIBRATED
-        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(268.30)); // 266.58
+        absoluteEncoderOffset = new Rotation2d(Units.degreesToRadians(265.85)); // 266.58
         break;
       default:
         throw new RuntimeException("Invalid module index");
     }
 
-    driveSparkMax.restoreFactoryDefaults();
-    turnSparkMax.restoreFactoryDefaults();
+    // driveSparkMax.restoreFactoryDefaults();
+    // turnSparkMax.restoreFactoryDefaults();
 
     driveSparkMax.setCANTimeout(250);
     turnSparkMax.setCANTimeout(250);
