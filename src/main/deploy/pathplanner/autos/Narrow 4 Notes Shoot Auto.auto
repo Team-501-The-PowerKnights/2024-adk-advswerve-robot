@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.41,
-      "y": 7.07
+      "x": 0.5,
+      "y": 7.0
     },
-    "rotation": 0
+    "rotation": 0.0
   },
   "command": {
     "type": "sequential",
@@ -14,19 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Narrow 01 Start Path"
+            "pathName": "Narrow Path 01"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 5.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Narrow 02 Path"
+            "name": "Shoot Auto w/ Pre-Load"
           }
         },
         {
@@ -38,42 +32,36 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Narrow 03 Note 1 Pickup Path"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Narrow 03 Note 1 Shoot Path"
+            "pathName": "Narrow Path 02"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 5.0
+            "waitTime": 2.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Narrow 03 Note 2 Pickup Path"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Narrow 03 Note 2 Shoot Path"
+            "pathName": "Narrow Path 03"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 5.0
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Narrow Path 04"
           }
         }
       ]
     }
   },
-  "folder": "Stu",
+  "folder": null,
   "choreoAuto": false
 }

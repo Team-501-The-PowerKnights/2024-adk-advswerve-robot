@@ -3,11 +3,12 @@
   "robotLength": 0.7,
   "holonomicMode": true,
   "pathFolders": [
-    "Wide",
-    "Narrow"
+    "Adam",
+    "Stu Narrow",
+    "Stu Wide"
   ],
   "autoFolders": [
-    "New Folder"
+    "Stu"
   ],
   "defaultMaxVel": 1.0,
   "defaultMaxAccel": 1.0,

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 2.0,
+      "x": 0.5273974184312005,
       "y": 7.0
     },
-    "rotation": 180.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Example Path"
+            "pathName": "Narrow Path 01"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Climb Path 01"
           }
         }
       ]
