@@ -247,6 +247,13 @@ public class RobotContainer {
     // doSimpleBackward("doSimpleBackward", null),
     // doSimpleForward("doSimpleForward", null);
     //
+    // ADAM
+    //
+    narrowAdamShootAuto("Narrow 4 Notes Shoot Auto", "Narrow 4 Notes Shoot Auto"),
+    narrowAdamClimbAuto("Narrow 2 Notes Climb Auto", "Narrow 2 Notes Climb Auto"),
+    //
+    // STU
+    //
     wideShootAuto("Wide Shoot Auto", "Wide Shoot Auto"),
     narrowShootAuto("Narrow Shoot Auto", "Narrow Shoot Auto");
     // @formatter:on
@@ -299,10 +306,19 @@ public class RobotContainer {
     //
     // autoChooser.addOption("Simple FORWARD", AutoSelection.doSimpleForward);
 
+    /** Adam's Autos */
+
     /** Simple Shoot w/ Starting Note */
-    autoChooser.addOption("Narrow Scoot & Shoot", AutoSelection.narrowShootAuto);
+    autoChooser.addOption("[A] Narrow 4 Notes Shoot", AutoSelection.narrowAdamShootAuto);
     //
-    autoChooser.addOption("Wide Scoot & Shoot", AutoSelection.wideShootAuto);
+    autoChooser.addOption("[A] Narrow 2 Notes Climb", AutoSelection.narrowAdamClimbAuto);
+
+    /** Stu's Autos */
+
+    /** Simple Shoot w/ Starting Note */
+    autoChooser.addOption("[S] Narrow Scoot & Shoot", AutoSelection.narrowShootAuto);
+    //
+    autoChooser.addOption("[S] Wide Scoot & Shoot", AutoSelection.wideShootAuto);
 
     // Put the chooser on the dashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
