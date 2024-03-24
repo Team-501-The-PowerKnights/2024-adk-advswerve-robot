@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.5273974184312005,
+      "y": 7.0
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Narrow Path 01"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Narrow Path 02"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Climb"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
