@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.5,
-      "y": 7.0
+      "x": 0.41,
+      "y": 6.89
     },
     "rotation": 0.0
   },
@@ -45,18 +45,6 @@
           "type": "path",
           "data": {
             "pathName": "Narrow Path 03"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Narrow Path 04"
           }
         }
       ]

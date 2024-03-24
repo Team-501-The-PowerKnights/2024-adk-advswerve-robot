@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.5806173256182129,
-        "y": 7.092703226502344
+        "x": 0.41,
+        "y": 6.89
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.6030356678693072,
-        "y": 7.092703226502344
+        "x": 0.43241834225109427,
+        "y": 6.89
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.3070140425995143,
-        "y": 6.611415508545304
+        "x": 1.54,
+        "y": 6.42
       },
       "prevControl": {
-        "x": 1.4070140425995143,
-        "y": 6.611415508545304
+        "x": 1.6400000000000001,
+        "y": 6.42
       },
       "nextControl": null,
       "isLocked": false,
@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Stu Narrow",
+  "folder": "Adam",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
