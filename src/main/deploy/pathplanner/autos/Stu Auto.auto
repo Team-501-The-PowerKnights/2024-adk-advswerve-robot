@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.58,
-      "y": 7.09
+      "x": 0.500743858630575,
+      "y": 7.329728945172176
     },
     "rotation": 0.0
   },
@@ -14,13 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Narrow 01 Start Path"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot Auto w/ Pre-Load"
+            "pathName": "1+Curve-Around"
           }
         }
       ]

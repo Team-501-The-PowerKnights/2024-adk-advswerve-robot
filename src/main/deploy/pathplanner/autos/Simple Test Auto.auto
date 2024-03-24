@@ -2,30 +2,24 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 2.0,
-      "y": 7.0
+      "x": 0.41,
+      "y": 7.03
     },
-    "rotation": 180.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Run Flywheel"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "Example Path"
+            "pathName": "1+Straight-to-Line"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Stu",
   "choreoAuto": false
 }
