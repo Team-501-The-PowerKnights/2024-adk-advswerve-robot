@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.ClimbLimitSensors;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Feeder.Task;
@@ -61,6 +62,7 @@ public class RobotContainer {
   private final Climber m_climber;
   public static final TopFeederSensor m_topFeederSensor = new TopFeederSensor();
   public static final TopIncrementerSensor m_topIncrementerSensor = new TopIncrementerSensor();
+  public static final ClimbLimitSensors m_climbLimitSensors = new ClimbLimitSensors();
 
   // Controller
   private final CommandXboxController driverPad = new CommandXboxController(0);
@@ -382,6 +384,7 @@ public class RobotContainer {
     //
     wideShootAuto("Wide Shoot Auto", "Wide Shoot Auto"),
     narrowShootAuto("Narrow Shoot Auto", "Narrow Shoot Auto");
+  
     // @formatter:on
 
     private final String name;
