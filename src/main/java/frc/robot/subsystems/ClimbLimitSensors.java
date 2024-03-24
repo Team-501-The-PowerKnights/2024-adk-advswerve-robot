@@ -13,7 +13,7 @@ public class ClimbLimitSensors extends SubsystemBase {
   public ClimbLimitSensors() {
 
     LeftClimbSensor = new DigitalInput(2);
-    RightClimbSensor = new DigitalInput(3);
+    RightClimbSensor = new DigitalInput(4);
     /*
     if (RobotBase.isReal()) {
       // Note Detection Filter for Real Robots

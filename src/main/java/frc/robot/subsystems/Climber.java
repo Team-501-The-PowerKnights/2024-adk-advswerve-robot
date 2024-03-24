@@ -4,12 +4,9 @@ import static frc.robot.Constants.ClimberConstants.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
-
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
-
 import org.littletonrobotics.junction.Logger;
 
 public class Climber extends SubsystemBase {
@@ -104,8 +101,7 @@ public class Climber extends SubsystemBase {
 
   // Sets the speed of the lead motor open loop
   public void setClimberSpeedOL(double speed) {
-    if (currentTask == Task.CLIMBING && RobotContainer.m_climbLimitSensors.get())
-    climber.set(0);
+    if (currentTask == Task.CLIMBING && RobotContainer.m_climbLimitSensors.get()) climber.set(0);
     else {
       climber.set(-speed);
     }
@@ -149,17 +145,13 @@ public class Climber extends SubsystemBase {
   @Override
   public void periodic() {
 
-    //If we hit the limit go back to IDLE
-    if (currentTask == Task.CLIMBING && RobotContainer.m_climbLimitSensors.get()){
+    // If we hit the limit go back to IDLE
+    if (currentTask == Task.CLIMBING && RobotContainer.m_climbLimitSensors.get()) {
       currentTask = Task.IDLE;
-      }
+    }
 
     // Update Current Task
     setClimberSpeedOL(currentTask.getSpeed());
-
-  
-
-    
 
     // Log Status
     Logger.recordOutput("Climber/Output", climber.get());
