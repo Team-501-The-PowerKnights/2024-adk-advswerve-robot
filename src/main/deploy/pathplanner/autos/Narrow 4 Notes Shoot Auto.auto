@@ -3,7 +3,7 @@
   "startingPose": {
     "position": {
       "x": 0.5,
-      "y": 7.0
+      "y": 6.97
     },
     "rotation": 0.0
   },
@@ -20,7 +20,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot Auto w/ Pre-Load"
+            "name": "Shoot Auto AMP w/ Pre-Load"
           }
         },
         {
@@ -30,33 +30,60 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Narrow Path 02"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Narrow Path 02"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Pickup and Load"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "wait",
+          "type": "sequential",
           "data": {
-            "waitTime": 2.0
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot Auto Note 1 w/ Pre-Load"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Narrow Path 03"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Narrow Path 03"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Pickup and Load"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 2.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Narrow Path 04"
+            "name": "Shoot Auto Note 2 w/ Pre-Load"
           }
         }
       ]

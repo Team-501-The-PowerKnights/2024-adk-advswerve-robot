@@ -27,7 +27,9 @@ public class Launcher extends SubsystemBase {
     PUTAMP("Note->Amp", 0.0, 0.0),
     LAUNCHTRAP("Launch Tap", 0.25, 1000),
     CLEARJAM("Clear", 0.25, 1000.0),
-    IDLE("Idle", 0.0, 0.0);
+    IDLE("Idle", 0.0, 0.0),
+    LAUCNHNOTE1("Launch Note 1", .67, 55.0),
+    LAUCNHNOTE2("Launch Note 2", .55, 45.0);
 
     private final String taskName;
     private final double speed;
