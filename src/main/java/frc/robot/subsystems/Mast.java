@@ -38,9 +38,11 @@ public class Mast extends SubsystemBase {
     CLIMBING("Climbing", -7.0),
     TESTING("Testing", 0.0),
     IDLE("Idle", 0.0),
-    OFFKICKSTAND("Off Kickstand", 70.00),
+    OFFKICKSTAND("Off Kickstand", 50.00),
     BUMPUP("Bump Up", 1.0),
-    BUMPDOWN("Bump Down", -1.0);
+    BUMPDOWN("Bump Down", -1.0),
+    LAUCNHNOTE1("Launch Note 1", 52.0),
+    LAUCNHNOTE2("Launch Note 2", 56.0);
 
     private final String taskName;
     private final double angle;
@@ -210,7 +212,7 @@ public class Mast extends SubsystemBase {
         (relmastRightEncoder.getPosition() * 360 / gearRatio); // + mastStartingAngleOffset;
 
     // Remove backlash from Launcher by syncing constantly
-    if (counts == 70) {
+    if (counts == 60) {
       double ABStoRel = getAbsoluteEncoderDegrees() * 37.5 / 360;
       relmastLeftEncoder.setPosition(-ABStoRel);
       relmastRightEncoder.setPosition(-ABStoRel);

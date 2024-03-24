@@ -16,15 +16,15 @@
     },
     {
       "anchor": {
-        "x": 3.1541057367829026,
+        "x": 3.18,
         "y": 6.92
       },
       "prevControl": {
-        "x": 2.622367218760412,
+        "x": 2.6482614819775097,
         "y": 6.873356270349359
       },
       "nextControl": {
-        "x": 3.4236045029359263,
+        "x": 3.449498766153024,
         "y": 6.943640242645597
       },
       "isLocked": false,
@@ -65,7 +65,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Adam",
+  "folder": null,
   "previewStartingState": {
     "rotation": 42.0,
     "velocity": 0

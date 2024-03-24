@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.66111693281934,
-        "y": 6.440745024709097
+        "x": 4.385500199571828,
+        "y": 6.611415508545304
       },
       "isLocked": false,
       "linkedName": null
@@ -20,8 +20,8 @@
         "y": 5.2
       },
       "prevControl": {
-        "x": 4.238905620668384,
-        "y": 5.292064298414312
+        "x": 4.4734569469138945,
+        "y": 5.321383214195
       },
       "nextControl": null,
       "isLocked": false,
@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Adam",
+  "folder": null,
   "previewStartingState": {
     "rotation": 25.0,
     "velocity": 0
