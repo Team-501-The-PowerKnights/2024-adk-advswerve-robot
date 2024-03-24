@@ -46,6 +46,18 @@
           "data": {
             "pathName": "Narrow Path 03"
           }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Narrow Path 04-No Note"
+          }
         }
       ]
     }
