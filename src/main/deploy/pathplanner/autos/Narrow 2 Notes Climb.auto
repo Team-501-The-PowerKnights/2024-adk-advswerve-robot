@@ -20,13 +20,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Narrow Path 02"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Climb"
+            "pathName": "Climb Path 01"
           }
         }
       ]
