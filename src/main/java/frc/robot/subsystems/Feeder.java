@@ -20,7 +20,7 @@ public class Feeder extends SubsystemBase {
     LAUNCHAUTO("Launching", 0.00),
     PUTAMP("PutAmp", 0.00),
     PUTRAP("PutTrap", 0.00),
-    CLEARJAM("Clear", 1.00),
+    CLEARJAM("Clear", -1.00),
     TRANSFER("Transfer", 0.40),
     IDLE("Idle", 0.0);
 

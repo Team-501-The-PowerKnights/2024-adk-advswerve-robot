@@ -291,8 +291,18 @@ public class RobotContainer {
             .leftBumper()
             .whileTrue(
                 Commands.sequence(
-                    m_mast.setTask(Mast.Task.CLIMBING),
+                    m_mast.setTask(Mast.Task.PUTTRAP),
                     m_launcher.setTask(Launcher.Task.LAUNCHTRAP),
+                    new WaitUntilCommand(m_launcher::atSpeed),
+                    m_incrementer.setTask(Incrementer.Task.LAUNCHMAN)));
+
+        // Pass to another robot
+        operPad
+            .rightTrigger()
+            .whileTrue(
+                Commands.sequence(
+                    m_mast.setTask(Mast.Task.LAUCNHPASS),
+                    m_launcher.setTask(Launcher.Task.LAUNCHPASS),
                     new WaitUntilCommand(m_launcher::atSpeed),
                     m_incrementer.setTask(Incrementer.Task.LAUNCHMAN)));
 
@@ -384,7 +394,7 @@ public class RobotContainer {
     //
     wideShootAuto("Wide Shoot Auto", "Wide Shoot Auto"),
     narrowShootAuto("Narrow Shoot Auto", "Narrow Shoot Auto");
-  
+
     // @formatter:on
 
     private final String name;

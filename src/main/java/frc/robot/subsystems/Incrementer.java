@@ -55,7 +55,7 @@ public class Incrementer extends SubsystemBase {
     incrementerLeft.setSmartCurrentLimit(kIncrementerCurrentLimit);
     incrementerRight.setSmartCurrentLimit(kIncrementerCurrentLimit);
 
-    incrementerLeft.setInverted(false);
+    incrementerLeft.setInverted(true);
     incrementerRight.setInverted(false);
 
     // Reduce canbus chatter

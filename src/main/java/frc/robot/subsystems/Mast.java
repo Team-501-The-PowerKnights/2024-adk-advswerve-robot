@@ -27,14 +27,15 @@ public class Mast extends SubsystemBase {
   // Mast at 90 Deg Abs=16.0, Rel= 43.00
 
   public enum Task {
-    INTAKING("Intaking", 36.0),
+    INTAKING("Intaking", 35.0),
     LAUNCHSUB("Launch Subwoofer", 40.0),
-    LAUCNHKEY("Launch Key", 65.0),
+    LAUCNHKEY("Launch Key", 60.5),
+    LAUCNHPASS("Launch Pass", 61.0),
     LAUNCHAUTO("Launch Auto", 6.0),
-    PUTAMP("PutAmp", -35.0), // tested
+    PUTAMP("PutAmp", -26.0), // tested
     PUTTRAP("PutTrap", 7.0),
     CLEARJAM("Clear", 40.0),
-    CLIMBING("Climbing", 7.0),
+    CLIMBING("Climbing", -7.0),
     TESTING("Testing", 0.0),
     IDLE("Idle", 0.0),
     OFFKICKSTAND("Off Kickstand", 70.00),
@@ -209,7 +210,7 @@ public class Mast extends SubsystemBase {
         (relmastRightEncoder.getPosition() * 360 / gearRatio); // + mastStartingAngleOffset;
 
     // Remove backlash from Launcher by syncing constantly
-    if (counts == 250) {
+    if (counts == 70) {
       double ABStoRel = getAbsoluteEncoderDegrees() * 37.5 / 360;
       relmastLeftEncoder.setPosition(-ABStoRel);
       relmastRightEncoder.setPosition(-ABStoRel);
