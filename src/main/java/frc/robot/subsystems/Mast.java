@@ -10,8 +10,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
-import edu.wpi.first.wpilibj.DigitalGlitchFilter;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -62,18 +60,16 @@ public class Mast extends SubsystemBase {
   }
 
   CANSparkMax mastLeft;
-  CANSparkMax mastRight;
-  DigitalInput mastSensor;
-  DigitalGlitchFilter mastSensorFilter;
+  // CANSparkMax mastRight;
 
   double mastSpeed;
   RelativeEncoder relmastLeftEncoder;
-  RelativeEncoder relmastRightEncoder;
+  // RelativeEncoder relmastRightEncoder;
   CommandXboxController operPad;
   AbsoluteEncoder absMastLeftEncoder;
 
   private static double leftEncAngle;
-  private static double rightEncAngle;
+  // private static double rightEncAngle;
   private static double AbsEncOffset;
   private static double testingAngle;
 
@@ -86,7 +82,7 @@ public class Mast extends SubsystemBase {
   public static double mastSetpoint;
 
   SparkPIDController mastLeftPIDController;
-  SparkPIDController mastRightPIDController;
+  // SparkPIDController mastRightPIDController;
 
   LoggedDashboardNumber testingAngleNumber;
   private static double counts = 0; // used for encoder sync
@@ -101,34 +97,31 @@ public class Mast extends SubsystemBase {
     currentTask = Task.OFFKICKSTAND;
 
     leftEncAngle = 0.0;
-    rightEncAngle = 0.0;
+    // rightEncAngle = 0.0;
     testingAngle = 0.0;
 
     mastKp = 0.8;
     mastKi = 0.002;
-    mastKd = 0.0;
+    mastKd = 2.0;
     double mastIWind = 100;
     mastFF = 0.0;
-    mastMaxPosOut = 0.2;
-    mastMaxNegOut = -0.2;
+    mastMaxPosOut = 0.3;
+    mastMaxNegOut = -0.3;
     mastSetpoint = 0.0;
 
     mastLeft = new CANSparkMax(kMastLeft, MotorType.kBrushless);
     mastLeft.restoreFactoryDefaults();
-
-    mastRight = new CANSparkMax(kMastRight, MotorType.kBrushless);
-    mastRight.restoreFactoryDefaults();
-
     mastLeft.setSmartCurrentLimit(kMastCurrentLimit);
-    mastRight.setSmartCurrentLimit(kMastCurrentLimit);
-
-    mastLeft.enableVoltageCompensation(12.0);
-    mastRight.enableVoltageCompensation(12.0);
-
+    mastLeft.enableVoltageCompensation(10.0);
     mastLeft.setIdleMode(IdleMode.kBrake); // Turn on the brake for PID
-    mastRight.setIdleMode(IdleMode.kBrake); // Turn off the brake other motor
     mastLeft.setInverted(false);
-    mastRight.setInverted(true);
+
+    // mastRight = new CANSparkMax(kMastRight, MotorType.kBrushless);
+    // mastRight.restoreFactoryDefaults();
+    // mastRight.setSmartCurrentLimit(kMastCurrentLimit);
+    // mastRight.enableVoltageCompensation(12.0);
+    // mastRight.setIdleMode(IdleMode.kBrake); // Turn off the brake other motor
+    // mastRight.setInverted(true);
     // mastRight.follow(mastLeft);
 
     absMastLeftEncoder = mastLeft.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
@@ -136,10 +129,10 @@ public class Mast extends SubsystemBase {
     absMastLeftEncoder.setInverted(true);
 
     relmastLeftEncoder = mastLeft.getEncoder();
-    relmastRightEncoder = mastRight.getEncoder();
+    // relmastRightEncoder = mastRight.getEncoder();
 
     mastLeftPIDController = mastLeft.getPIDController();
-    mastRightPIDController = mastRight.getPIDController();
+    // mastRightPIDController = mastRight.getPIDController();
     // set PID coefficients
     mastLeftPIDController.setP(mastKp);
     mastLeftPIDController.setI(mastKi);
@@ -147,24 +140,24 @@ public class Mast extends SubsystemBase {
     mastLeftPIDController.setIZone(mastIWind); // windup I
     mastLeftPIDController.setFF(mastFF);
     mastLeftPIDController.setOutputRange(mastMaxNegOut, mastMaxPosOut);
-    mastRightPIDController.setP(mastKp);
-    mastRightPIDController.setI(mastKi);
-    mastRightPIDController.setD(mastKd);
-    mastRightPIDController.setIZone(mastIWind); // windup I
-    mastRightPIDController.setFF(mastFF);
-    mastRightPIDController.setOutputRange(mastMaxNegOut, mastMaxPosOut);
+    // mastRightPIDController.setP(mastKp);
+    // mastRightPIDController.setI(mastKi);
+    // mastRightPIDController.setD(mastKd);
+    // mastRightPIDController.setIZone(mastIWind); // windup I
+    // mastRightPIDController.setFF(mastFF);
+    // mastRightPIDController.setOutputRange(mastMaxNegOut, mastMaxPosOut);
 
     testingAngleNumber = new LoggedDashboardNumber("Mast/Test_Angle", testingAngle);
     double ABStoRel = getAbsoluteEncoderDegrees() * 37.5 / 360;
     relmastLeftEncoder.setPosition(-ABStoRel);
-    relmastRightEncoder.setPosition(-ABStoRel);
+    // relmastRightEncoder.setPosition(-ABStoRel);
     System.out.println("Mast Constructed!!");
   }
 
   private void setMastPID(double setPoint) {
     mastSetpoint = -(setPoint * 37.5 / 360);
     mastLeftPIDController.setReference(mastSetpoint, ControlType.kPosition);
-    mastRightPIDController.setReference(mastSetpoint, ControlType.kPosition);
+    // mastRightPIDController.setReference(mastSetpoint, ControlType.kPosition);
     // System.out.println(mastSetpoint);
   }
 
@@ -208,14 +201,14 @@ public class Mast extends SubsystemBase {
     // Get Datafrom Sensors
     leftEncAngle =
         (relmastLeftEncoder.getPosition() * 360 / gearRatio); // + mastStartingAngleOffset;
-    rightEncAngle =
-        (relmastRightEncoder.getPosition() * 360 / gearRatio); // + mastStartingAngleOffset;
+    // rightEncAngle =
+    //     (relmastRightEncoder.getPosition() * 360 / gearRatio); // + mastStartingAngleOffset;
 
     // Remove backlash from Launcher by syncing constantly
-    if (counts == 60) {
+    if (counts == 50) {
       double ABStoRel = getAbsoluteEncoderDegrees() * 37.5 / 360;
       relmastLeftEncoder.setPosition(-ABStoRel);
-      relmastRightEncoder.setPosition(-ABStoRel);
+      // relmastRightEncoder.setPosition(-ABStoRel);
       counts = 0;
     }
     counts++;
@@ -228,10 +221,10 @@ public class Mast extends SubsystemBase {
     testingAngle = testingAngleNumber.get();
 
     Logger.recordOutput("Mast/Left_Enc", leftEncAngle);
-    Logger.recordOutput("Mast/Right_Enc", rightEncAngle);
+    // Logger.recordOutput("Mast/Right_Enc", rightEncAngle);
     Logger.recordOutput("Mast/Abs_Enc", getAbsoluteEncoderDegrees());
     Logger.recordOutput("Mast/LeftMotorOutput", mastLeft.get());
-    Logger.recordOutput("Mast/RightMotorOutput", mastRight.get());
+    // Logger.recordOutput("Mast/RightMotorOutput", mastRight.get());
     Logger.recordOutput("Mast/Current_Tsk", currentTask.getTaskName());
   }
 
