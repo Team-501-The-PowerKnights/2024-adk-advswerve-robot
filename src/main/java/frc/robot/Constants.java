@@ -62,7 +62,7 @@ public final class Constants {
     public static final int kFeederRight = 22;
     // Speed Controller Speeds
     public static final double kFeederSpeed = 1;
-    public static final int kFeederCurrentLimit = 20;
+    public static final int kFeederCurrentLimit = 40;
   }
 
   public static final class IncrementerConstants {
