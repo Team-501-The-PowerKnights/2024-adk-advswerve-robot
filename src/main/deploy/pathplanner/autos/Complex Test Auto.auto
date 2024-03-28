@@ -1,0 +1,79 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.41,
+      "y": 7.07
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Narrow 01 Start Path"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Narrow 02 Path"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Narrow 03 Note 1 Pickup Path"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Narrow 03 Note 1 Shoot Path"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Narrow 03 Note 2 Pickup Path"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Narrow 03 Note 2 Shoot Path"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Stu",
+  "choreoAuto": false
+}

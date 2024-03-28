@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.58,
-      "y": 7.09
+      "x": 0.5273974184312005,
+      "y": 7.0
     },
-    "rotation": 0.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -14,19 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Narrow 01 Path"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot Auto w/ Pre-Load"
+            "pathName": "Narrow Path 01"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Narrow 02 Notes Path"
+            "pathName": "Climb Path 01"
           }
         }
       ]

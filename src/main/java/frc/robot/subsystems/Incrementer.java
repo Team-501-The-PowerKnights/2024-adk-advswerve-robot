@@ -5,6 +5,7 @@ import static frc.robot.Constants.IncrementerConstants.*;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -55,7 +56,7 @@ public class Incrementer extends SubsystemBase {
     incrementerLeft.setSmartCurrentLimit(kIncrementerCurrentLimit);
     incrementerRight.setSmartCurrentLimit(kIncrementerCurrentLimit);
 
-    incrementerLeft.setInverted(false);
+    incrementerLeft.setInverted(true);
     incrementerRight.setInverted(false);
 
     // Reduce canbus chatter
@@ -115,6 +116,10 @@ public class Incrementer extends SubsystemBase {
     }
 
     if (currentTask == Task.LAUNCHMAN && !Launcher.getInstance().atSpeed()) {
+      currentTask = Task.IDLE;
+    }
+
+    if (DriverStation.isDisabled()) {
       currentTask = Task.IDLE;
     }
 

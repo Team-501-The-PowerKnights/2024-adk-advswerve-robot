@@ -28,6 +28,8 @@ import java.util.Queue;
 public class GyroIOPigeon2 implements GyroIO {
   private final Pigeon2 pigeon = new Pigeon2(10);
   private final StatusSignal<Double> yaw = pigeon.getYaw();
+  private final StatusSignal<Double> pitch = pigeon.getPitch();
+  private final StatusSignal<Double> roll = pigeon.getRoll();
   private final Queue<Double> yawPositionQueue;
   private final Queue<Double> yawTimestampQueue;
   private final StatusSignal<Double> yawVelocity = pigeon.getAngularVelocityZWorld();
@@ -36,6 +38,8 @@ public class GyroIOPigeon2 implements GyroIO {
     pigeon.getConfigurator().apply(new Pigeon2Configuration());
     pigeon.getConfigurator().setYaw(0.0);
     yaw.setUpdateFrequency(Module.ODOMETRY_FREQUENCY);
+    pitch.setUpdateFrequency(Module.ODOMETRY_FREQUENCY);
+    roll.setUpdateFrequency(Module.ODOMETRY_FREQUENCY);
     yawVelocity.setUpdateFrequency(100.0);
     pigeon.optimizeBusUtilization();
     if (phoenixDrive) {
@@ -49,7 +53,9 @@ public class GyroIOPigeon2 implements GyroIO {
               .registerSignal(
                   () -> {
                     boolean valid = yaw.refresh().getStatus().isOK();
-                    if (valid) {
+                    boolean valid2 = pitch.refresh().getStatus().isOK();
+                    boolean valid3 = roll.refresh().getStatus().isOK();
+                    if (valid && valid2 && valid3) {
                       return OptionalDouble.of(yaw.getValueAsDouble());
                     } else {
                       return OptionalDouble.empty();
@@ -63,9 +69,13 @@ public class GyroIOPigeon2 implements GyroIO {
     inputs.connected = BaseStatusSignal.refreshAll(yaw, yawVelocity).equals(StatusCode.OK);
     inputs.yawPosition = Rotation2d.fromDegrees(yaw.getValueAsDouble());
     inputs.yawVelocityRadPerSec = Units.degreesToRadians(yawVelocity.getValueAsDouble());
+    inputs.rollCurrent = roll.getValue(); // Added to add to monitoring for anti tip Adam
+    inputs.pitchCurrent = pitch.getValue(); // Added to add to monitoring for anti tip Adam
 
     SmartDashboard.putNumber("STU.yawPosition", inputs.yawPosition.getRadians());
     SmartDashboard.putNumber("STU.yawVelocity", inputs.yawVelocityRadPerSec);
+    SmartDashboard.putNumber("STU.Roll", inputs.rollCurrent);
+    SmartDashboard.putNumber("STU.Pitch", inputs.pitchCurrent);
 
     inputs.odometryYawTimestamps =
         yawTimestampQueue.stream().mapToDouble((Double value) -> value).toArray();

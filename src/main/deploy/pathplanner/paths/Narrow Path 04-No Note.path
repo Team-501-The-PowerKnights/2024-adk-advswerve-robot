@@ -3,32 +3,43 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.5381331310607826,
-        "y": 3.963034227438319
+        "x": 2.58,
+        "y": 5.2
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.6081331310607827,
-        "y": 3.963034227438319
+        "x": 2.392445077492279,
+        "y": 5.189612559506636
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.3,
-        "y": 4.331230580269381
+        "x": 2.85,
+        "y": 4.794975408132635
       },
       "prevControl": {
-        "x": 1.3573576436351047,
-        "y": 4.249315375840482
+        "x": 2.85,
+        "y": 5.1710291789217235
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": -90.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1.5,
+      "rotationDegrees": -90.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -39,11 +50,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -40.855376258895674,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Stu Wide",
+  "folder": "Adam",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

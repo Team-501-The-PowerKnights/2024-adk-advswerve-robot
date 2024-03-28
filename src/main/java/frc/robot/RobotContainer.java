@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
+import frc.robot.subsystems.ClimbLimitSensors;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Feeder.Task;
@@ -61,6 +62,7 @@ public class RobotContainer {
   private final Climber m_climber;
   public static final TopFeederSensor m_topFeederSensor = new TopFeederSensor();
   public static final TopIncrementerSensor m_topIncrementerSensor = new TopIncrementerSensor();
+  public static final ClimbLimitSensors m_climbLimitSensors = new ClimbLimitSensors();
 
   // Controller
   private final CommandXboxController driverPad = new CommandXboxController(0);
@@ -220,8 +222,8 @@ public class RobotContainer {
                 DriveCommands.joystickDrive(
                     drive,
                     () -> (MathUtil.applyDeadband(-driverPad.getLeftY(), .07)),
-                    () -> (MathUtil.applyDeadband(-driverPad.getLeftX() * .65, .07)),
-                    () -> (MathUtil.applyDeadband(-driverPad.getRightX() * .65, .07))));
+                    () -> (MathUtil.applyDeadband(-driverPad.getLeftX() * .75, .07)),
+                    () -> (MathUtil.applyDeadband(-driverPad.getRightX() * .75, .07))));
 
         // Intake Note and Load into Launcher
         /*
@@ -289,8 +291,18 @@ public class RobotContainer {
             .leftBumper()
             .whileTrue(
                 Commands.sequence(
-                    m_mast.setTask(Mast.Task.CLIMBING),
+                    m_mast.setTask(Mast.Task.PUTTRAP),
                     m_launcher.setTask(Launcher.Task.LAUNCHTRAP),
+                    new WaitUntilCommand(m_launcher::atSpeed),
+                    m_incrementer.setTask(Incrementer.Task.LAUNCHMAN)));
+
+        // Pass to another robot
+        operPad
+            .rightTrigger()
+            .whileTrue(
+                Commands.sequence(
+                    m_mast.setTask(Mast.Task.LAUCNHPASS),
+                    m_launcher.setTask(Launcher.Task.LAUNCHPASS),
                     new WaitUntilCommand(m_launcher::atSpeed),
                     m_incrementer.setTask(Incrementer.Task.LAUNCHMAN)));
 
@@ -358,13 +370,52 @@ public class RobotContainer {
 
   void configurePathPlannerCommands() {
     NamedCommands.registerCommand(
-        "Shoot Auto w/ Pre-Load",
+        "Shoot Auto AMP w/ Pre-Load",
         Commands.sequence(
             new WaitCommand(1.0),
             m_mast.setTask(Mast.Task.LAUNCHSUB),
             m_launcher.setTask(Launcher.Task.LAUNCHSUB),
             new WaitUntilCommand(m_launcher::atSpeed),
             m_incrementer.setTask(Incrementer.Task.LAUNCHMAN)));
+    NamedCommands.registerCommand(
+        "Shoot Auto Note 1 w/ Pre-Load",
+        Commands.sequence(
+            new WaitCommand(1.0),
+            m_mast.setTask(Mast.Task.LAUCNHNOTE1),
+            m_launcher.setTask(Launcher.Task.LAUCNHNOTE1),
+            new WaitUntilCommand(m_launcher::atSpeed),
+            m_incrementer.setTask(Incrementer.Task.LAUNCHMAN)));
+
+    NamedCommands.registerCommand(
+        "Shoot Auto Note 2 w/ Pre-Load",
+        Commands.sequence(
+            new WaitCommand(1.0),
+            m_mast.setTask(Mast.Task.LAUCNHNOTE2),
+            m_launcher.setTask(Launcher.Task.LAUCNHNOTE2),
+            new WaitUntilCommand(m_launcher::atSpeed),
+            m_incrementer.setTask(Incrementer.Task.LAUNCHMAN)));
+    NamedCommands.registerCommand(
+        "Pickup and Load",
+        Commands.sequence(
+            m_intake.setTask(Intake.Task.INTAKING),
+            m_feeder.setTask(Feeder.Task.INTAKING),
+            m_mast.setTask(Mast.Task.INTAKING),
+            new WaitUntilCommand(m_topFeederSensor::get),
+            m_feeder.setTask(Feeder.Task.IDLE),
+            m_incrementer.setTask(Incrementer.Task.TRANSFER),
+            m_feeder.setTask(Feeder.Task.TRANSFER),
+            new WaitUntilCommand(m_topIncrementerSensor::get),
+            m_feeder.setTask(Feeder.Task.IDLE),
+            m_launcher.setTask(Launcher.Task.IDLE)));
+    NamedCommands.registerCommand(
+        "Transfer to Launcher",
+        Commands.sequence(
+            m_mast.setTask(Mast.Task.INTAKING),
+            m_feeder.setTask(Feeder.Task.TRANSFER),
+            m_incrementer.setTask(Incrementer.Task.TRANSFER),
+            new WaitUntilCommand(m_topIncrementerSensor::get),
+            m_feeder.setTask(Feeder.Task.IDLE),
+            m_incrementer.setTask(Incrementer.Task.IDLE)));
   }
 
   //
@@ -372,13 +423,21 @@ public class RobotContainer {
     // @formatter:off
     doNothing("Do Nothing", "Do Nothing Auto"),
     //
+    simpleTest("Simple Test", "Simple Test Auto"),
+    complexText("Complex Test", "Complex Test Auto"),
+    //
     sitStill("Sit Still", "Sit Still Auto"),
     sitStillShootAuto("Sit Still and Shoot", "Sit Still and Shoot Auto"),
     //
-    simpleTest("Simple Test", "Simple Test Auto"),
-    //
     // doSimpleBackward("doSimpleBackward", null),
     // doSimpleForward("doSimpleForward", null);
+    //
+    // ADAM
+    //
+    narrowAdamShootAuto("Narrow 4 Notes Shoot Auto", "Narrow 4 Notes Shoot Auto"),
+    narrowAdamClimbAuto("Narrow 2 Notes Climb Auto", "Narrow 2 Notes Climb Auto"),
+    //
+    // STU
     //
     wideShootAuto("Wide Shoot Auto", "Wide Shoot Auto"),
     narrowShootAuto("Narrow Shoot Auto", "Narrow Shoot Auto");
@@ -416,11 +475,15 @@ public class RobotContainer {
 
     /** Test */
     //
+    autoChooser.addOption("Simple Test", AutoSelection.simpleTest);
+    //
+    autoChooser.addOption("Complex Test", AutoSelection.complexText);
+
+    /** Simple */
+    //
     autoChooser.addOption("Sit Still", AutoSelection.sitStill);
     //
     autoChooser.addOption("Sit Still and Shoot", AutoSelection.sitStillShootAuto);
-    //
-    autoChooser.addOption("Simple Test", AutoSelection.simpleTest);
 
     /** Drive */
     //
@@ -428,10 +491,19 @@ public class RobotContainer {
     //
     // autoChooser.addOption("Simple FORWARD", AutoSelection.doSimpleForward);
 
+    /** Adam's Autos */
+
     /** Simple Shoot w/ Starting Note */
-    autoChooser.addOption("Narrow Scoot & Shoot", AutoSelection.narrowShootAuto);
+    autoChooser.addOption("[A] Narrow 4 Notes Shoot", AutoSelection.narrowAdamShootAuto);
     //
-    autoChooser.addOption("Wide Scoot & Shoot", AutoSelection.wideShootAuto);
+    autoChooser.addOption("[A] Narrow 2 Notes Climb", AutoSelection.narrowAdamClimbAuto);
+
+    /** Stu's Autos */
+
+    /** Simple Shoot w/ Starting Note */
+    autoChooser.addOption("[S] Narrow Scoot & Shoot", AutoSelection.narrowShootAuto);
+    //
+    autoChooser.addOption("[S] Wide Scoot & Shoot", AutoSelection.wideShootAuto);
 
     // Put the chooser on the dashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);

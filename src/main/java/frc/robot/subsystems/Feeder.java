@@ -5,6 +5,7 @@ import static frc.robot.Constants.FeederConstants.*;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -20,7 +21,7 @@ public class Feeder extends SubsystemBase {
     LAUNCHAUTO("Launching", 0.00),
     PUTAMP("PutAmp", 0.00),
     PUTRAP("PutTrap", 0.00),
-    CLEARJAM("Clear", 1.00),
+    CLEARJAM("Clear", -1.00),
     TRANSFER("Transfer", 0.40),
     IDLE("Idle", 0.0);
 
@@ -70,10 +71,12 @@ public class Feeder extends SubsystemBase {
 
     System.out.println("Feeder Constructed!!");
   }
+
   // Sets the speed of the lead motor
   public void setFeederSpeed(double speed) {
     feeder.set(speed);
   }
+
   // Sets the speed of the lead motor to 0
   public void stop() {
     feeder.set(0);
@@ -114,7 +117,9 @@ public class Feeder extends SubsystemBase {
 
     if (currentTask == Task.TRANSFER) {
       // If the Feeder Sensor is Intaking and finds the Note go IDLE
-      if (!RobotContainer.m_topFeederSensor.get() || RobotContainer.m_topIncrementerSensor.get()) {
+      if (!RobotContainer.m_topFeederSensor.get()
+          || RobotContainer.m_topIncrementerSensor.get()
+          || DriverStation.isDisabled()) {
         currentTask = Task.IDLE;
         System.out.println("Note Transfered");
       }

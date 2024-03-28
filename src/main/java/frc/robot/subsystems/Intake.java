@@ -5,6 +5,7 @@ import static frc.robot.Constants.IntakeConstants.*;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -115,7 +116,10 @@ public class Intake extends SubsystemBase {
     setIntakeSpeed(currentTask.getSpeed());
 
     // If the FeederSensor or IncrementerSensor is on got back to idle.
-    if (RobotContainer.m_topFeederSensor.get() || RobotContainer.m_topIncrementerSensor.get()) {
+    if ((RobotContainer.m_topFeederSensor.get()
+            || RobotContainer.m_topIncrementerSensor.get()
+            || DriverStation.isDisabled())
+        && DriverStation.isTeleop()) {
       currentTask = Task.IDLE;
     }
 

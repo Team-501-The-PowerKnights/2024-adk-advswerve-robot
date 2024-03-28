@@ -23,6 +23,7 @@ package frc.robot;
  */
 public final class Constants {
   public static final Mode currentMode = Mode.REAL;
+  public static final boolean tuningMode = false;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -62,7 +63,7 @@ public final class Constants {
     public static final int kFeederRight = 22;
     // Speed Controller Speeds
     public static final double kFeederSpeed = 1;
-    public static final int kFeederCurrentLimit = 20;
+    public static final int kFeederCurrentLimit = 40;
   }
 
   public static final class IncrementerConstants {
@@ -89,7 +90,7 @@ public final class Constants {
     public static final int kMastRight = 41;
     // Speed Controller Speeds
     public static final double kMastSpeed = 1;
-    public static final int kMastCurrentLimit = 20;
+    public static final int kMastCurrentLimit = 30;
   }
 
   public static final class ClimberConstants {
