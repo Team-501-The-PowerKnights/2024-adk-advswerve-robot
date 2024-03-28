@@ -27,11 +27,11 @@ public class Mast extends SubsystemBase {
   public enum Task {
     INTAKING("Intaking", 35.0),
     LAUNCHSUB("Launch Subwoofer", 40.0),
-    LAUCNHKEY("Launch Key", 60.5),
+    LAUCNHKEY("Launch Key", 64.5),
     LAUCNHPASS("Launch Pass", 61.0),
     LAUNCHAUTO("Launch Auto", 6.0),
     PUTAMP("PutAmp", -26.0), // tested
-    PUTTRAP("PutTrap", 7.0),
+    PUTTRAP("PutTrap", 2.5),
     CLEARJAM("Clear", 40.0),
     CLIMBING("Climbing", -7.0),
     TESTING("Testing", 0.0),
@@ -100,13 +100,13 @@ public class Mast extends SubsystemBase {
     // rightEncAngle = 0.0;
     testingAngle = 0.0;
 
-    mastKp = 0.8;
-    mastKi = 0.002;
-    mastKd = 2.0;
-    double mastIWind = 100;
+    mastKp = 0.88;
+    mastKi = 0.00;
+    mastKd = 0.0;
+    double mastIWind = 150;
     mastFF = 0.0;
-    mastMaxPosOut = 0.3;
-    mastMaxNegOut = -0.3;
+    mastMaxPosOut = 0.45;
+    mastMaxNegOut = -0.45;
     mastSetpoint = 0.0;
 
     mastLeft = new CANSparkMax(kMastLeft, MotorType.kBrushless);
@@ -202,10 +202,11 @@ public class Mast extends SubsystemBase {
     leftEncAngle =
         (relmastLeftEncoder.getPosition() * 360 / gearRatio); // + mastStartingAngleOffset;
     // rightEncAngle =
-    //     (relmastRightEncoder.getPosition() * 360 / gearRatio); // + mastStartingAngleOffset;
+    // (relmastRightEncoder.getPosition() * 360 / gearRatio); // +
+    // mastStartingAngleOffset;
 
     // Remove backlash from Launcher by syncing constantly
-    if (counts == 50) {
+    if (counts == 40) {
       double ABStoRel = getAbsoluteEncoderDegrees() * 37.5 / 360;
       relmastLeftEncoder.setPosition(-ABStoRel);
       // relmastRightEncoder.setPosition(-ABStoRel);
@@ -224,7 +225,7 @@ public class Mast extends SubsystemBase {
     // Logger.recordOutput("Mast/Right_Enc", rightEncAngle);
     Logger.recordOutput("Mast/Abs_Enc", getAbsoluteEncoderDegrees());
     Logger.recordOutput("Mast/LeftMotorOutput", mastLeft.get());
-    // Logger.recordOutput("Mast/RightMotorOutput", mastRight.get());
+    Logger.recordOutput("Mast/Target", currentTask.getAngle());
     Logger.recordOutput("Mast/Current_Tsk", currentTask.getTaskName());
   }
 

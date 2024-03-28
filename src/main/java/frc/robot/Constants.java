@@ -89,7 +89,7 @@ public final class Constants {
     public static final int kMastRight = 41;
     // Speed Controller Speeds
     public static final double kMastSpeed = 1;
-    public static final int kMastCurrentLimit = 20;
+    public static final int kMastCurrentLimit = 30;
   }
 
   public static final class ClimberConstants {

@@ -222,8 +222,8 @@ public class RobotContainer {
                 DriveCommands.joystickDrive(
                     drive,
                     () -> (MathUtil.applyDeadband(-driverPad.getLeftY(), .07)),
-                    () -> (MathUtil.applyDeadband(-driverPad.getLeftX() * .65, .07)),
-                    () -> (MathUtil.applyDeadband(-driverPad.getRightX() * .65, .07))));
+                    () -> (MathUtil.applyDeadband(-driverPad.getLeftX() * .75, .07)),
+                    () -> (MathUtil.applyDeadband(-driverPad.getRightX() * .75, .07))));
 
         // Intake Note and Load into Launcher
         /*
