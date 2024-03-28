@@ -5,7 +5,6 @@ import static frc.robot.Constants.FeederConstants.*;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -118,7 +117,8 @@ public class Feeder extends SubsystemBase {
 
     if (currentTask == Task.TRANSFER) {
       // If the Feeder Sensor is Intaking and finds the Note go IDLE
-      if (!RobotContainer.m_topFeederSensor.get() || RobotContainer.m_topIncrementerSensor.get()
+      if (!RobotContainer.m_topFeederSensor.get()
+          || RobotContainer.m_topIncrementerSensor.get()
           || DriverStation.isDisabled()) {
         currentTask = Task.IDLE;
         System.out.println("Note Transfered");

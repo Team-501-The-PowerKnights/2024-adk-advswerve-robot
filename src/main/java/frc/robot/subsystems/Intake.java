@@ -116,8 +116,9 @@ public class Intake extends SubsystemBase {
     setIntakeSpeed(currentTask.getSpeed());
 
     // If the FeederSensor or IncrementerSensor is on got back to idle.
-    if ((RobotContainer.m_topFeederSensor.get() || RobotContainer.m_topIncrementerSensor.get()
-        || DriverStation.isDisabled())
+    if ((RobotContainer.m_topFeederSensor.get()
+            || RobotContainer.m_topIncrementerSensor.get()
+            || DriverStation.isDisabled())
         && DriverStation.isTeleop()) {
       currentTask = Task.IDLE;
     }
