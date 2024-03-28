@@ -88,7 +88,7 @@ public class Mast extends SubsystemBase {
   private static double counts = 0; // used for encoder sync
 
   private static Task currentTask;
-  private static final double gearRatio = (48.0 / 32.0) * 25.0 * -1;
+  private static final double gearRatio = (48.0 / 32.0) * 125.0;
 
   // TODO: Populate values with encoder values
 
@@ -102,16 +102,16 @@ public class Mast extends SubsystemBase {
 
     mastKp = 0.88;
     mastKi = 0.00;
-    mastKd = 0.0;
+    mastKd = 1.0;
     double mastIWind = 150;
     mastFF = 0.0;
-    mastMaxPosOut = 0.45;
-    mastMaxNegOut = -0.45;
+    mastMaxPosOut = 0.85;
+    mastMaxNegOut = -0.85;
     mastSetpoint = 0.0;
 
     mastLeft = new CANSparkMax(kMastLeft, MotorType.kBrushless);
     mastLeft.restoreFactoryDefaults();
-    mastLeft.setSmartCurrentLimit(kMastCurrentLimit);
+    mastLeft.setSmartCurrentLimit(10);
     mastLeft.enableVoltageCompensation(10.0);
     mastLeft.setIdleMode(IdleMode.kBrake); // Turn on the brake for PID
     mastLeft.setInverted(false);
@@ -148,14 +148,14 @@ public class Mast extends SubsystemBase {
     // mastRightPIDController.setOutputRange(mastMaxNegOut, mastMaxPosOut);
 
     testingAngleNumber = new LoggedDashboardNumber("Mast/Test_Angle", testingAngle);
-    double ABStoRel = getAbsoluteEncoderDegrees() * 37.5 / 360;
+    double ABStoRel = getAbsoluteEncoderDegrees() * gearRatio / 360;
     relmastLeftEncoder.setPosition(-ABStoRel);
     // relmastRightEncoder.setPosition(-ABStoRel);
     System.out.println("Mast Constructed!!");
   }
 
   private void setMastPID(double setPoint) {
-    mastSetpoint = -(setPoint * 37.5 / 360);
+    mastSetpoint = (setPoint * gearRatio / 360);
     mastLeftPIDController.setReference(mastSetpoint, ControlType.kPosition);
     // mastRightPIDController.setReference(mastSetpoint, ControlType.kPosition);
     // System.out.println(mastSetpoint);
@@ -206,9 +206,9 @@ public class Mast extends SubsystemBase {
     // mastStartingAngleOffset;
 
     // Remove backlash from Launcher by syncing constantly
-    if (counts == 40) {
-      double ABStoRel = getAbsoluteEncoderDegrees() * 37.5 / 360;
-      relmastLeftEncoder.setPosition(-ABStoRel);
+    if (counts == 30) {
+      double ABStoRel = getAbsoluteEncoderDegrees() * gearRatio / 360;
+      relmastLeftEncoder.setPosition(ABStoRel);
       // relmastRightEncoder.setPosition(-ABStoRel);
       counts = 0;
     }
