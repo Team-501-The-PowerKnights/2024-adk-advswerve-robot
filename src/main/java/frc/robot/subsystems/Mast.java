@@ -27,7 +27,7 @@ public class Mast extends SubsystemBase {
   // Mast at 90 Deg Abs=16.0, Rel= 43.00
 
   public enum Task {
-    INTAKING("Intaking", 33.0),
+    INTAKING("Intaking", 32.0),
     LAUNCHSUB("Launch Subwoofer", 40.0),
     LAUCNHKEY("Launch Key", 64.5),
     LAUCNHPASS("Launch Pass", 61.0),
@@ -70,7 +70,7 @@ public class Mast extends SubsystemBase {
   CommandXboxController operPad;
   AbsoluteEncoder absMastLeftEncoder;
 
-  private static double leftEncAngle;
+  private static double leftEncDeg;
   // private static double rightEncAngle;
   private static double AbsEncOffset;
   private static double testingAngle;
@@ -98,7 +98,7 @@ public class Mast extends SubsystemBase {
 
     currentTask = Task.OFFKICKSTAND;
 
-    leftEncAngle = 0.0;
+    leftEncDeg = 0.0;
     // rightEncAngle = 0.0;
     testingAngle = 0.0;
 
@@ -201,20 +201,20 @@ public class Mast extends SubsystemBase {
     // SmartDashboard.putString("Mast/Task", currentTask.taskName);
 
     // Get Datafrom Sensors
-    leftEncAngle =
-        (relmastLeftEncoder.getPosition() * 360 / gearRatio); // + mastStartingAngleOffset;
+    leftEncDeg = (relmastLeftEncoder.getPosition() * 360 / gearRatio); // + mastStartingAngleOffset;
     // rightEncAngle =
     // (relmastRightEncoder.getPosition() * 360 / gearRatio); // +
     // mastStartingAngleOffset;
 
     // find ABS vs Relative Error
-    double error = leftEncAngle - getAbsoluteEncoderDegrees();
+    double absEncoderDeg = getAbsoluteEncoderDegrees();
+    double error = leftEncDeg - absEncoderDeg;
 
     // Remove backlash from Launcher by syncing constantly
     if (++counts == 30 && Math.abs(error) > .4) {
       // double AbsToRel = getAbsoluteEncoderDegrees() * gearRatio / 360;
       double AbsToRel =
-          new BigDecimal(getAbsoluteEncoderDegrees() * gearRatio / 360)
+          new BigDecimal(absEncoderDeg * gearRatio / 360)
               .setScale(3, RoundingMode.DOWN)
               .doubleValue();
       relmastLeftEncoder.setPosition(AbsToRel);
@@ -229,9 +229,9 @@ public class Mast extends SubsystemBase {
     // Uses Logger to log dashboard value and create dashboard field
     testingAngle = testingAngleNumber.get();
 
-    Logger.recordOutput("Mast/Left_Enc", leftEncAngle);
+    Logger.recordOutput("Mast/Left_Enc", leftEncDeg);
     // Logger.recordOutput("Mast/Right_Enc", rightEncAngle);
-    Logger.recordOutput("Mast/Abs_Enc", getAbsoluteEncoderDegrees());
+    Logger.recordOutput("Mast/Abs_Enc", absEncoderDeg);
     Logger.recordOutput("Mast/ErrorABS", error);
     Logger.recordOutput("Mast/LeftMotorOutput", mastLeft.get());
     Logger.recordOutput("Mast/Target", currentTask.getAngle());
