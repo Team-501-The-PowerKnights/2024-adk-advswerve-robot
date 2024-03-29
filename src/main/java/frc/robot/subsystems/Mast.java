@@ -41,7 +41,7 @@ public class Mast extends SubsystemBase {
     OFFKICKSTAND("Off Kickstand", 50.00),
     BUMPUP("Bump Up", 1.0),
     BUMPDOWN("Bump Down", -1.0),
-    LAUCNHNOTE1("Launch Note 1", 52.0),
+    LAUCNHNOTE1("Launch Note 1", 54.0),
     LAUCNHNOTE2("Launch Note 2", 56.0);
 
     private final String taskName;
