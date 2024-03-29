@@ -13,6 +13,8 @@ import com.revrobotics.SparkPIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
@@ -207,9 +209,13 @@ public class Mast extends SubsystemBase {
 
     // Remove backlash from Launcher by syncing constantly
     if (counts == 30) {
-      double ABStoRel = getAbsoluteEncoderDegrees() * gearRatio / 360;
-      relmastLeftEncoder.setPosition(ABStoRel);
-      // relmastRightEncoder.setPosition(-ABStoRel);
+      // double AbsToRel = getAbsoluteEncoderDegrees() * gearRatio / 360;
+      double AbsToRel =
+          new BigDecimal(getAbsoluteEncoderDegrees() * gearRatio / 360)
+              .setScale(3, RoundingMode.DOWN)
+              .doubleValue();
+      relmastLeftEncoder.setPosition(AbsToRel);
+      // relmastRightEncoder.setPosition(-AbsToRel);
       counts = 0;
     }
     counts++;
