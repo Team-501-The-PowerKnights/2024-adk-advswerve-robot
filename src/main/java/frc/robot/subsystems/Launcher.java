@@ -20,7 +20,7 @@ public class Launcher extends SubsystemBase {
   public enum Task {
     INTAKING("Intaking", 0.0, 0.0),
     LOADINC("Load INC", 0.0, 0.0),
-    LAUNCHSUB("Launch Subwoofer", 0.4, 3000.00),
+    LAUNCHSUB("Launch Subwoofer", 0.41, 3000.00),
     LAUNCHKEY("Launch Protected", 0.67, 4000),
     LAUNCHPASS("Launch Pass", 1.00, 5000),
     LAUNCHAUTO("Launch Auto", 0.0, 0.0),
