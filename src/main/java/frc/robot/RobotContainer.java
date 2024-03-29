@@ -372,6 +372,7 @@ public class RobotContainer {
   }
 
   void configurePathPlannerCommands() {
+    //
     NamedCommands.registerCommand(
         "Shoot Auto AMP w/ Pre-Load",
         Commands.sequence(
@@ -380,6 +381,8 @@ public class RobotContainer {
             m_launcher.setTask(Launcher.Task.LAUNCHSUB),
             new WaitUntilCommand(m_launcher::atSpeed),
             m_incrementer.setTask(Incrementer.Task.LAUNCHMAN)));
+
+    //
     NamedCommands.registerCommand(
         "Shoot Auto Note 1 w/ Pre-Load",
         Commands.sequence(
@@ -388,7 +391,7 @@ public class RobotContainer {
             m_launcher.setTask(Launcher.Task.LAUCNHNOTE1),
             new WaitUntilCommand(m_launcher::atSpeed),
             m_incrementer.setTask(Incrementer.Task.LAUNCHMAN)));
-
+    //
     NamedCommands.registerCommand(
         "Shoot Auto Note 2 w/ Pre-Load",
         Commands.sequence(
@@ -397,6 +400,8 @@ public class RobotContainer {
             m_launcher.setTask(Launcher.Task.LAUCNHNOTE2),
             new WaitUntilCommand(m_launcher::atSpeed),
             m_incrementer.setTask(Incrementer.Task.LAUNCHMAN)));
+
+    //
     NamedCommands.registerCommand(
         "Pickup and Load",
         Commands.sequence(
@@ -410,6 +415,7 @@ public class RobotContainer {
             new WaitUntilCommand(m_topIncrementerSensor::get),
             m_feeder.setTask(Feeder.Task.IDLE),
             m_launcher.setTask(Launcher.Task.IDLE)));
+    //
     NamedCommands.registerCommand(
         "Transfer to Launcher",
         Commands.sequence(
@@ -420,6 +426,7 @@ public class RobotContainer {
             m_feeder.setTask(Feeder.Task.IDLE),
             m_incrementer.setTask(Incrementer.Task.IDLE)));
 
+    //
     NamedCommands.registerCommand("Delay Auto Start", Commands.sequence(new DelayAutoCommand()));
   }
 
@@ -444,8 +451,9 @@ public class RobotContainer {
     //
     // STU
     //
-    wideShootAuto("Wide Shoot Auto", "Wide Shoot Auto"),
-    narrowShootAuto("Narrow 1 Note Shoot Auto", "Narrow 1 Note Shoot Auto");
+    narrowShootAuto("Narrow 1 Note Shoot Auto", "Narrow 1 Note Shoot Auto"),
+    middleSitStillShootAuto("Middle Sit Still Shoot Auto", "Middle Sit Still Shoot Auto"),
+    wideShootAuto("Wide Shoot Auto", "Wide Shoot Auto");
     // @formatter:on
 
     private final String name;
@@ -498,15 +506,17 @@ public class RobotContainer {
 
     /** Adam's Autos */
 
-    /** Simple Shoot w/ Starting Note */
+    /** Shoot w/ Starting Note & Then Pick-Up and Shoot Two Notes */
     autoChooser.addOption("[A] Narrow 3 Notes Shoot", AutoSelection.narrowAdamShootAuto);
-    //
+    /** */
     autoChooser.addOption("[A] Narrow 2 Notes Climb", AutoSelection.narrowAdamClimbAuto);
 
     /** Stu's Autos */
 
     /** Simple Shoot w/ Starting Note */
     autoChooser.addOption("[S] Narrow Scoot & Shoot", AutoSelection.narrowShootAuto);
+    //
+    autoChooser.addOption("[S] Middle Sit & Shoot", AutoSelection.middleSitStillShootAuto);
     //
     autoChooser.addOption("[S] Wide Scoot & Shoot", AutoSelection.wideShootAuto);
 
