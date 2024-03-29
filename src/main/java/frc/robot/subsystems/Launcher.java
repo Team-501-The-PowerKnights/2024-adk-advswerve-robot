@@ -25,7 +25,7 @@ public class Launcher extends SubsystemBase {
     LAUNCHPASS("Launch Pass", 1.00, 5000),
     LAUNCHAUTO("Launch Auto", 0.0, 0.0),
     PUTAMP("Note->Amp", 0.0, 0.0),
-    LAUNCHTRAP("Launch Tap", 0.25, 1000),
+    LAUNCHTRAP("Launch Tap", 0.3, 1000),
     CLEARJAM("Clear", 0.25, 1000.0),
     IDLE("Idle", 0.0, 0.0),
     LAUCNHNOTE1("Launch Note 1", .67, 55.0),
