@@ -434,13 +434,13 @@ public class RobotContainer {
     //
     // ADAM
     //
-    narrowAdamShootAuto("Narrow 4 Notes Shoot Auto", "Narrow 4 Notes Shoot Auto"),
+    narrowAdamShootAuto("Narrow 3 Notes Shoot Auto", "Narrow 3 Notes Shoot Auto"),
     narrowAdamClimbAuto("Narrow 2 Notes Climb Auto", "Narrow 2 Notes Climb Auto"),
     //
     // STU
     //
     wideShootAuto("Wide Shoot Auto", "Wide Shoot Auto"),
-    narrowShootAuto("Narrow Shoot Auto", "Narrow Shoot Auto");
+    narrowShootAuto("Narrow 1 Note Shoot Auto", "Narrow 1 Note Shoot Auto");
     // @formatter:on
 
     private final String name;
@@ -494,7 +494,7 @@ public class RobotContainer {
     /** Adam's Autos */
 
     /** Simple Shoot w/ Starting Note */
-    autoChooser.addOption("[A] Narrow 4 Notes Shoot", AutoSelection.narrowAdamShootAuto);
+    autoChooser.addOption("[A] Narrow 3 Notes Shoot", AutoSelection.narrowAdamShootAuto);
     //
     autoChooser.addOption("[A] Narrow 2 Notes Climb", AutoSelection.narrowAdamClimbAuto);
 
