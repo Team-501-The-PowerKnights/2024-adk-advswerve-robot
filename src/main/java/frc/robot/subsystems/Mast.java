@@ -84,7 +84,7 @@ public class Mast extends SubsystemBase {
   CommandXboxController operPad;
 
   LoggedDashboardNumber testingAngleNumber;
-  private static double counts = 0; // used for encoder sync
+  private int counts = 0; // used for encoder sync
 
   private static Task currentTask;
   private static final double gearRatio = (48.0 / 32.0) * 125.0;
@@ -188,14 +188,30 @@ public class Mast extends SubsystemBase {
     double error = relEncoderDeg - absEncoderDeg;
 
     // Remove backlash from Launcher by syncing constantly
-    if (++counts == 30 && Math.abs(error) > .4) {
-      // double AbsToRel = getAbsoluteEncoderDegrees() * gearRatio / 360;
-      double AbsToRel =
-          new BigDecimal(absEncoderDeg * gearRatio / 360)
-              .setScale(3, RoundingMode.DOWN)
-              .doubleValue();
-      relMastLeftEncoder.setPosition(AbsToRel);
+    // if (++counts == 30 && Math.abs(error) > .4) {
+    // // double AbsToRel = getAbsoluteEncoderDegrees() * gearRatio / 360;
+    // double AbsToRel = new BigDecimal(absEncoderDeg * gearRatio / 360)
+    // .setScale(3, RoundingMode.DOWN)
+    // .doubleValue();
+    // relMastLeftEncoder.setPosition(AbsToRel);
+    // counts = 0;
+    // }
+
+    if (++counts >= 30) {
+      if (Math.abs(error) > .4) {
+        // System.out.println("*** fixing at " + counts);
+        // double AbsToRel = getAbsoluteEncoderDegrees() * gearRatio / 360;
+        double AbsToRel =
+            new BigDecimal(absEncoderDeg * gearRatio / 360)
+                .setScale(3, RoundingMode.DOWN)
+                .doubleValue();
+        relMastLeftEncoder.setPosition(AbsToRel);
+      } else {
+        // System.out.println("*** not fixing at " + counts);
+      }
       counts = 0;
+    } else {
+      // System.out.println("skipping at " + counts);
     }
 
     // SmartDashboard.putNumber("Mast/Left_Enc", leftEncAngle);
