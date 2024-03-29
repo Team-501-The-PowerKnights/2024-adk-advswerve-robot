@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Delay Auto Start"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Narrow Path 01"

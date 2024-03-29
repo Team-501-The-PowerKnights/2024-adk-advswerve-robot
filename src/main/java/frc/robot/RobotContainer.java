@@ -17,7 +17,9 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -183,11 +185,12 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
+    // Create the auto choosers for dashboard
+    createAutoChooser();
+    createAutoDelayChooser();
+
     // Register the commands for Path Planner
     configurePathPlannerCommands();
-
-    // Create the auto chooser for dashboard
-    createAutoChooser();
   }
 
   /**
@@ -416,6 +419,8 @@ public class RobotContainer {
             new WaitUntilCommand(m_topIncrementerSensor::get),
             m_feeder.setTask(Feeder.Task.IDLE),
             m_incrementer.setTask(Incrementer.Task.IDLE)));
+
+    NamedCommands.registerCommand("Delay Auto Start", Commands.sequence(new DelayAutoCommand()));
   }
 
   //
@@ -524,6 +529,76 @@ public class RobotContainer {
       return null;
     } else {
       return new PathPlannerAuto(autoSelected.getPathName());
+    }
+  }
+
+  // Chooser for autonomous delay from Dashboard
+  private SendableChooser<Integer> autoDelayChooser;
+  // Delay that was selected
+  private Integer autoDelaySelected;
+
+  public void createAutoDelayChooser() {
+    autoDelayChooser = new SendableChooser<>();
+
+    // Default option is "no delay"
+    autoDelayChooser.setDefaultOption("No Delay", Integer.valueOf(0));
+
+    //
+    autoDelayChooser.addOption("1 Sec", Integer.valueOf(1));
+    autoDelayChooser.addOption("2 Sec", Integer.valueOf(2));
+    autoDelayChooser.addOption("3 Sec", Integer.valueOf(3));
+    autoDelayChooser.addOption("4 Sec", Integer.valueOf(4));
+    autoDelayChooser.addOption("5 Sec", Integer.valueOf(5));
+    autoDelayChooser.addOption("6 Sec", Integer.valueOf(6));
+    autoDelayChooser.addOption("7 Sec", Integer.valueOf(7));
+    autoDelayChooser.addOption("8 Sec", Integer.valueOf(8));
+    autoDelayChooser.addOption("9 Sec", Integer.valueOf(9));
+    autoDelayChooser.addOption("10 Sec", Integer.valueOf(10));
+
+    // Put the chooser on the dashboard
+    SmartDashboard.putData("Auto Delay Chooser", autoDelayChooser);
+  }
+
+  public Integer getAutonomousDelay() {
+    autoDelaySelected = autoDelayChooser.getSelected();
+    return autoDelaySelected;
+  }
+
+  private class DelayAutoCommand extends Command {
+    /** The timer used for waiting. */
+    protected Timer m_timer = new Timer();
+
+    private double m_duration;
+
+    public DelayAutoCommand() {}
+
+    @Override
+    public void initialize() {
+      m_duration = getAutonomousDelay().doubleValue();
+      m_timer.restart();
+      System.out.println("AutoDelayCommand initialized");
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+      m_timer.stop();
+      System.out.println("AutoDelayCommand done");
+    }
+
+    @Override
+    public boolean isFinished() {
+      return m_timer.hasElapsed(m_duration);
+    }
+
+    @Override
+    public boolean runsWhenDisabled() {
+      return true;
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+      super.initSendable(builder);
+      builder.addDoubleProperty("duration", () -> m_duration, null);
     }
   }
 }

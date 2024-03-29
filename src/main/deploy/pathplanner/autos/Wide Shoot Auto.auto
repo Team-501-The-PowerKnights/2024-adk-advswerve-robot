@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Delay Auto Start"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Wide 01 Path"
@@ -20,7 +26,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot Auto w/ Pre-Load"
+            "name": "Shoot Auto AMP w/ Pre-Load"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
           }
         },
         {
@@ -32,6 +44,6 @@
       ]
     }
   },
-  "folder": "Stu",
+  "folder": null,
   "choreoAuto": false
 }
