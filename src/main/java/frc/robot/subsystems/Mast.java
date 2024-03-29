@@ -27,7 +27,7 @@ public class Mast extends SubsystemBase {
   // Mast at 90 Deg Abs=16.0, Rel= 43.00
 
   public enum Task {
-    INTAKING("Intaking", 35.0),
+    INTAKING("Intaking", 33.0),
     LAUNCHSUB("Launch Subwoofer", 40.0),
     LAUCNHKEY("Launch Key", 64.5),
     LAUCNHPASS("Launch Pass", 61.0),
@@ -207,8 +207,11 @@ public class Mast extends SubsystemBase {
     // (relmastRightEncoder.getPosition() * 360 / gearRatio); // +
     // mastStartingAngleOffset;
 
+    // find ABS vs Relative Error
+    double error = leftEncAngle - getAbsoluteEncoderDegrees();
+
     // Remove backlash from Launcher by syncing constantly
-    if (counts == 30) {
+    if (++counts == 30 && Math.abs(error) > .4) {
       // double AbsToRel = getAbsoluteEncoderDegrees() * gearRatio / 360;
       double AbsToRel =
           new BigDecimal(getAbsoluteEncoderDegrees() * gearRatio / 360)
@@ -218,7 +221,6 @@ public class Mast extends SubsystemBase {
       // relmastRightEncoder.setPosition(-AbsToRel);
       counts = 0;
     }
-    counts++;
 
     // SmartDashboard.putNumber("Mast/Left_Enc", leftEncAngle);
     // SmartDashboard.putNumber("Mast/Right_Enc", rightEncAngle);
@@ -230,6 +232,7 @@ public class Mast extends SubsystemBase {
     Logger.recordOutput("Mast/Left_Enc", leftEncAngle);
     // Logger.recordOutput("Mast/Right_Enc", rightEncAngle);
     Logger.recordOutput("Mast/Abs_Enc", getAbsoluteEncoderDegrees());
+    Logger.recordOutput("Mast/ErrorABS", error);
     Logger.recordOutput("Mast/LeftMotorOutput", mastLeft.get());
     Logger.recordOutput("Mast/Target", currentTask.getAngle());
     Logger.recordOutput("Mast/Current_Tsk", currentTask.getTaskName());
