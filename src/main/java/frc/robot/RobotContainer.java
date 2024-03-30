@@ -376,7 +376,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Shoot Auto AMP w/ Pre-Load",
         Commands.sequence(
-            new WaitCommand(1.0),
+            new WaitCommand(0.5),
             m_mast.setTask(Mast.Task.LAUNCHSUB),
             m_launcher.setTask(Launcher.Task.LAUNCHSUB),
             new WaitUntilCommand(m_launcher::atSpeed),
@@ -386,7 +386,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Shoot Auto Note 1 w/ Pre-Load",
         Commands.sequence(
-            new WaitCommand(1.0),
+            new WaitCommand(0.5),
             m_mast.setTask(Mast.Task.LAUCNHNOTE1),
             m_launcher.setTask(Launcher.Task.LAUCNHNOTE1),
             new WaitUntilCommand(m_launcher::atSpeed),
@@ -395,7 +395,7 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Shoot Auto Note 2 w/ Pre-Load",
         Commands.sequence(
-            new WaitCommand(1.0),
+            new WaitCommand(0.5),
             m_mast.setTask(Mast.Task.LAUCNHNOTE2),
             m_launcher.setTask(Launcher.Task.LAUCNHNOTE2),
             new WaitUntilCommand(m_launcher::atSpeed),
@@ -451,9 +451,10 @@ public class RobotContainer {
     //
     // STU
     //
-    narrowShootAuto("Narrow 1 Note Shoot Auto", "Narrow 1 Note Shoot Auto"),
+    narrowShootScootAuto("Narrow 1 Note Shoot Scoot Auto", "Narrow 1 Note Shoot Scoot Auto"),
+    narrowShootReturnAuto("Narrow 1 Note Shoot Return Auto", "Narrow 1 Note Shoot Return Auto"),
     middleSitStillShootAuto("Middle Sit Still Shoot Auto", "Middle Sit Still Shoot Auto"),
-    wideShootAuto("Wide Shoot Auto", "Wide Shoot Auto");
+    wideShootScootAuto("Wide 1 Note Shoot Scoot Auto", "Wide 1 Note Shoot Scoot Auto");
     // @formatter:on
 
     private final String name;
@@ -486,24 +487,6 @@ public class RobotContainer {
     // Default option is safety of "do nothing"
     autoChooser.setDefaultOption("Do Nothing", AutoSelection.doNothing);
 
-    /** Test */
-    //
-    autoChooser.addOption("Simple Test", AutoSelection.simpleTest);
-    //
-    autoChooser.addOption("Complex Test", AutoSelection.complexText);
-
-    /** Simple */
-    //
-    autoChooser.addOption("Sit Still", AutoSelection.sitStill);
-    //
-    autoChooser.addOption("Sit Still and Shoot", AutoSelection.sitStillShootAuto);
-
-    /** Drive */
-    //
-    // autoChooser.addOption("Simple BACKWARD", AutoSelection.doSimpleBackward);
-    //
-    // autoChooser.addOption("Simple FORWARD", AutoSelection.doSimpleForward);
-
     /** Adam's Autos */
 
     /** Shoot w/ Starting Note & Then Pick-Up and Shoot Two Notes */
@@ -514,11 +497,31 @@ public class RobotContainer {
     /** Stu's Autos */
 
     /** Simple Shoot w/ Starting Note */
-    autoChooser.addOption("[S] Narrow Scoot & Shoot", AutoSelection.narrowShootAuto);
+    autoChooser.addOption("[S] Narrow Shoot & Scoot", AutoSelection.narrowShootScootAuto);
+    //
+    autoChooser.addOption("[S] Narrow Shoot & Return", AutoSelection.narrowShootReturnAuto);
     //
     autoChooser.addOption("[S] Middle Sit & Shoot", AutoSelection.middleSitStillShootAuto);
     //
-    autoChooser.addOption("[S] Wide Scoot & Shoot", AutoSelection.wideShootAuto);
+    autoChooser.addOption("[S] Wide Shoot & Scoot", AutoSelection.wideShootScootAuto);
+
+    /** Test */
+    //
+    autoChooser.addOption("Simple Test", AutoSelection.simpleTest);
+    //
+    autoChooser.addOption("Complex Test", AutoSelection.complexText);
+
+    /** Simple */
+    //
+    autoChooser.addOption("Sit Still", AutoSelection.sitStill);
+    //
+    autoChooser.addOption("Sit Still & Shoot", AutoSelection.sitStillShootAuto);
+
+    /** Drive */
+    //
+    // autoChooser.addOption("Simple BACKWARD", AutoSelection.doSimpleBackward);
+    //
+    // autoChooser.addOption("Simple FORWARD", AutoSelection.doSimpleForward);
 
     // Put the chooser on the dashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -564,6 +567,10 @@ public class RobotContainer {
     autoDelayChooser.addOption("8 Sec", Integer.valueOf(8));
     autoDelayChooser.addOption("9 Sec", Integer.valueOf(9));
     autoDelayChooser.addOption("10 Sec", Integer.valueOf(10));
+    autoDelayChooser.addOption("11 Sec", Integer.valueOf(11));
+    autoDelayChooser.addOption("12 Sec", Integer.valueOf(12));
+    autoDelayChooser.addOption("13 Sec", Integer.valueOf(13));
+    autoDelayChooser.addOption("14 Sec", Integer.valueOf(14));
 
     // Put the chooser on the dashboard
     SmartDashboard.putData("Auto Delay Chooser", autoDelayChooser);
