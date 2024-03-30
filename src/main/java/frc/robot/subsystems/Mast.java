@@ -33,7 +33,7 @@ public class Mast extends SubsystemBase {
     LAUCNHPASS("Launch Pass", 61.0),
     LAUNCHAUTO("Launch Auto", 6.0),
     PUTAMP("PutAmp", -26.0), // tested
-    PUTTRAP("PutTrap", 2.5),
+    PUTTRAP("PutTrap", 37.5), // was 40
     CLEARJAM("Clear", 40.0),
     CLIMBING("Climbing", -7.0),
     TESTING("Testing", 0.0),
@@ -187,25 +187,14 @@ public class Mast extends SubsystemBase {
     double absEncoderDeg = getAbsoluteEncoderDegrees();
     double error = relEncoderDeg - absEncoderDeg;
 
-    // Remove backlash from Launcher by syncing constantly
-    // if (++counts == 30 && Math.abs(error) > .4) {
-    // // double AbsToRel = getAbsoluteEncoderDegrees() * gearRatio / 360;
-    // double AbsToRel = new BigDecimal(absEncoderDeg * gearRatio / 360)
-    // .setScale(3, RoundingMode.DOWN)
-    // .doubleValue();
-    // relMastLeftEncoder.setPosition(AbsToRel);
-    // counts = 0;
-    // }
-
     if (++counts >= 30) {
       if (Math.abs(error) > .4) {
         // System.out.println("*** fixing at " + counts);
-        // double AbsToRel = getAbsoluteEncoderDegrees() * gearRatio / 360;
-        double AbsToRel =
+        double absToRel =
             new BigDecimal(absEncoderDeg * gearRatio / 360)
                 .setScale(3, RoundingMode.DOWN)
                 .doubleValue();
-        relMastLeftEncoder.setPosition(AbsToRel);
+        relMastLeftEncoder.setPosition(absToRel);
       } else {
         // System.out.println("*** not fixing at " + counts);
       }
