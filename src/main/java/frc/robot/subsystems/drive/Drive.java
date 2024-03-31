@@ -265,6 +265,16 @@ public class Drive extends SubsystemBase {
     return getPose().getRotation();
   }
 
+  /** Returns the current Pitch angle F/B from the gyro* */
+  public double getPitch() {
+    return gyroInputs.pitchCurrent;
+  }
+
+  /** Returns the current Roll angle L/R from the gyro* */
+  public double getRoll() {
+    return gyroInputs.rollCurrent;
+  }
+
   /** Resets the current odometry pose. */
   public void setPose(Pose2d pose) {
     poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);

@@ -26,7 +26,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.DriveCommands;
+import frc.robot.commands.DriveCommandsBalance;
 import frc.robot.subsystems.ClimbLimitSensors;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Feeder;
@@ -68,7 +68,7 @@ public class RobotContainer {
   private final CommandXboxController driverPad = new CommandXboxController(0);
   private final CommandXboxController operPad = new CommandXboxController(1);
 
-  private double directionSign;
+  // private double directionSign;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -200,7 +200,7 @@ public class RobotContainer {
     switch (Constants.currentRobot) {
       case PROTO:
         drive.setDefaultCommand(
-            DriveCommands.joystickDrive(
+            DriveCommandsBalance.joystickDrive(
                 drive,
                 () -> (MathUtil.applyDeadband(driverPad.getLeftY() * .5, .07)),
                 () -> (MathUtil.applyDeadband(driverPad.getLeftX() * .5, .07)),
@@ -210,7 +210,7 @@ public class RobotContainer {
 
       case REAL:
         drive.setDefaultCommand(
-            DriveCommands.joystickDrive(
+            DriveCommandsBalance.joystickDrive(
                 drive,
                 () -> (MathUtil.applyDeadband(-driverPad.getLeftY() * .65, .07)),
                 () -> (MathUtil.applyDeadband(-driverPad.getLeftX() * .65, .07)),
@@ -219,7 +219,7 @@ public class RobotContainer {
         driverPad
             .leftBumper()
             .whileTrue(
-                DriveCommands.joystickDrive(
+                DriveCommandsBalance.joystickDrive(
                     drive,
                     () -> (MathUtil.applyDeadband(-driverPad.getLeftY(), .07)),
                     () -> (MathUtil.applyDeadband(-driverPad.getLeftX() * .75, .07)),

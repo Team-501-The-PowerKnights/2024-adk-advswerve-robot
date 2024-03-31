@@ -20,7 +20,6 @@ import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.OptionalDouble;
 import java.util.Queue;
 
@@ -71,11 +70,6 @@ public class GyroIOPigeon2 implements GyroIO {
     inputs.yawVelocityRadPerSec = Units.degreesToRadians(yawVelocity.getValueAsDouble());
     inputs.rollCurrent = roll.getValue(); // Added to add to monitoring for anti tip Adam
     inputs.pitchCurrent = pitch.getValue(); // Added to add to monitoring for anti tip Adam
-
-    SmartDashboard.putNumber("STU.yawPosition", inputs.yawPosition.getRadians());
-    SmartDashboard.putNumber("STU.yawVelocity", inputs.yawVelocityRadPerSec);
-    SmartDashboard.putNumber("STU.Roll", inputs.rollCurrent);
-    SmartDashboard.putNumber("STU.Pitch", inputs.pitchCurrent);
 
     inputs.odometryYawTimestamps =
         yawTimestampQueue.stream().mapToDouble((Double value) -> value).toArray();
