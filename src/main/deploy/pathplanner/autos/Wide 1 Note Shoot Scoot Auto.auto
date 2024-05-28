@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.5273974184312005,
-      "y": 7.0
+      "x": 0.54,
+      "y": 3.96
     },
-    "rotation": 0
+    "rotation": 0.0
   },
   "command": {
     "type": "sequential",
@@ -20,13 +20,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Narrow Path 01"
+            "pathName": "Wide 01 Path"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Auto AMP w/ Pre-Load"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Climb Path 01"
+            "pathName": "Wide 02 Path"
           }
         }
       ]

@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Delay Auto Start"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Narrow Path 01"
@@ -26,7 +32,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 2.0
+            "waitTime": 0.5
           }
         },
         {

@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.54,
-      "y": 3.96
+      "x": 0.5,
+      "y": 6.97
     },
     "rotation": 0.0
   },
@@ -12,26 +12,38 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Delay Auto Start"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Wide 01 Path"
+            "pathName": "Narrow Path 01"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Shoot Auto w/ Pre-Load"
+            "name": "Shoot Auto AMP w/ Pre-Load"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Wide 02 Path"
+            "pathName": "Narrow Path 01 Clear"
           }
         }
       ]
     }
   },
-  "folder": "Stu",
+  "folder": null,
   "choreoAuto": false
 }
