@@ -377,7 +377,7 @@ public class RobotContainer {
         "Shoot Auto AMP w/ Pre-Load",
         Commands.sequence(
             new WaitCommand(0.5),
-            m_mast.setTask(Mast.Task.LAUNCHSUB),
+            m_mast.setTask(Mast.Task.LAUCNHNOTEPRE),
             m_launcher.setTask(Launcher.Task.LAUNCHSUB),
             new WaitUntilCommand(m_launcher::atSpeed),
             m_incrementer.setTask(Incrementer.Task.LAUNCHMAN)));
