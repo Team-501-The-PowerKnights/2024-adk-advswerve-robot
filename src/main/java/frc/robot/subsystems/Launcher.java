@@ -28,6 +28,7 @@ public class Launcher extends SubsystemBase {
     LAUNCHTRAP("Launch Tap", 0.55, 1000), // .60
     CLEARJAM("Clear", 0.25, 1000.0),
     IDLE("Idle", 0.0, 0.0),
+    LAUCNHNOTEPRE("Note Preload", .50, 5000),
     LAUCNHNOTE1("Launch Note 1", .67, 55.0),
     LAUCNHNOTE2("Launch Note 2", .55, 45.0);
 

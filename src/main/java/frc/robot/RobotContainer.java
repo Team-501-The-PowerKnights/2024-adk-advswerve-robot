@@ -378,7 +378,7 @@ public class RobotContainer {
         Commands.sequence(
             new WaitCommand(0.5),
             m_mast.setTask(Mast.Task.LAUCNHNOTEPRE),
-            m_launcher.setTask(Launcher.Task.LAUNCHSUB),
+            m_launcher.setTask(Launcher.Task.LAUCNHNOTEPRE),
             new WaitUntilCommand(m_launcher::atSpeed),
             m_incrementer.setTask(Incrementer.Task.LAUNCHMAN)));
 
