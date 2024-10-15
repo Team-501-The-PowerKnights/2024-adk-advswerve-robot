@@ -41,6 +41,7 @@ public class Mast extends SubsystemBase {
     OFFKICKSTAND("Off Kickstand", 50.00),
     BUMPUP("Bump Up", 1.0),
     BUMPDOWN("Bump Down", -1.0),
+    LAUCNHNOTEPRE("Launch Preload", 44.0),
     LAUCNHNOTE1("Launch Note 1", 60.0),
     LAUCNHNOTE2("Launch Note 2", 55.0);
 
